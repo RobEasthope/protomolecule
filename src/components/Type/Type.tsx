@@ -1,36 +1,16 @@
 import { createElement } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, stylesCheck } from "@/utils/tailwind";
+import { cn } from "@/utils/tailwind";
+import { stylesCheck } from "@/utils/stylesCheck";
 
 const typeVariants = cva(
-  // Base styles
+  // Root/base styles
   null,
   {
     variants: {
       variant: {
         // General
-        base: "text-base print:text-[11pt]",
-        "section-heading": "text-2xl leading-none print:text-[14pt]",
-
-        // Landing
-        "landing-heading": "text-xl leading-tight",
-
-        // Project
-        "work-heading": "text-2xl leading-none",
-
-        // Project index
-        "work-thumbnail-subheading": "text-sm italic",
-
-        // CV
-        "cv-name": "text-lg print:text-[14pt]",
-        "gig-heading": "font-bold print:text-[12pt]",
-        "gig-subheading": "italic",
-
-        // Navigation
-        "header-links": "",
-
-        // Footer
-        copyright: "text-sm",
+        base: "text-base",
       },
     },
     defaultVariants: {
