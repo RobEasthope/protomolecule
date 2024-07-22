@@ -1,6 +1,6 @@
 import React from "react";
 
-import { cn } from "~/utils/tailwind";
+import { cn } from "@/utils/tailwind";
 
 // Schema props
 export type EmailLinkWithTitleSchemaProps = {
