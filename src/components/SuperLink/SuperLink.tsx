@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { EmailLinkWithTitleSchemaProps } from '~/components/_base/EmailLink/EmailLink';
-import { EmailLink } from '~/components/_base/EmailLink/EmailLink';
+import type { EmailLinkWithTitleSchemaProps } from "@/components/_base/EmailLink/EmailLink";
+import { EmailLink } from "@/components/_base/EmailLink/EmailLink";
 import type {
   ExternalLinkSchemaProps,
   ExternalLinkWithTitleSchemaProps,
-} from '~/components/_base/ExternalLink/ExternalLink';
-import { ExternalLink } from '~/components/_base/ExternalLink/ExternalLink';
+} from "@/components/_base/ExternalLink/ExternalLink";
+import { ExternalLink } from "@/components/_base/ExternalLink/ExternalLink";
 import type {
   InternalLinkSchemaProps,
   InternalLinkWithTitleSchemaProps,
-} from '~/components/_base/InternalLink/InternalLink';
-import { InternalLink } from '~/components/_base/InternalLink/InternalLink';
+} from "@/components/_base/InternalLink/InternalLink";
+import { InternalLink } from "@/components/_base/InternalLink/InternalLink";
 
 export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   link:
@@ -37,7 +37,7 @@ export const SuperLink = ({
   }
 
   switch (link?._type) {
-    case 'EmailLinkWithTitle':
+    case "EmailLinkWithTitle":
       return (
         <EmailLink
           email={link?.email}
@@ -49,7 +49,7 @@ export const SuperLink = ({
         </EmailLink>
       );
 
-    case 'InternalLinkWithTitle':
+    case "InternalLinkWithTitle":
       return (
         <InternalLink
           href={link?.to?.slug?.current}
@@ -62,7 +62,7 @@ export const SuperLink = ({
         </InternalLink>
       );
 
-    case 'ExternalLinkWithTitle':
+    case "ExternalLinkWithTitle":
       return (
         <ExternalLink
           href={link?.url}
