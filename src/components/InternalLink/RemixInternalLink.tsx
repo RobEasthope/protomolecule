@@ -21,20 +21,20 @@ export type InternalLinkSchemaProps = {
 };
 
 // Component props
-export type InternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
+export type RemixInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   href: string | undefined;
   className?: string;
   children: React.ReactNode;
   homePageSlug?: string;
 };
 
-export function InternalLink({
+export function RemixInternalLink({
   href,
   children,
   className,
   homePageSlug,
   ...rest
-}: InternalLinkProps) {
+}: RemixInternalLinkProps) {
   if (!href && !children) {
     return null;
   }
@@ -48,7 +48,7 @@ export function InternalLink({
       to={href === homePageSlug ? "/" : `/${href}`}
       role="link"
       tabIndex={0}
-      className={cn(className, "hover:text-saffron duration-300")}
+      className={cn(className)}
       {...rest}
     >
       {children || null}
