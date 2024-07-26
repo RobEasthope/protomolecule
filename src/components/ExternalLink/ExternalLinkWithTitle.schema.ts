@@ -1,8 +1,6 @@
 import { RiExternalLinkLine } from "react-icons/ri";
 import { defineField, defineType } from "sanity";
 
-import type { TitleListPreviewProps } from "~/types/listPreviews";
-
 export default defineType({
   name: "ExternalLinkWithTitle",
   title: "External link",
@@ -31,7 +29,7 @@ export default defineType({
     select: {
       title: "title",
     },
-    prepare({ title }: TitleListPreviewProps) {
+    prepare({ title }: { title: string }) {
       return {
         title: title || "External link",
         subtitle: title && "External link",
