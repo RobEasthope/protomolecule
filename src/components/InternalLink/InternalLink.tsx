@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { SanityReference } from "@sanity/asset-utils";
 import React from "react";
 
-import { cn } from "~/utils/tailwind";
+import { cn } from "@/utils/tailwind";
 
 // Schema props
 export type InternalLinkWithTitleSchemaProps = {

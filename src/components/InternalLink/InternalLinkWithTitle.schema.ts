@@ -1,8 +1,6 @@
 import { RiLinksLine } from "react-icons/ri";
 import { defineField, defineType } from "sanity";
 
-import type { TitleAndSubTitleListPreviewProps } from "~/types/listPreviews";
-
 import { LINKABLE_DOC_TYPES } from "./LINKABLE_DOC_TYPES";
 
 export default defineType({
@@ -32,7 +30,7 @@ export default defineType({
     select: {
       title: "title",
     },
-    prepare({ title }: TitleAndSubTitleListPreviewProps) {
+    prepare({ title }: { title: string }) {
       return {
         title: title || "Internal link",
         subtitle: title && "Internal link",
