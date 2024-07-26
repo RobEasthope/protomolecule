@@ -1,13 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable react/prop-types */
-/* eslint-disable @typescript-eslint/naming-convention */
 import type { PortableTextComponents } from "@portabletext/react";
 
 import { Type } from "@/components/Type/Type";
 import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
-import { InternalLink } from "@/components/InternalLink/InternalLink";
+import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
 
 export type BasicProseProps = Array<SanityKeyed<SanityBlock>>;
 
@@ -27,12 +23,12 @@ export const BasicProseComponents: PortableTextComponents = {
       <ExternalLink href={value.url}>{children}</ExternalLink>
     ),
     InternalLink: ({ children, value }) => (
-      <InternalLink
+      <RemixInternalLink
         href={value?.page?.slug?.current}
         homePageSlug={value?.appSettings?.homePageSlug}
       >
         {children}
-      </InternalLink>
+      </RemixInternalLink>
     ),
     EmailLink: ({ children, value }) => (
       <EmailLink email={value?.email}>{children}</EmailLink>
