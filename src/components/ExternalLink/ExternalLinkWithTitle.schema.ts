@@ -21,7 +21,7 @@ export default defineType({
       validation: (Rule) =>
         Rule.uri({
           allowRelative: true,
-          scheme: ["https", "http", "mailto", "tel"],
+          scheme: ["https", "http"],
         }),
     }),
   ],
