@@ -9,14 +9,12 @@ export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   };
   className?: string;
   children: unknown;
-  onClick?: () => void;
 };
 
 export const SuperLink = ({
   link,
   className,
   children,
-  onClick,
   ...rest
 }: SuperLinkProps) => {
   if (!link && !children) {
@@ -26,36 +24,21 @@ export const SuperLink = ({
   switch (link?._type) {
     case "EmailLinkWithTitle":
       return (
-        <EmailLink
-          email={link?.href}
-          className={className}
-          onClick={onClick}
-          {...rest}
-        >
+        <EmailLink email={link?.href} className={className} {...rest}>
           {children}
         </EmailLink>
       );
 
     case "InternalLinkWithTitle":
       return (
-        <RemixInternalLink
-          href={link?.href}
-          className={className}
-          onClick={onClick}
-          {...rest}
-        >
+        <RemixInternalLink href={link?.href} className={className} {...rest}>
           {children}
         </RemixInternalLink>
       );
 
     case "ExternalLinkWithTitle":
       return (
-        <ExternalLink
-          href={link?.href}
-          className={className}
-          onClick={onClick}
-          {...rest}
-        >
+        <ExternalLink href={link?.href} className={className} {...rest}>
           {children}
         </ExternalLink>
       );
