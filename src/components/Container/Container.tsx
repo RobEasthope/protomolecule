@@ -1,9 +1,10 @@
 import { type VariantProps } from "class-variance-authority";
 import { createElement } from "react";
 
-import { areThereAnyStyles, cn } from "@/utils/tailwind";
+import { cn } from "@/utils/tailwind";
 
 import { cva } from "class-variance-authority";
+import { checkForStylingClasses } from "@/utils/checkForStylingClasses";
 
 const containerVariants = cva(
   // Base styles
@@ -48,7 +49,7 @@ export function Container({
   return createElement(
     as,
     {
-      className: areThereAnyStyles(
+      className: checkForStylingClasses(
         cn(containerVariants({ breakout, maxWidth }), className),
       ),
       ...props,
