@@ -1,6 +1,7 @@
 import { createElement, forwardRef } from "react";
 
-import { areThereAnyStyles, cn } from "@/utils/tailwind";
+import { cn } from "@/utils/tailwind";
+import { checkForStylingClasses } from "@/utils/checkForStylingClasses";
 
 export interface BoxProps {
   as: string;
@@ -15,7 +16,7 @@ const Box = forwardRef<HTMLDivElement, BoxProps>(
     return createElement(
       as,
       {
-        className: areThereAnyStyles(cn(className)),
+        className: checkForStylingClasses(cn(className)),
         ref,
         ...props,
       },
