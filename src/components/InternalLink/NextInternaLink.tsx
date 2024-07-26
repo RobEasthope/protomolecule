@@ -3,7 +3,7 @@ import React from "react";
 
 // Component props
 export type NextInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  href: string | null;
+  href: string | undefined;
   className?: string;
   children: React.ReactNode;
 };
