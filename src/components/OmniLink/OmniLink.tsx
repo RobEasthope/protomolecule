@@ -40,7 +40,7 @@ export const SuperLink = ({
     case "EmailLinkWithTitle":
       return (
         <EmailLink
-          email={link?.email}
+          email={link?.href}
           className={className}
           onClick={onClick}
           {...rest}
@@ -52,8 +52,7 @@ export const SuperLink = ({
     case "InternalLinkWithTitle":
       return (
         <RemixInternalLink
-          href={link?.to?.slug?.current}
-          docType={link?.to?._type}
+          href={link?.href}
           className={className}
           onClick={onClick}
           {...rest}
@@ -65,7 +64,7 @@ export const SuperLink = ({
     case "ExternalLinkWithTitle":
       return (
         <ExternalLink
-          href={link?.url}
+          href={link?.href}
           className={className}
           onClick={onClick}
           {...rest}
