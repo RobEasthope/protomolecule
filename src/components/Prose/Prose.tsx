@@ -1,5 +1,3 @@
-import "./prose.css";
-
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
 import { TypedObject } from "sanity";
