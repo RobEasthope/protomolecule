@@ -1,5 +1,5 @@
 import { type VariantProps } from "class-variance-authority";
-import { createElement, forwardRef } from "react";
+import { createElement } from "react";
 
 import { areThereAnyStyles, cn } from "@/utils/tailwind";
 import { containerVariants } from "@/components/Container/Container.variants";
@@ -10,22 +10,26 @@ export interface ContainerProps
   as: string;
 }
 
-export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  ({ as = "div", className, breakout, maxWidth, children, ...props }, ref) => {
-    if (!children) return null;
+export function Container({
+  as = "div",
+  className,
+  breakout,
+  maxWidth,
+  children,
+  ...props
+}: ContainerProps) {
+  if (!children) return null;
 
-    return createElement(
-      as,
-      {
-        className: areThereAnyStyles(
-          cn(containerVariants({ breakout, maxWidth }), className),
-        ),
-        ref,
-        ...props,
-      },
-      children,
-    );
-  },
-);
+  return createElement(
+    as,
+    {
+      className: areThereAnyStyles(
+        cn(containerVariants({ breakout, maxWidth }), className),
+      ),
+      ...props,
+    },
+    children,
+  );
+}
 
 Container.displayName = "Container";
