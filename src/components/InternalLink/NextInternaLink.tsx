@@ -2,18 +2,18 @@ import Link from "next/link";
 import React from "react";
 
 // Component props
-export type InternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  href: string | null;
+export type NextInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
+  href: string | undefined;
   className?: string;
   children: React.ReactNode;
 };
 
-export const InternalLink = ({
+export function NextInternalLink({
   href,
   children,
   className,
   ...rest
-}: InternalLinkProps) => {
+}: NextInternalLinkProps) {
   if (!href && !children) {
     return null;
   }
@@ -33,4 +33,4 @@ export const InternalLink = ({
       {children || null}
     </Link>
   );
-};
+}
