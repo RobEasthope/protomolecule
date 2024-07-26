@@ -1,6 +1,7 @@
 import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
 import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
+import React from "react";
 
 export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   link: {
@@ -8,7 +9,7 @@ export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
     href: string;
   };
   className?: string;
-  children: unknown;
+  children: React.ReactNode;
 };
 
 export const SuperLink = ({
