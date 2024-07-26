@@ -3,7 +3,7 @@ import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
 import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
 import React from "react";
 
-export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
+export type OmniLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   link: {
     _type: string;
     href: string;
@@ -12,12 +12,12 @@ export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   children: React.ReactNode;
 };
 
-export const SuperLink = ({
+export const OmniLink = ({
   link,
   className,
   children,
   ...rest
-}: SuperLinkProps) => {
+}: OmniLinkProps) => {
   if (!link && !children) {
     return null;
   }
