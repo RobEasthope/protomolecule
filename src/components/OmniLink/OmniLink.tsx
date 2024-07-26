@@ -1,25 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { EmailLinkWithTitleSchemaProps } from "@/components/_base/EmailLink/EmailLink";
 import { EmailLink } from "@/components/EmailLink/EmailLink";
-import type {
-  ExternalLinkSchemaProps,
-  ExternalLinkWithTitleSchemaProps,
-} from "@/components/ExternalLink/ExternalLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
-import type {
-  InternalLinkSchemaProps,
-  InternalLinkWithTitleSchemaProps,
-} from "@/components/InternalLink/InternalLink";
 import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
 
 export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  link:
-    | EmailLinkWithTitleSchemaProps
-    | ExternalLinkSchemaProps
-    | ExternalLinkWithTitleSchemaProps
-    | InternalLinkSchemaProps
-    | InternalLinkWithTitleSchemaProps
-    | undefined;
+  link: {
+    _type: string;
+    href: string;
+  };
   className?: string;
   children: unknown;
   onClick?: () => void;
