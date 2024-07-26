@@ -30,18 +30,18 @@ export const SuperLink = ({
         </EmailLink>
       );
 
-    case "InternalLinkWithTitle":
-      return (
-        <RemixInternalLink href={link?.href} className={className} {...rest}>
-          {children}
-        </RemixInternalLink>
-      );
-
     case "ExternalLinkWithTitle":
       return (
         <ExternalLink href={link?.href} className={className} {...rest}>
           {children}
         </ExternalLink>
+      );
+
+    case "InternalLinkWithTitle":
+      return (
+        <RemixInternalLink href={link?.href} className={className} {...rest}>
+          {children}
+        </RemixInternalLink>
       );
 
     default:
