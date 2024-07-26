@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { EmailLinkWithTitleSchemaProps } from "@/components/_base/EmailLink/EmailLink";
-import { EmailLink } from "@/components/_base/EmailLink/EmailLink";
+import { EmailLink } from "@/components/EmailLink/EmailLink";
 import type {
   ExternalLinkSchemaProps,
   ExternalLinkWithTitleSchemaProps,
-} from "@/components/_base/ExternalLink/ExternalLink";
-import { ExternalLink } from "@/components/_base/ExternalLink/ExternalLink";
+} from "@/components/ExternalLink/ExternalLink";
+import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
 import type {
   InternalLinkSchemaProps,
   InternalLinkWithTitleSchemaProps,
-} from "@/components/_base/InternalLink/InternalLink";
-import { InternalLink } from "@/components/_base/InternalLink/InternalLink";
+} from "@/components/InternalLink/InternalLink";
+import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
 
 export type SuperLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   link:
@@ -51,7 +51,7 @@ export const SuperLink = ({
 
     case "InternalLinkWithTitle":
       return (
-        <InternalLink
+        <RemixInternalLink
           href={link?.to?.slug?.current}
           docType={link?.to?._type}
           className={className}
@@ -59,7 +59,7 @@ export const SuperLink = ({
           {...rest}
         >
           {children}
-        </InternalLink>
+        </RemixInternalLink>
       );
 
     case "ExternalLinkWithTitle":
