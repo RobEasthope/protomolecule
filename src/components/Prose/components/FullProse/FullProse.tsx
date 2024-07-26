@@ -5,7 +5,7 @@ import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
 import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
 
-export type FullProseProps = Array<SanityKeyed<SanityBlock>>;
+// export type FullProseProps = Array<SanityKeyed<SanityBlock>>;
 
 export const FullProseComponents: PortableTextComponents = {
   block: {
