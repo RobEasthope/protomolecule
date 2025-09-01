@@ -16,7 +16,31 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
+    setupFiles: './vitest.setup.ts',
     include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     passWithNoTests: true,
+    css: {
+      include: [/\.css$/],
+    },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/**/*.stories.tsx',
+        'src/**/*.stories.ts',
+        '*.config.*',
+      ],
+    },
+    cache: {
+      dir: '.vitest',
+    },
+    pool: 'vmThreads',
+    poolOptions: {
+      vmThreads: {
+        maxThreads: 4,
+        minThreads: 1,
+      },
+    },
   },
 });
