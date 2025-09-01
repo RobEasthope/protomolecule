@@ -6,14 +6,29 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
     "test": {
-      "dependsOn": ["build"],
       "outputs": []
+    },
+    "test:ui": {
+      "cache": false,
+      "persistent": true
     },
     "lint": {
       "outputs": []
     },
+    "lint:fix": {
+      "outputs": []
+    },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "preview": {
+      "dependsOn": ["build"],
       "cache": false,
       "persistent": true
     },
