@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { SanityReference } from "@sanity/asset-utils";
 import React from "react";
 
-import { cn } from "@/utils/tailwind";
-
 // Schema props
 export type InternalLinkWithTitleSchemaProps = {
   _type: "InternalLinkWithTitle";
@@ -48,7 +46,7 @@ export function ReactRouterLink({
       to={href === homePageSlug ? "/" : `/${href}`}
       role="link"
       tabIndex={0}
-      className={cn(className)}
+      className={className}
       {...rest}
     >
       {children || null}
