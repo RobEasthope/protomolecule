@@ -1,0 +1,13 @@
+{
+  "name": "@protomolecule/radix-colors",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Radix colors CSS imports for Protomolecule projects",
+  "main": "index.css",
+  "files": [
+    "index.css"
+  ],
+  "devDependencies": {
+    "@protomolecule/tsconfig": "workspace:*"
+  }
+}
