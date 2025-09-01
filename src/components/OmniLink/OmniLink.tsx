@@ -1,6 +1,6 @@
 import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
-import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
+import { ReactRouterLink } from "@/components/InternalLink/ReactRouterLink";
 import React from "react";
 
 export type OmniLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
@@ -39,9 +39,9 @@ export const OmniLink = ({
 
     case "InternalLinkWithTitle":
       return (
-        <RemixInternalLink href={link?.href} className={className} {...rest}>
+        <ReactRouterLink href={link?.href} className={className} {...rest}>
           {children}
-        </RemixInternalLink>
+        </ReactRouterLink>
       );
 
     default:
