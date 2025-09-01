@@ -3,7 +3,7 @@ import {
     customRules,
     packageJsonConfig,
     storybookConfig,
-  } from "@repo/eslint/eslint.pkgConfig";
+  } from "./protomolecule.eslintSource";
   import auto from "eslint-config-canonical/auto";
   import tseslint from "typescript-eslint";
   
