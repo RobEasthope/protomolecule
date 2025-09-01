@@ -1,0 +1,12 @@
+{
+  "name": "@protomolecule/github-rulesets",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub configuration rulesets for Protomolecule projects",
+  "files": [
+    "rulesets"
+  ],
+  "devDependencies": {
+    "@protomolecule/tsconfig": "workspace:*"
+  }
+}
