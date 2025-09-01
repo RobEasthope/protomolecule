@@ -21,20 +21,20 @@ export type InternalLinkSchemaProps = {
 };
 
 // Component props
-export type RemixInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
+export type ReactRouterLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   href: string | undefined;
   className?: string;
   children: React.ReactNode;
   homePageSlug?: string;
 };
 
-export function RemixInternalLink({
+export function ReactRouterLink({
   href,
   children,
   className,
   homePageSlug,
   ...rest
-}: RemixInternalLinkProps) {
+}: ReactRouterLinkProps) {
   if (!href && !children) {
     return null;
   }
