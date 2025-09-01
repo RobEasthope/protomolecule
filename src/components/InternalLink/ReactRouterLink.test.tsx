@@ -4,7 +4,7 @@ import { ReactRouterLink } from "./ReactRouterLink";
 
 // Mock react-router-dom
 vi.mock("react-router-dom", () => ({
-  Link: ({ children, to, ...props }: any) => (
+  Link: ({ children, to, ...props }: { children: React.ReactNode; to: string; [key: string]: unknown }) => (
     <a href={to} {...props}>
       {children}
     </a>
