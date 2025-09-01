@@ -32,6 +32,12 @@ importers:
       '@portabletext/react':
         specifier: ^3.1.0
         version: 3.1.0(react@19.1.1)
+      '@protomolecule/radix-colors':
+        specifier: workspace:*
+        version: link:../radix-colors
+      '@protomolecule/tailwind-config':
+        specifier: workspace:*
+        version: link:../tailwind-config
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@19.1.12)(react@19.1.1)
@@ -165,6 +171,21 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@20.12.12)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1)
+
+  packages/radix-colors:
+    devDependencies:
+      '@protomolecule/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+
+  packages/tailwind-config:
+    devDependencies:
+      '@protomolecule/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      tailwindcss:
+        specifier: ^4.1.12
+        version: 4.1.12
 
   packages/tsconfig: {}
 
