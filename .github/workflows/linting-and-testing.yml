@@ -1,0 +1,251 @@
+name: Linting & Testing
+
+on:
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  lint:
+    name: 🔬 Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏱️ Start Timer
+        run: echo "JOB_START=$(date +%s)" >> $GITHUB_ENV
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: 📦 Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: 📦 Cache ESLint
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: ${{ runner.os }}-eslint-${{ hashFiles('**/package.json', '**/.eslintrc*', '**/eslint.config.*') }}
+          restore-keys: |
+            ${{ runner.os }}-eslint-
+
+      - name: 📥 Install dependencies
+        run: pnpm install
+
+      - name: 🔬 Run ESLint
+        id: lint
+        run: |
+          echo "## 🔬 ESLint Results" >> $GITHUB_STEP_SUMMARY
+          if pnpm run lint; then
+            echo "✅ **Linting passed successfully**" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ **Linting failed** - Check the logs for details" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Calculate runtime
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - JOB_START))
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Duration: ${DURATION}s_" >> $GITHUB_STEP_SUMMARY
+
+  typecheck:
+    name: 🔎 Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏱️ Start Timer
+        run: echo "JOB_START=$(date +%s)" >> $GITHUB_ENV
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: 📦 Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: 🔧 Cache TypeScript build info
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/*.tsbuildinfo
+            **/tsconfig.tsbuildinfo
+          key: ${{ runner.os }}-tsbuildinfo-${{ hashFiles('**/tsconfig.json', '**/tsconfig.*.json') }}
+          restore-keys: |
+            ${{ runner.os }}-tsbuildinfo-
+
+      - name: 📥 Install dependencies
+        run: pnpm install
+
+      - name: 🔎 Run TypeScript Check
+        id: typecheck
+        run: |
+          echo "## 🔎 TypeScript Results" >> $GITHUB_STEP_SUMMARY
+          if npx tsc --noEmit; then
+            echo "✅ **Type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ **Type checking failed** - Check the logs for errors" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Calculate runtime
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - JOB_START))
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Duration: ${DURATION}s_" >> $GITHUB_STEP_SUMMARY
+
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏱️ Start Timer
+        run: echo "JOB_START=$(date +%s)" >> $GITHUB_ENV
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: 📦 Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: 🗄️ Cache Vite build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist
+            .vite
+          key: ${{ runner.os }}-vite-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-vite-
+
+      - name: 🧪 Cache Test Results
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules/.vitest
+            coverage
+            test-results
+          key: ${{ runner.os }}-vitest-${{ hashFiles('**/src/**/*.test.*', '**/src/**/*.spec.*', '**/vitest.config.*') }}
+          restore-keys: |
+            ${{ runner.os }}-vitest-
+
+      - name: 📥 Install dependencies
+        run: pnpm install
+
+      - name: 🧪 Run Unit Tests
+        id: tests
+        run: |
+          echo "## 🧪 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "Running tests..." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run tests
+          if pnpm test run; then
+            echo "✅ **All tests passed successfully**" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+            TEST_EXIT_CODE=0
+          else
+            echo "❌ **Tests failed** - Check the test report for details" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            TEST_EXIT_CODE=1
+          fi
+
+          # Calculate runtime
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - JOB_START))
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Duration: ${DURATION}s_" >> $GITHUB_STEP_SUMMARY
+
+          # Exit with the test exit code
+          exit $TEST_EXIT_CODE
+
+  summary:
+    name: 📊 Summary
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test]
+    if: always()
+    steps:
+      - name: 📊 Generate Summary Report
+        run: |
+          echo "## 📊 Parallel Checks Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Determine overall status
+          if [[ "${{ needs.lint.result }}" == "success" && "${{ needs.typecheck.result }}" == "success" && "${{ needs.test.result }}" == "success" ]]; then
+            echo "### ✅ All checks passed!" >> $GITHUB_STEP_SUMMARY
+            OVERALL_STATUS="success"
+          else
+            echo "### ❌ Some checks failed" >> $GITHUB_STEP_SUMMARY
+            OVERALL_STATUS="failure"
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "| Check | Status | Details |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          # Lint status
+          if [[ "${{ needs.lint.result }}" == "success" ]]; then
+            echo "| 🔬 ESLint | ✅ Passed | Code style checks passed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.lint.result }}" == "failure" ]]; then
+            echo "| 🔬 ESLint | ❌ Failed | See [lint job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| 🔬 ESLint | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # TypeScript status
+          if [[ "${{ needs.typecheck.result }}" == "success" ]]; then
+            echo "| 🔎 TypeScript | ✅ Passed | Type safety verified |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.typecheck.result }}" == "failure" ]]; then
+            echo "| 🔎 TypeScript | ❌ Failed | See [typecheck job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| 🔎 TypeScript | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Test status
+          if [[ "${{ needs.test.result }}" == "success" ]]; then
+            echo "| 🧪 Unit Tests | ✅ Passed | All tests successful |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.test.result }}" == "failure" ]]; then
+            echo "| 🧪 Unit Tests | ❌ Failed | See [test job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| 🧪 Unit Tests | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚡ Performance Benefits" >> $GITHUB_STEP_SUMMARY
+          echo "- **Parallel Execution**: All checks run simultaneously" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fail-Fast Disabled**: All checks complete even if one fails" >> $GITHUB_STEP_SUMMARY
+          echo "- **Optimized Caching**: Each job uses specific caches for better performance" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Run #${{ github.run_number }} | Commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
+
+          # Exit with failure if any check failed
+          if [[ "$OVERALL_STATUS" == "failure" ]]; then
+            exit 1
+          fi

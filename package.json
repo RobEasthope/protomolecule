@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
@@ -57,5 +58,9 @@
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "vitest": "^3.2.4"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "pnpm": ">=9.0.0"
   }
 }
