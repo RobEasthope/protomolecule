@@ -3,7 +3,7 @@ import type { PortableTextComponents } from "@portabletext/react";
 import { Type } from "@/components/Type/Type";
 import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
-import { RemixInternalLink } from "@/components/InternalLink/RemixInternalLink";
+import { ReactRouterLink } from "@/components/InternalLink/ReactRouterLink";
 
 // export type FullProseProps = Array<SanityKeyed<SanityBlock>>;
 
@@ -41,12 +41,12 @@ export const FullProseComponents: PortableTextComponents = {
       <ExternalLink href={value.url}>{children}</ExternalLink>
     ),
     InternalLink: ({ children, value }) => (
-      <RemixInternalLink
+      <ReactRouterLink
         href={value?.page?.slug?.current}
         homePageSlug={value?.appSettings?.homePageSlug}
       >
         {children}
-      </RemixInternalLink>
+      </ReactRouterLink>
     ),
     EmailLink: ({ children, value }) => (
       <EmailLink email={value?.email}>{children}</EmailLink>
