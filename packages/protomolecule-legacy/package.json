@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",
+    "@protomolecule/tsconfig": "workspace:*",
     "@storybook/addon-docs": "^9.1.3",
     "@storybook/addon-links": "^9.1.3",
     "@storybook/addon-onboarding": "^9.1.3",
