@@ -31,7 +31,7 @@ importers:
         version: 0.379.0(react@19.1.1)
       next:
         specifier: ^14.2.5
-        version: 14.2.5(@babel/core@7.28.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 14.2.5(@babel/core@7.24.5)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -81,6 +81,9 @@ importers:
       '@testing-library/react':
         specifier: ^16.3.0
         version: 16.3.0(@testing-library/dom@10.1.0)(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@types/eslint':
+        specifier: ^9.6.1
+        version: 9.6.1
       '@types/node':
         specifier: ^20.12.12
         version: 20.12.12
@@ -107,7 +110,7 @@ importers:
         version: 8.57.0
       eslint-config-canonical:
         specifier: ^45.0.0
-        version: 45.0.0(@types/node@20.12.12)(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@3.2.4)
+        version: 45.0.0(@types/eslint@9.6.1)(@types/node@20.12.12)(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@3.2.4)
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.2(eslint@8.57.0)
@@ -2356,6 +2359,9 @@ packages:
 
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
+
+  '@types/eslint@9.6.1':
+    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -9315,6 +9321,11 @@ snapshots:
 
   '@types/doctrine@0.0.9': {}
 
+  '@types/eslint@9.6.1':
+    dependencies:
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+
   '@types/estree@1.0.5': {}
 
   '@types/estree@1.0.8': {}
@@ -10753,7 +10764,7 @@ snapshots:
       eslint: 8.57.0
       semver: 7.6.2
 
-  eslint-config-canonical@45.0.0(@types/node@20.12.12)(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@3.2.4):
+  eslint-config-canonical@45.0.0(@types/eslint@9.6.1)(@types/node@20.12.12)(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.41.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0))(eslint@8.57.0)(typescript@5.4.5)(vitest@3.2.4):
     dependencies:
       '@graphql-eslint/eslint-plugin': 4.4.0(@types/node@20.12.12)(eslint@8.57.0)(graphql@16.11.0)(typescript@5.4.5)
       '@next/eslint-plugin-next': 15.5.2
@@ -10779,7 +10790,7 @@ snapshots:
       eslint-plugin-modules-newline: 0.0.6
       eslint-plugin-n: 17.21.3(eslint@8.57.0)(typescript@5.4.5)
       eslint-plugin-perfectionist: 4.15.0(eslint@8.57.0)(typescript@5.4.5)
-      eslint-plugin-prettier: 5.5.4(eslint-config-prettier@10.1.8(eslint@8.57.0))(eslint@8.57.0)(prettier@3.6.2)
+      eslint-plugin-prettier: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@8.57.0))(eslint@8.57.0)(prettier@3.6.2)
       eslint-plugin-promise: 7.2.1(eslint@8.57.0)
       eslint-plugin-react: 7.37.5(eslint@8.57.0)
       eslint-plugin-react-hooks: 5.2.0(eslint@8.57.0)
@@ -10955,7 +10966,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-context: 0.1.9(unrs-resolver@1.11.1)
       is-glob: 4.0.3
-      minimatch: 9.0.4
+      minimatch: 9.0.5
       semver: 7.7.2
       stable-hash-x: 0.2.0
       unrs-resolver: 1.11.1
@@ -11064,13 +11075,14 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@8.57.0))(eslint@8.57.0)(prettier@3.6.2):
+  eslint-plugin-prettier@5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@8.57.0))(eslint@8.57.0)(prettier@3.6.2):
     dependencies:
       eslint: 8.57.0
       prettier: 3.6.2
       prettier-linter-helpers: 1.0.0
       synckit: 0.11.11
     optionalDependencies:
+      '@types/eslint': 9.6.1
       eslint-config-prettier: 10.1.8(eslint@8.57.0)
 
   eslint-plugin-promise@7.2.1(eslint@8.57.0):
@@ -12419,7 +12431,7 @@ snapshots:
 
   natural-orderby@5.0.0: {}
 
-  next@14.2.5(@babel/core@7.28.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  next@14.2.5(@babel/core@7.24.5)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
@@ -12429,7 +12441,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      styled-jsx: 5.1.1(@babel/core@7.28.3)(react@19.1.1)
+      styled-jsx: 5.1.1(@babel/core@7.24.5)(react@19.1.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.5
       '@next/swc-darwin-x64': 14.2.5
@@ -13676,12 +13688,12 @@ snapshots:
       stylis: 4.3.2
       tslib: 2.6.2
 
-  styled-jsx@5.1.1(@babel/core@7.28.3)(react@19.1.1):
+  styled-jsx@5.1.1(@babel/core@7.24.5)(react@19.1.1):
     dependencies:
       client-only: 0.0.1
       react: 19.1.1
     optionalDependencies:
-      '@babel/core': 7.28.3
+      '@babel/core': 7.24.5
 
   stylis@4.3.2: {}
 
