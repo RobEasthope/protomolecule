@@ -1,8 +1,6 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 import { SanityReference } from "@sanity/asset-utils";
 import React from "react";
-
-import { cn } from "@/utils/tailwind";
 
 // Schema props
 export type InternalLinkWithTitleSchemaProps = {
@@ -21,20 +19,20 @@ export type InternalLinkSchemaProps = {
 };
 
 // Component props
-export type RemixInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
+export type ReactRouterLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   href: string | undefined;
   className?: string;
   children: React.ReactNode;
   homePageSlug?: string;
 };
 
-export function RemixInternalLink({
+export function ReactRouterLink({
   href,
   children,
   className,
   homePageSlug,
   ...rest
-}: RemixInternalLinkProps) {
+}: ReactRouterLinkProps) {
   if (!href && !children) {
     return null;
   }
@@ -48,7 +46,7 @@ export function RemixInternalLink({
       to={href === homePageSlug ? "/" : `/${href}`}
       role="link"
       tabIndex={0}
-      className={cn(className)}
+      className={className}
       {...rest}
     >
       {children || null}

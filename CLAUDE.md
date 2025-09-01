@@ -36,9 +36,9 @@ This is a React component library built with Vite, TypeScript, and Storybook. Th
 
 1. **Component Structure**: Components live in `src/components/` with co-located tests (`.test.tsx`), stories (`.stories.ts`), and schemas (`.schema.ts`)
 
-2. **Multi-Framework Support**: Components are designed to work with both Next.js and Remix:
+2. **Multi-Framework Support**: Components are designed to work with both Next.js and React Router:
    - `NextInternalLink.tsx` for Next.js routing
-   - `RemixInternalLink.tsx` for Remix routing
+   - `ReactRouterLink.tsx` for React Router routing
    - Framework-agnostic components that can adapt to either
 
 3. **Sanity CMS Integration**: Components include Sanity schemas and GROQ queries for CMS integration:
