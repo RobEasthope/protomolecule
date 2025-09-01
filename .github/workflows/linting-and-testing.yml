@@ -189,7 +189,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Run tests
-          if pnpm test run; then
+          if pnpm test; then
             echo "✅ **All tests passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
             TEST_EXIT_CODE=0
