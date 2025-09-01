@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router-dom";
 import { SanityReference } from "@sanity/asset-utils";
 import React from "react";
 
