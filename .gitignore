@@ -28,3 +28,9 @@ dist-ssr
 # Vitest
 .vitest
 coverage
+
+# Notes
+notes/*
+
+# Turborepo
+.turbo

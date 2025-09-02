@@ -40,6 +40,14 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install
 
+      - name: 🚀 Setup Turbo Cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-lint-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-lint-
+
       - name: 🔬 Run ESLint
         id: lint
         run: |
@@ -93,11 +101,19 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install
 
+      - name: 🚀 Setup Turbo Cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-build-
+
       - name: 🔎 Run TypeScript Check
         id: typecheck
         run: |
           echo "## 🔎 TypeScript Results" >> $GITHUB_STEP_SUMMARY
-          if npx tsc --noEmit; then
+          if pnpm run build; then
             echo "✅ **Type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
           else
@@ -157,6 +173,14 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install
 
+      - name: 🚀 Setup Turbo Cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-test-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-test-
+
       - name: 🧪 Run Unit Tests
         id: tests
         run: |
@@ -165,7 +189,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Run tests
-          if pnpm test run; then
+          if pnpm test; then
             echo "✅ **All tests passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
             TEST_EXIT_CODE=0

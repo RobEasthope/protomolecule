@@ -1,0 +1,12 @@
+{
+  "extends": "@protomolecule/tsconfig/react-library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["src", "vitest.config.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

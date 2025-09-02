@@ -1,8 +1,2 @@
 packages:
-  - .
-
-ignoredBuiltDependencies:
-  - unrs-resolver
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
+  - "packages/*"
