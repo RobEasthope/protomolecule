@@ -37,15 +37,6 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
-  packages/tailwind-config:
-    devDependencies:
-      '@protomolecule/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      tailwindcss:
-        specifier: ^4.1.12
-        version: 4.1.12
-
   packages/tsconfig: {}
 
   packages/ui:
@@ -56,9 +47,6 @@ importers:
       '@protomolecule/radix-colors':
         specifier: workspace:*
         version: link:../radix-colors
-      '@protomolecule/tailwind-config':
-        specifier: workspace:*
-        version: link:../tailwind-config
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@19.1.12)(react@19.1.1)
