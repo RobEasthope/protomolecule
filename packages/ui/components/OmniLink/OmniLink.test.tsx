@@ -65,7 +65,8 @@ describe('OmniLink', () => {
 
   it('returns null when no link and no children', () => {
     const { container } = render(
-      <OmniLink link={undefined as any}>{null}</OmniLink>
+      // @ts-expect-error Testing undefined link prop
+      <OmniLink link={undefined}>{null}</OmniLink>
     );
     
     expect(container.firstChild).toBeNull();
@@ -115,7 +116,8 @@ describe('OmniLink', () => {
   it('handles missing href in link object', () => {
     render(
       <OmniLink 
-        link={{ _type: 'ExternalLinkWithTitle', href: undefined as any }}
+        // @ts-expect-error Testing undefined href
+        link={{ _type: 'ExternalLinkWithTitle', href: undefined }}
       >
         No Href
       </OmniLink>

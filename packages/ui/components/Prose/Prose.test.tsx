@@ -22,7 +22,7 @@ describe('Prose', () => {
 
   const mockComponents = {
     block: {
-      normal: ({ children }: any) => <p>{children}</p>
+      normal: ({ children }: { children: React.ReactNode }) => <p>{children}</p>
     }
   };
 
@@ -42,7 +42,8 @@ describe('Prose', () => {
     const { container } = render(
       <Prose 
         as="div" 
-        content={null as any} 
+        // @ts-expect-error Testing null content
+        content={null} 
         components={mockComponents}
       />
     );
@@ -54,7 +55,8 @@ describe('Prose', () => {
     const { container } = render(
       <Prose 
         as="div" 
-        content={undefined as any} 
+        // @ts-expect-error Testing undefined content
+        content={undefined} 
         components={mockComponents}
       />
     );
