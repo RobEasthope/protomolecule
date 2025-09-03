@@ -4,9 +4,14 @@
   "private": true,
   "description": "React component library for Protomolecule projects",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "files": [
-    "src"
+    "index.ts",
+    "components",
+    "utils",
+    "styles.css",
+    "test-setup.ts",
+    "vitest.d.ts"
   ],
   "scripts": {
     "dev": "storybook dev -p 6006 --no-open",
