@@ -9,7 +9,6 @@
     "index.ts",
     "components",
     "utils",
-    "styles.css",
     "test-setup.ts",
     "vitest.d.ts"
   ],
