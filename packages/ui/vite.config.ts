@@ -12,14 +12,14 @@ export default defineConfig({
     alias: {
       '@/components': path.resolve(__dirname, './components'),
       '@/utils': path.resolve(__dirname, './utils'),
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, '.'),
     },
   },
   test: {
     globals: true,
     environment: 'happy-dom',
-    setupFiles: './vitest.setup.ts',
-    include: ['./src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    setupFiles: './test-setup.ts',
+    include: ['components/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', 'utils/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     passWithNoTests: true,
     css: {
       include: [/\.css$/],
