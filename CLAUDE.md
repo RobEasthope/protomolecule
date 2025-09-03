@@ -8,11 +8,10 @@ This is a monorepo using Turborepo and pnpm workspaces. Packages are organized a
 
 ```
 packages/
-├── ui/                    # React component library with Storybook
+├── ui/                    # React component library with Storybook (includes Tailwind CSS v4 config)
 ├── eslint-config/         # Shared ESLint configuration
 ├── github-rulesets/       # GitHub configuration rulesets
 ├── radix-colors/          # Radix UI color system CSS
-├── tailwind-config/       # Tailwind CSS v4 configuration
 └── tsconfig/              # Shared TypeScript configurations
 ```
 
@@ -55,6 +54,7 @@ This is a React component library monorepo built with:
    - Components with co-located tests, stories, and Sanity schemas
    - Multi-framework support (Next.js and React Router)
    - Utilities for Tailwind class management
+   - Includes Tailwind CSS v4 configuration
 
 2. **@protomolecule/eslint-config**: Shared ESLint rules (publishable)
 
@@ -62,9 +62,7 @@ This is a React component library monorepo built with:
 
 4. **@protomolecule/radix-colors**: Radix UI color imports (private)
 
-5. **@protomolecule/tailwind-config**: Tailwind v4 configuration (publishable)
-
-6. **@protomolecule/tsconfig**: Shared TypeScript configurations (publishable)
+5. **@protomolecule/tsconfig**: Shared TypeScript configurations (publishable)
 
 ### Key Architectural Patterns
 
