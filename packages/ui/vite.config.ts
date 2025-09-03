@@ -29,8 +29,8 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/',
-        'src/**/*.stories.tsx',
-        'src/**/*.stories.ts',
+        '**/*.stories.tsx',
+        '**/*.stories.ts',
         '*.config.*',
       ],
     },
