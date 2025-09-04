@@ -20,8 +20,8 @@ export default defineType({
             return true; // Allow undefined values
           }
 
-          return /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}\])|(([\dA-Za-z\-]+\.)+[A-Za-z]{2,}))$/.test(
-            email.toLowerCase(),
+          return /^[\w.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(
+            email.toLowerCase()
           )
             ? true
             : "This is not an email";
