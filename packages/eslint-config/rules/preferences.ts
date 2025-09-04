@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const custom = {
+export const preferences = {
   files: ["**/*.{ts,tsx,js,jsx,mjs}"],
   languageOptions: {
     parserOptions: {
@@ -22,6 +22,7 @@ export const custom = {
         tailwindFunctions: ["cn", "clsx"],
       },
     ],
+
     quotes: ["warn", "double"],
     "react/forbid-component-props": "off",
     "react/function-component-definition": "off",

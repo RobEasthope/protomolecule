@@ -1,4 +1,4 @@
-import { custom } from "./rules/custom";
+import { preferences } from "./rules/preferences";
 import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { storybook } from "./rules/storybook";
@@ -11,5 +11,5 @@ export default [
   packageJson,
   storybook,
   typescriptOverrides,
-  custom,
+  preferences,
 ];
