@@ -42,7 +42,6 @@ pnpm lint
 
 - **cn** - Class name utility for merging Tailwind classes
 - **checkForStylingClasses** - Runtime validation for styling classes
-- **stylesCheck** - Development-time style checking
 
 ## Sanity Integration
 
