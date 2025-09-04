@@ -1,7 +1,7 @@
 import {
   ignoredFolders,
   customRules,
-  packageJsonConfig,
+  packageJsonRules,
   storybookRules,
 } from "./protomolecule.eslintSource";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
@@ -12,7 +12,7 @@ export default [
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylistic,
   ...eslintConfigCanonicalAuto,
-  packageJsonConfig,
+  packageJsonRules,
   storybookRules,
   customRules,
 ] as const;

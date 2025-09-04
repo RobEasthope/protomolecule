@@ -50,7 +50,7 @@ export const customRules = {
 } satisfies Linter.Config;
 
 // Override jsonc/sort-keys rule so it isn't set on package.json
-export const packageJsonConfig = {
+export const packageJsonRules = {
   files: ["**/package.json"],
   rules: {
     "jsonc/sort-keys": "off",
