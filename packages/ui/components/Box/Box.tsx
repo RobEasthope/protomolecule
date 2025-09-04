@@ -1,4 +1,4 @@
-import { cn } from "@/utils/tailwind";
+import { cn } from "../../utils/tailwind";
 import { createElement } from "react";
 
 export type BoxProps = {
@@ -8,7 +8,13 @@ export type BoxProps = {
   readonly ref?: React.Ref<HTMLDivElement>;
 };
 
-const Box = ({ as = "div", children, className, ref, ...props }: BoxProps) => {
+export function Box({
+  as = "div",
+  children,
+  className,
+  ref,
+  ...props
+}: BoxProps) {
   if (!children) {
     return null;
   }
@@ -20,10 +26,6 @@ const Box = ({ as = "div", children, className, ref, ...props }: BoxProps) => {
       ref,
       ...props,
     },
-    children,
+    children
   );
-};
-
-Box.displayName = "Box";
-
-export { Box };
+}
