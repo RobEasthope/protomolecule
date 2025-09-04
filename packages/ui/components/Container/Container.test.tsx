@@ -5,7 +5,7 @@ import { Container } from "./Container";
 describe("Container", () => {
   it("renders children correctly", () => {
     render(<Container as="div">Lorem ipsum</Container>);
-    
+
     expect(screen.getByText("Lorem ipsum")).toBeInTheDocument();
   });
 
@@ -13,19 +13,21 @@ describe("Container", () => {
     render(
       <Container as="section" className="custom-class">
         Content
-      </Container>
+      </Container>,
     );
-    
+
     const container = screen.getByText("Content");
     expect(container).toHaveClass("custom-class");
   });
 
   it("renders as different HTML elements", () => {
-    const { rerender } = render(<Container as="article">Article content</Container>);
-    
+    const { rerender } = render(
+      <Container as="article">Article content</Container>,
+    );
+
     let element = screen.getByText("Article content");
     expect(element.tagName).toBe("ARTICLE");
-    
+
     rerender(<Container as="main">Main content</Container>);
     element = screen.getByText("Main content");
     expect(element.tagName).toBe("MAIN");
@@ -35,9 +37,9 @@ describe("Container", () => {
     render(
       <Container as="div" maxWidth="small">
         Small container
-      </Container>
+      </Container>,
     );
-    
+
     const container = screen.getByText("Small container");
     expect(container).toHaveClass("max-w-lg");
   });
@@ -46,9 +48,9 @@ describe("Container", () => {
     render(
       <Container as="div" breakout>
         Breakout container
-      </Container>
+      </Container>,
     );
-    
+
     const container = screen.getByText("Breakout container");
     expect(container).toHaveClass("w-screen");
   });

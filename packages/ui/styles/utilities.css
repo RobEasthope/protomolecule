@@ -3,7 +3,7 @@
   .animate-accordion-down {
     animation: var(--animate-accordion-down);
   }
-  
+
   .animate-accordion-up {
     animation: var(--animate-accordion-up);
   }

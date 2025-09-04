@@ -4,7 +4,15 @@ import { NextInternalLink } from "./NextInternalLink";
 
 // Mock next/link
 vi.mock("next/link", () => ({
-  default: ({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) => (
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -14,9 +22,7 @@ vi.mock("next/link", () => ({
 describe("NextInternalLink", () => {
   it("renders null when no href and no children", () => {
     const { container } = render(
-      <NextInternalLink href={undefined}>
-        {null}
-      </NextInternalLink>
+      <NextInternalLink href={undefined}>{null}</NextInternalLink>,
     );
     expect(container.firstChild).toBeNull();
   });
@@ -25,7 +31,7 @@ describe("NextInternalLink", () => {
     render(
       <NextInternalLink href={undefined} className="test-class">
         Test Content
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const span = screen.getByText("Test Content");
     expect(span.tagName).toBe("SPAN");
@@ -36,7 +42,7 @@ describe("NextInternalLink", () => {
     render(
       <NextInternalLink href="about" className="link-class">
         About Page
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/about");
@@ -48,7 +54,7 @@ describe("NextInternalLink", () => {
     render(
       <NextInternalLink href="home" homePageSlug="home" className="home-link">
         Home
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/");
@@ -57,13 +63,13 @@ describe("NextInternalLink", () => {
 
   it("passes through additional props to Link", () => {
     render(
-      <NextInternalLink 
-        href="contact" 
+      <NextInternalLink
+        href="contact"
         data-testid="custom-link"
         aria-label="Contact us"
       >
         Contact
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("data-testid")).toBe("custom-link");
@@ -75,7 +81,7 @@ describe("NextInternalLink", () => {
     render(
       <NextInternalLink href="home" homePageSlug={undefined}>
         Home Link
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/home");
@@ -83,12 +89,12 @@ describe("NextInternalLink", () => {
 
   it("applies className correctly", () => {
     render(
-      <NextInternalLink 
-        href="services" 
+      <NextInternalLink
+        href="services"
         className="text-blue-500 hover:text-blue-700"
       >
         Services
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.className).toBe("text-blue-500 hover:text-blue-700");
@@ -98,7 +104,7 @@ describe("NextInternalLink", () => {
     render(
       <NextInternalLink href="" className="empty-href">
         Empty Href Link
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const span = screen.getByText("Empty Href Link");
     expect(span.tagName).toBe("SPAN");
@@ -110,7 +116,7 @@ describe("NextInternalLink", () => {
       <NextInternalLink href="products">
         <span>Products</span>
         <span> Page</span>
-      </NextInternalLink>
+      </NextInternalLink>,
     );
     const link = screen.getByRole("link");
     expect(link.textContent).toBe("Products Page");
