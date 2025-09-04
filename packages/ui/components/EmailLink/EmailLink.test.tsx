@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
 import { EmailLink } from "./EmailLink";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 describe("EmailLink", () => {
   it("renders email link with children", () => {
@@ -35,7 +35,7 @@ describe("EmailLink", () => {
 
   it("applies custom className", () => {
     render(
-      <EmailLink email="test@example.com" className="custom-class">
+      <EmailLink className="custom-class" email="test@example.com">
         Email Link
       </EmailLink>,
     );
@@ -47,9 +47,9 @@ describe("EmailLink", () => {
   it("passes through additional props", () => {
     render(
       <EmailLink
-        email="test@example.com"
-        data-testid="email-link"
         aria-label="Send email"
+        data-testid="email-link"
+        email="test@example.com"
       >
         Contact
       </EmailLink>,

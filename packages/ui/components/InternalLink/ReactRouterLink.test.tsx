@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
 import { ReactRouterLink } from "./ReactRouterLink";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock react-router-dom
 vi.mock("react-router-dom", () => ({
@@ -9,9 +9,9 @@ vi.mock("react-router-dom", () => ({
     to,
     ...props
   }: {
-    children: React.ReactNode;
-    to: string;
     [key: string]: unknown;
+    readonly children: React.ReactNode;
+    readonly to: string;
   }) => (
     <a href={to} {...props}>
       {children}
@@ -29,7 +29,7 @@ describe("ReactRouterLink", () => {
 
   it("renders a span when no href but has children", () => {
     render(
-      <ReactRouterLink href={undefined} className="test-class">
+      <ReactRouterLink className="test-class" href={undefined}>
         Test Content
       </ReactRouterLink>,
     );
@@ -40,7 +40,7 @@ describe("ReactRouterLink", () => {
 
   it("renders a Link with correct href for regular pages", () => {
     render(
-      <ReactRouterLink href="about" className="link-class">
+      <ReactRouterLink className="link-class" href="about">
         About Page
       </ReactRouterLink>,
     );
@@ -52,7 +52,7 @@ describe("ReactRouterLink", () => {
 
   it("renders a Link with root href when href matches homePageSlug", () => {
     render(
-      <ReactRouterLink href="home" homePageSlug="home" className="home-link">
+      <ReactRouterLink className="home-link" homePageSlug="home" href="home">
         Home
       </ReactRouterLink>,
     );
@@ -64,9 +64,9 @@ describe("ReactRouterLink", () => {
   it("passes through additional props to Link", () => {
     render(
       <ReactRouterLink
-        href="contact"
-        data-testid="custom-link"
         aria-label="Contact us"
+        data-testid="custom-link"
+        href="contact"
       >
         Contact
       </ReactRouterLink>,
@@ -79,7 +79,7 @@ describe("ReactRouterLink", () => {
 
   it("handles undefined homePageSlug correctly", () => {
     render(
-      <ReactRouterLink href="home" homePageSlug={undefined}>
+      <ReactRouterLink homePageSlug={undefined} href="home">
         Home Link
       </ReactRouterLink>,
     );
@@ -90,8 +90,8 @@ describe("ReactRouterLink", () => {
   it("applies className correctly", () => {
     render(
       <ReactRouterLink
-        href="services"
         className="text-blue-500 hover:text-blue-700"
+        href="services"
       >
         Services
       </ReactRouterLink>,

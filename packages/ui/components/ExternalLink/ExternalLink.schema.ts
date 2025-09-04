@@ -2,11 +2,7 @@ import { RiExternalLinkLine } from "react-icons/ri";
 import { defineField, defineType } from "sanity";
 
 export default defineType({
-  name: "ExternalLink",
-  title: "External link",
-  type: "object",
   description: "Add a link to outside the site",
-  icon: RiExternalLinkLine,
   fields: [
     defineField({
       name: "url",
@@ -19,6 +15,8 @@ export default defineType({
         }),
     }),
   ],
+  icon: RiExternalLinkLine,
+  name: "ExternalLink",
   preview: {
     prepare() {
       return {
@@ -26,4 +24,6 @@ export default defineType({
       };
     },
   },
+  title: "External link",
+  type: "object",
 });

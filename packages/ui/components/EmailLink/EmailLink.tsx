@@ -1,33 +1,32 @@
-import React from "react";
-
 import { cn } from "@/utils/tailwind";
+import React from "react";
 
 // Schema props
 export type EmailLinkWithTitleSchemaProps = {
-  _type: "EmailLinkWithTitle";
   _key: string;
-  title: string;
+  _type: "EmailLinkWithTitle";
   email: string;
+  title: string;
 };
 
 export type EmailLinkSchemaProps = {
-  _type: "EmailLinkSansTitle";
   _key: string;
-  newTab: boolean;
+  _type: "EmailLinkSansTitle";
   email: string;
+  newTab: boolean;
 };
 
 // Component props
 export type EmailLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  email: string | null;
-  className?: string;
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
+  readonly className?: string;
+  readonly email: null | string;
 };
 
 export function EmailLink({
-  email,
   children,
   className,
+  email,
   ...rest
 }: EmailLinkProps) {
   if (!email && !children) {
@@ -40,10 +39,10 @@ export function EmailLink({
 
   return (
     <a
-      href={`mailto:${email}`}
-      target="_blank"
-      rel="noopener noreferrer"
       className={cn(className, "hover:text-saffron duration-300")}
+      href={`mailto:${email}`}
+      rel="noopener noreferrer"
+      target="_blank"
       {...rest}
     >
       {children || null}

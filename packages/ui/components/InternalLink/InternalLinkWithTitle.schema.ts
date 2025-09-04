@@ -1,14 +1,9 @@
+import { LINKABLE_DOC_TYPES } from "./LINKABLE_DOC_TYPES";
 import { RiLinksLine } from "react-icons/ri";
 import { defineField, defineType } from "sanity";
 
-import { LINKABLE_DOC_TYPES } from "./LINKABLE_DOC_TYPES";
-
 export default defineType({
-  name: "InternalLinkWithTitle",
-  title: "Internal link",
-  type: "object",
   description: "Link to a document on the site",
-  icon: RiLinksLine,
   fields: [
     defineField({
       name: "title",
@@ -20,21 +15,25 @@ export default defineType({
     defineField({
       name: "internalUID",
       title: "Page",
-      type: "reference",
       to: LINKABLE_DOC_TYPES,
+      type: "reference",
 
       validation: (Rule) => Rule.required(),
     }),
   ],
+  icon: RiLinksLine,
+  name: "InternalLinkWithTitle",
   preview: {
+    prepare({ title }: { title: string }) {
+      return {
+        subtitle: title && "Internal link",
+        title: title || "Internal link",
+      };
+    },
     select: {
       title: "title",
     },
-    prepare({ title }: { title: string }) {
-      return {
-        title: title || "Internal link",
-        subtitle: title && "Internal link",
-      };
-    },
   },
+  title: "Internal link",
+  type: "object",
 });

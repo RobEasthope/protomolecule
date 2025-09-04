@@ -1,22 +1,20 @@
-import type { PortableTextComponents } from "@portabletext/react";
-import { PortableText } from "@portabletext/react";
-import { TypedObject } from "sanity";
-
 import { Box } from "@/components/Box/Box";
 import { cn } from "@/utils/tailwind";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { type TypedObject } from "sanity";
 
 export type ProseProps = {
-  as: string;
-  className?: string;
-  content: TypedObject | TypedObject[];
-  components: unknown;
+  readonly as: string;
+  readonly className?: string;
+  readonly components: unknown;
+  readonly content: TypedObject | TypedObject[];
 };
 
 export function Prose({
   as = "div",
-  content,
-  components,
   className,
+  components,
+  content,
 }: ProseProps) {
   if (!content) {
     return null;
@@ -25,8 +23,8 @@ export function Prose({
   return (
     <Box as={as} className={cn("prose", "text-ink", className)}>
       <PortableText
-        value={content}
         components={components as PortableTextComponents}
+        value={content}
       />
     </Box>
   );

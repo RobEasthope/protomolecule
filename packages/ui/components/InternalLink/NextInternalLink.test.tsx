@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
 import { NextInternalLink } from "./NextInternalLink";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock next/link
 vi.mock("next/link", () => ({
@@ -9,9 +9,9 @@ vi.mock("next/link", () => ({
     href,
     ...props
   }: {
+    [key: string]: unknown;
     children: React.ReactNode;
     href: string;
-    [key: string]: unknown;
   }) => (
     <a href={href} {...props}>
       {children}
@@ -29,7 +29,7 @@ describe("NextInternalLink", () => {
 
   it("renders a span when no href but has children", () => {
     render(
-      <NextInternalLink href={undefined} className="test-class">
+      <NextInternalLink className="test-class" href={undefined}>
         Test Content
       </NextInternalLink>,
     );
@@ -40,7 +40,7 @@ describe("NextInternalLink", () => {
 
   it("renders a Link with correct href for regular pages", () => {
     render(
-      <NextInternalLink href="about" className="link-class">
+      <NextInternalLink className="link-class" href="about">
         About Page
       </NextInternalLink>,
     );
@@ -52,7 +52,7 @@ describe("NextInternalLink", () => {
 
   it("renders a Link with root href when href matches homePageSlug", () => {
     render(
-      <NextInternalLink href="home" homePageSlug="home" className="home-link">
+      <NextInternalLink className="home-link" homePageSlug="home" href="home">
         Home
       </NextInternalLink>,
     );
@@ -64,9 +64,9 @@ describe("NextInternalLink", () => {
   it("passes through additional props to Link", () => {
     render(
       <NextInternalLink
-        href="contact"
-        data-testid="custom-link"
         aria-label="Contact us"
+        data-testid="custom-link"
+        href="contact"
       >
         Contact
       </NextInternalLink>,
@@ -79,7 +79,7 @@ describe("NextInternalLink", () => {
 
   it("handles undefined homePageSlug correctly", () => {
     render(
-      <NextInternalLink href="home" homePageSlug={undefined}>
+      <NextInternalLink homePageSlug={undefined} href="home">
         Home Link
       </NextInternalLink>,
     );
@@ -90,8 +90,8 @@ describe("NextInternalLink", () => {
   it("applies className correctly", () => {
     render(
       <NextInternalLink
-        href="services"
         className="text-blue-500 hover:text-blue-700"
+        href="services"
       >
         Services
       </NextInternalLink>,
@@ -102,7 +102,7 @@ describe("NextInternalLink", () => {
 
   it("handles empty string href", () => {
     render(
-      <NextInternalLink href="" className="empty-href">
+      <NextInternalLink className="empty-href" href="">
         Empty Href Link
       </NextInternalLink>,
     );

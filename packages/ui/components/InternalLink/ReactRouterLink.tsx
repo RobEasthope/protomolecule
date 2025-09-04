@@ -1,36 +1,36 @@
-import { Link } from "react-router-dom";
-import { SanityReference } from "@sanity/asset-utils";
+import { type SanityReference } from "@sanity/asset-utils";
 import React from "react";
+import { Link } from "react-router-dom";
 
 // Schema props
 export type InternalLinkWithTitleSchemaProps = {
-  _type: "InternalLinkWithTitle";
   _key: string;
+  _type: "InternalLinkWithTitle";
   internalUID: SanityReference;
-  to?: unknown;
   title: string;
+  to?: unknown;
 };
 
 export type InternalLinkSchemaProps = {
-  _type: "InternalLinkSansTitle";
   _key: string;
+  _type: "InternalLinkSansTitle";
   internalUID: SanityReference;
   to?: unknown;
 };
 
 // Component props
 export type ReactRouterLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  href: string | undefined;
-  className?: string;
-  children: React.ReactNode;
-  homePageSlug?: string;
+  readonly children: React.ReactNode;
+  readonly className?: string;
+  readonly homePageSlug?: string;
+  readonly href: string | undefined;
 };
 
 export function ReactRouterLink({
-  href,
   children,
   className,
   homePageSlug,
+  href,
   ...rest
 }: ReactRouterLinkProps) {
   if (!href && !children) {
@@ -43,10 +43,10 @@ export function ReactRouterLink({
 
   return (
     <Link
-      to={href === homePageSlug ? "/" : `/${href}`}
+      className={className}
       role="link"
       tabIndex={0}
-      className={className}
+      to={href === homePageSlug ? "/" : `/${href}`}
       {...rest}
     >
       {children || null}
