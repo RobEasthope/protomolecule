@@ -1,3 +1,4 @@
+// eslint-disable-next-line canonical/filename-match-exported
 import { type StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
