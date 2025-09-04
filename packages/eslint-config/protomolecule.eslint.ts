@@ -3,6 +3,7 @@ import {
   customRules,
   packageJsonRules,
   storybookRules,
+  typescriptOverrideRules,
 } from "./protomolecule.eslintSource";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
 import tseslint from "typescript-eslint";
@@ -14,5 +15,6 @@ export default [
   ...eslintConfigCanonicalAuto,
   packageJsonRules,
   storybookRules,
+  typescriptOverrideRules,
   customRules,
 ] as const;

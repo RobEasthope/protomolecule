@@ -66,7 +66,7 @@ export const storybookRules = {
 } satisfies Linter.Config;
 
 // Override prop-types rules for TypeScript files since we use TypeScript interfaces
-export const typescriptOverrides = {
+export const typescriptOverrideRules = {
   files: ["**/*.{ts,tsx}"],
   rules: {
     "react/no-unused-prop-types": "off",
