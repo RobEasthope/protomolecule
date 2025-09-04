@@ -21,7 +21,7 @@ describe("ExternalLink", () => {
 
   it("returns null when no href and no children", () => {
     const { container } = render(
-      <ExternalLink href={undefined}>{null}</ExternalLink>
+      <ExternalLink href={undefined}>{null}</ExternalLink>,
     );
 
     expect(container.firstChild).toBeNull();
@@ -40,7 +40,7 @@ describe("ExternalLink", () => {
     render(
       <ExternalLink className="custom-class" href="https://example.com">
         Styled Link
-      </ExternalLink>
+      </ExternalLink>,
     );
 
     const link = screen.getByText("Styled Link");
@@ -63,7 +63,7 @@ describe("ExternalLink", () => {
         href="https://example.com"
       >
         Link
-      </ExternalLink>
+      </ExternalLink>,
     );
 
     const link = screen.getByTestId("external-link");
