@@ -8,6 +8,10 @@
     "node.json"
   ],
   "scripts": {
+    "clean": "rimraf node_modules",
     "format": "npx prettier --write ."
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }

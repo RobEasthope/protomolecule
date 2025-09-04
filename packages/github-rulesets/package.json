@@ -7,9 +7,11 @@
     "rulesets"
   ],
   "scripts": {
+    "clean": "rimraf node_modules",
     "format": "npx prettier --write ."
   },
   "devDependencies": {
-    "@protomolecule/tsconfig": "workspace:*"
+    "@protomolecule/tsconfig": "workspace:*",
+    "rimraf": "^6.0.1"
   }
 }

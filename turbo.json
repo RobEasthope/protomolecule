@@ -26,6 +26,9 @@
     "lint:fix": {
       "outputs": []
     },
+    "clean": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true
