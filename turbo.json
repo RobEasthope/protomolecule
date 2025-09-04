@@ -17,6 +17,9 @@
       "cache": false,
       "persistent": true
     },
+    "format": {
+      "outputs": []
+    },
     "lint": {
       "outputs": []
     },

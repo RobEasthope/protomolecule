@@ -26,7 +26,7 @@ export function NextInternalLink({
 
   return (
     <Link
-    href={href === homePageSlug ? "/" : `/${href}`}
+      href={href === homePageSlug ? "/" : `/${href}`}
       className={className}
       role="link"
       tabIndex={0}

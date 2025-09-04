@@ -4,7 +4,15 @@ import { ReactRouterLink } from "./ReactRouterLink";
 
 // Mock react-router-dom
 vi.mock("react-router-dom", () => ({
-  Link: ({ children, to, ...props }: { children: React.ReactNode; to: string; [key: string]: unknown }) => (
+  Link: ({
+    children,
+    to,
+    ...props
+  }: {
+    children: React.ReactNode;
+    to: string;
+    [key: string]: unknown;
+  }) => (
     <a href={to} {...props}>
       {children}
     </a>
@@ -14,9 +22,7 @@ vi.mock("react-router-dom", () => ({
 describe("ReactRouterLink", () => {
   it("renders null when no href and no children", () => {
     const { container } = render(
-      <ReactRouterLink href={undefined}>
-        {null}
-      </ReactRouterLink>
+      <ReactRouterLink href={undefined}>{null}</ReactRouterLink>,
     );
     expect(container.firstChild).toBeNull();
   });
@@ -25,7 +31,7 @@ describe("ReactRouterLink", () => {
     render(
       <ReactRouterLink href={undefined} className="test-class">
         Test Content
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const span = screen.getByText("Test Content");
     expect(span.tagName).toBe("SPAN");
@@ -36,7 +42,7 @@ describe("ReactRouterLink", () => {
     render(
       <ReactRouterLink href="about" className="link-class">
         About Page
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/about");
@@ -48,7 +54,7 @@ describe("ReactRouterLink", () => {
     render(
       <ReactRouterLink href="home" homePageSlug="home" className="home-link">
         Home
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/");
@@ -57,13 +63,13 @@ describe("ReactRouterLink", () => {
 
   it("passes through additional props to Link", () => {
     render(
-      <ReactRouterLink 
-        href="contact" 
+      <ReactRouterLink
+        href="contact"
         data-testid="custom-link"
         aria-label="Contact us"
       >
         Contact
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("data-testid")).toBe("custom-link");
@@ -75,7 +81,7 @@ describe("ReactRouterLink", () => {
     render(
       <ReactRouterLink href="home" homePageSlug={undefined}>
         Home Link
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const link = screen.getByRole("link");
     expect(link.getAttribute("href")).toBe("/home");
@@ -83,12 +89,12 @@ describe("ReactRouterLink", () => {
 
   it("applies className correctly", () => {
     render(
-      <ReactRouterLink 
-        href="services" 
+      <ReactRouterLink
+        href="services"
         className="text-blue-500 hover:text-blue-700"
       >
         Services
-      </ReactRouterLink>
+      </ReactRouterLink>,
     );
     const link = screen.getByRole("link");
     expect(link.className).toBe("text-blue-500 hover:text-blue-700");

@@ -8,6 +8,7 @@
     "node.json"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules",
+    "format": "npx prettier --write ."
   }
 }
