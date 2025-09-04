@@ -9,11 +9,11 @@
       "path": "../packages/eslint-config"
     },
     {
-      "name": "🎁 GitHub Rulesets",
+      "name": "🚨 GitHub Rulesets",
       "path": "../packages/github-rulesets"
     },
     {
-      "name": "🎁 Radix Colors",
+      "name": "🎨 Radix Colors",
       "path": "../packages/radix-colors"
     },
     {
