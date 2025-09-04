@@ -13,7 +13,6 @@ export { Type } from './components/Type/Type';
 
 // Utilities
 export { cn } from './utils/tailwind';
-export { checkForStylingClasses } from './utils/checkForStylingClasses';
 
 // Sanity schemas (default exports)
 export { default as EmailLinkSchema } from './components/EmailLink/EmailLink.schema';

@@ -1,7 +1,6 @@
 import { createElement } from "react";
 
 import { cn } from "@/utils/tailwind";
-import { checkForStylingClasses } from "@/utils/checkForStylingClasses";
 
 export interface BoxProps {
   as: string;
@@ -16,7 +15,7 @@ const Box = ({ as = "div", className, children, ref, ...props }: BoxProps) => {
   return createElement(
     as,
     {
-      className: checkForStylingClasses(cn(className)),
+      className: cn(className),
       ref,
       ...props,
     },
