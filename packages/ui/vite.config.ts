@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
@@ -30,7 +31,7 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
     },
     css: {
-      include: [/\.css$/],
+      include: [/\.css$/u],
     },
     environment: "happy-dom",
     globals: true,
