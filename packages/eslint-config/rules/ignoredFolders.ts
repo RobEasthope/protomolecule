@@ -10,6 +10,5 @@ export const ignoredFolders = {
     "**/.astro/*",
     "**/.turbo/*",
     "**/build/*",
-    "tsconfig.json",
   ],
 } satisfies Linter.Config;
