@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "turbo run dev --filter=@protomolecule/ui",
     "build": "turbo run build",
+    "format": "turbo run format",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
