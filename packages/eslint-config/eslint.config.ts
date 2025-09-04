@@ -6,13 +6,11 @@ import { packageJsonRules } from "./rules/package-json-rules";
 import { storybookRules } from "./rules/storybook-rules";
 import { typescriptOverrideRules } from "./rules/typescript-override-rules";
 
-export default [
+export default tseslint.config([
   ignoredFolders,
-  ...tseslint.configs.recommended,
-  ...tseslint.configs.stylistic,
   ...eslintConfigCanonicalAuto,
   packageJsonRules,
   storybookRules,
   typescriptOverrideRules,
   customRules,
-] as const;
+]) as unknown;
