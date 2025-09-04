@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const customRules = {
+export const custom = {
   files: ["**/*.{ts,tsx,js,jsx,mjs}"],
   languageOptions: {
     parserOptions: {

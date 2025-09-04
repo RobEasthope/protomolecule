@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const storybookRules = {
+export const storybook = {
   files: ["**/*.stories.ts", "**/*.stories.tsx"],
   ignores: ["**/storybook-static/**/*"],
   rules: {

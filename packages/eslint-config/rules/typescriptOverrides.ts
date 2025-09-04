@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const typescriptOverrideRules = {
+export const typescriptOverrides = {
   files: ["**/*.{ts,tsx}"],
   rules: {
     "react/no-unused-prop-types": "off",

@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const packageJsonRules = {
+export const packageJson = {
   files: ["**/package.json"],
   rules: {
     "jsonc/sort-keys": "off",

@@ -1,8 +1,8 @@
-import { customRules } from "./rules/custom-rules";
-import { ignoredFolders } from "./rules/ignored-folders";
-import { packageJsonRules } from "./rules/package-json-rules";
-import { storybookRules } from "./rules/storybook-rules";
-import { typescriptOverrideRules } from "./rules/typescript-override-rules";
+import { custom } from "./rules/custom";
+import { ignoredFolders } from "./rules/ignoredFolders";
+import { packageJson } from "./rules/packageJson";
+import { storybook } from "./rules/storybook";
+import { typescriptOverrides } from "./rules/typescriptOverrides";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
 import tseslint from "typescript-eslint";
 
@@ -11,8 +11,8 @@ export default [
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylistic,
   ...eslintConfigCanonicalAuto,
-  packageJsonRules,
-  storybookRules,
-  typescriptOverrideRules,
-  customRules,
+  packageJson,
+  storybook,
+  typescriptOverrides,
+  custom,
 ] as const;
