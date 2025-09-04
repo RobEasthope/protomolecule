@@ -4,8 +4,6 @@ import { type Linter } from "eslint";
 export const baseConfig = {
   ignores: [
     "**/.react-router/**",
-    "data/**",
-    "**/map-styles/*.json",
     "**/node_modules/**",
     "pnpm-lock.yaml",
     ".vscode/*",
@@ -13,8 +11,6 @@ export const baseConfig = {
     "**/.astro/*",
     "**/.turbo/*",
     "**/build/*",
-    ".repomix/*",
-    "**/database.types.ts",
     "storybook-static/**/*",
   ],
 } satisfies Linter.Config;
