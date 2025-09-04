@@ -6,6 +6,9 @@
   "files": [
     "rulesets"
   ],
+  "scripts": {
+    "format": "npx prettier --write ."
+  },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*"
   }

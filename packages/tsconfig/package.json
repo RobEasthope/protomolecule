@@ -6,5 +6,8 @@
     "base.json",
     "react-library.json",
     "node.json"
-  ]
+  ],
+  "scripts": {
+    "format": "npx prettier --write ."
+  }
 }
