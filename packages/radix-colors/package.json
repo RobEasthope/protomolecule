@@ -8,11 +8,12 @@
     "index.css"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules",
+    "clean": "rimraf node_modules",
     "format": "npx prettier --write ."
   },
   "devDependencies": {
-    "@protomolecule/tsconfig": "workspace:*"
+    "@protomolecule/tsconfig": "workspace:*",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "@radix-ui/colors": "^3.0.0"
