@@ -11,7 +11,7 @@ describe("EmailLink", () => {
     expect(link).toHaveAttribute("href", "mailto:test@example.com");
   });
 
-  it('renders with target="_blank" and rel="noopener noreferrer"', () => {
+  it("renders with target='_blank' and rel='noopener noreferrer'", () => {
     render(<EmailLink email="test@example.com">Email</EmailLink>);
 
     const link = screen.getByText("Email");
@@ -37,7 +37,7 @@ describe("EmailLink", () => {
     render(
       <EmailLink className="custom-class" email="test@example.com">
         Email Link
-      </EmailLink>,
+      </EmailLink>
     );
 
     const link = screen.getByText("Email Link");
@@ -52,7 +52,7 @@ describe("EmailLink", () => {
         email="test@example.com"
       >
         Contact
-      </EmailLink>,
+      </EmailLink>
     );
 
     const link = screen.getByTestId("email-link");
