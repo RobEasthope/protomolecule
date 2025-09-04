@@ -28,6 +28,7 @@ export const preferences = {
     "react/function-component-definition": "off",
     "regexp/no-unused-capturing-group": "off",
     "require-unicode-regexp": "off",
+    "unicorn/better-regex": "off",
     "unicorn/numeric-separators-style": "off",
   },
   settings: {
