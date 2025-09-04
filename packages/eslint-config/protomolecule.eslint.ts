@@ -6,12 +6,6 @@ import { packageJsonRules } from "./rules/package-json-rules";
 import { storybookRules } from "./rules/storybook-rules";
 import { typescriptOverrideRules } from "./rules/typescript-override-rules";
 
-export { ignoredFolders } from "./rules/ignored-folders";
-export { customRules } from "./rules/custom-rules";
-export { packageJsonRules } from "./rules/package-json-rules";
-export { storybookRules } from "./rules/storybook-rules";
-export { typescriptOverrideRules } from "./rules/typescript-override-rules";
-
 export default [
   ignoredFolders,
   ...tseslint.configs.recommended,
