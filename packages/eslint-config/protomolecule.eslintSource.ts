@@ -57,7 +57,7 @@ export const packageJsonConfig = {
   },
 } satisfies Linter.Config;
 
-export const storybookConfig = {
+export const storybookRules = {
   files: ["**/*.stories.ts", "**/*.stories.tsx"],
   rules: {
     "canonical/filename-match-exported": "off",

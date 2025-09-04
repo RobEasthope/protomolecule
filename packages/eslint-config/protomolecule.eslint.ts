@@ -1,18 +1,18 @@
 import {
-  baseConfig,
+  ignoredFolders,
   customRules,
   packageJsonConfig,
-  storybookConfig,
+  storybookRules,
 } from "./protomolecule.eslintSource";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
 import tseslint from "typescript-eslint";
 
 export default [
+  ignoredFolders,
   ...tseslint.configs.recommended,
   ...tseslint.configs.stylistic,
   ...eslintConfigCanonicalAuto,
-  baseConfig,
   packageJsonConfig,
-  storybookConfig,
+  storybookRules,
   customRules,
 ] as const;
