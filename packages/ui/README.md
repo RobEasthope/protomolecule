@@ -22,11 +22,13 @@ pnpm lint
 ## Components
 
 ### Layout Components
+
 - **Box** - Polymorphic box component with semantic HTML support
 - **Container** - Responsive container with max-width constraints
 - **Type** - Typography component with heading and paragraph variants
 
 ### Link Components
+
 - **EmailLink** - Email link component with Sanity schema
 - **ExternalLink** - External link component with Sanity schema
 - **NextInternalLink** - Internal link for Next.js applications
@@ -34,6 +36,7 @@ pnpm lint
 - **OmniLink** - Universal link component that handles all link types
 
 ### Content Components
+
 - **Prose** - Rich text rendering with Portable Text
 - **BasicProse** - Simple prose component for basic content
 - **FullProse** - Full-featured prose component with all formatting options
@@ -45,6 +48,7 @@ pnpm lint
 ## Sanity Integration
 
 Each component that integrates with Sanity CMS includes:
+
 - Schema definitions (`.schema.ts`)
 - GROQ queries (`.query.ts`)
 - Type definitions
@@ -52,6 +56,7 @@ Each component that integrates with Sanity CMS includes:
 ## Framework Support
 
 Components are designed to work with both Next.js and React Router. Use the appropriate link component for your framework:
+
 - Next.js: `NextInternalLink`
 - React Router: `ReactRouterLink`
 

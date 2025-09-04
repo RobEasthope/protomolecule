@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { BrowserRouter } from 'react-router-dom';
-import { OmniLink } from './OmniLink';
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { BrowserRouter } from "react-router-dom";
+import { OmniLink } from "./OmniLink";
 
 // Mock React Router Link
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
     Link: vi.fn(({ to, children, ...props }) => (
@@ -16,128 +16,124 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-describe('OmniLink', () => {
-  it('renders EmailLink for EmailLinkWithTitle type', () => {
+describe("OmniLink", () => {
+  it("renders EmailLink for EmailLinkWithTitle type", () => {
     render(
-      <OmniLink 
-        link={{ _type: 'EmailLinkWithTitle', href: 'test@example.com' }}
+      <OmniLink
+        link={{ _type: "EmailLinkWithTitle", href: "test@example.com" }}
       >
         Email Me
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = screen.getByText('Email Me');
+
+    const link = screen.getByText("Email Me");
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'mailto:test@example.com');
-    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute("href", "mailto:test@example.com");
+    expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it('renders ExternalLink for ExternalLinkWithTitle type', () => {
+  it("renders ExternalLink for ExternalLinkWithTitle type", () => {
     render(
-      <OmniLink 
-        link={{ _type: 'ExternalLinkWithTitle', href: 'https://example.com' }}
+      <OmniLink
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
       >
         External Site
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = screen.getByText('External Site');
+
+    const link = screen.getByText("External Site");
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://example.com');
-    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute("href", "https://example.com");
+    expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it('renders ReactRouterLink for InternalLinkWithTitle type', () => {
+  it("renders ReactRouterLink for InternalLinkWithTitle type", () => {
     render(
       <BrowserRouter>
-        <OmniLink 
-          link={{ _type: 'InternalLinkWithTitle', href: 'about' }}
-        >
+        <OmniLink link={{ _type: "InternalLinkWithTitle", href: "about" }}>
           About Page
         </OmniLink>
-      </BrowserRouter>
+      </BrowserRouter>,
     );
-    
-    const link = screen.getByText('About Page');
+
+    const link = screen.getByText("About Page");
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/about');
+    expect(link).toHaveAttribute("href", "/about");
   });
 
-  it('returns null when no link and no children', () => {
+  it("returns null when no link and no children", () => {
     const { container } = render(
       // @ts-expect-error Testing undefined link prop
-      <OmniLink link={undefined}>{null}</OmniLink>
+      <OmniLink link={undefined}>{null}</OmniLink>,
     );
-    
+
     expect(container.firstChild).toBeNull();
   });
 
-  it('returns null for unknown link type', () => {
+  it("returns null for unknown link type", () => {
     const { container } = render(
-      <OmniLink 
-        link={{ _type: 'UnknownType', href: 'https://example.com' }}
-      >
+      <OmniLink link={{ _type: "UnknownType", href: "https://example.com" }}>
         Unknown
-      </OmniLink>
+      </OmniLink>,
     );
-    
+
     expect(container.firstChild).toBeNull();
   });
 
-  it('passes className to child components', () => {
+  it("passes className to child components", () => {
     render(
-      <OmniLink 
-        link={{ _type: 'ExternalLinkWithTitle', href: 'https://example.com' }}
+      <OmniLink
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
         className="custom-class"
       >
         Styled Link
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = screen.getByText('Styled Link');
-    expect(link).toHaveClass('custom-class');
+
+    const link = screen.getByText("Styled Link");
+    expect(link).toHaveClass("custom-class");
   });
 
-  it('passes additional props to child components', () => {
+  it("passes additional props to child components", () => {
     render(
-      <OmniLink 
-        link={{ _type: 'ExternalLinkWithTitle', href: 'https://example.com' }}
+      <OmniLink
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
         data-testid="omni-link"
         aria-label="Test link"
       >
         Props Test
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = screen.getByTestId('omni-link');
-    expect(link).toHaveAttribute('aria-label', 'Test link');
+
+    const link = screen.getByTestId("omni-link");
+    expect(link).toHaveAttribute("aria-label", "Test link");
   });
 
-  it('handles missing href in link object', () => {
+  it("handles missing href in link object", () => {
     render(
-      <OmniLink 
+      <OmniLink
         // @ts-expect-error Testing undefined href
-        link={{ _type: 'ExternalLinkWithTitle', href: undefined }}
+        link={{ _type: "ExternalLinkWithTitle", href: undefined }}
       >
         No Href
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = screen.getByText('No Href');
+
+    const link = screen.getByText("No Href");
     expect(link).toBeInTheDocument();
   });
 
-  it('handles empty children', () => {
+  it("handles empty children", () => {
     render(
-      <OmniLink 
-        link={{ _type: 'ExternalLinkWithTitle', href: 'https://example.com' }}
+      <OmniLink
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
       >
         {null}
-      </OmniLink>
+      </OmniLink>,
     );
-    
-    const link = document.querySelector('a');
+
+    const link = document.querySelector("a");
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://example.com');
+    expect(link).toHaveAttribute("href", "https://example.com");
   });
 });
