@@ -1,1 +1,1 @@
-module.exports = require("./protomolecule.eslint.ts");
+export { default } from "./protomolecule.eslint.ts";
