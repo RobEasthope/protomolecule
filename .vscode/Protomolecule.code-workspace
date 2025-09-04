@@ -1,0 +1,44 @@
+{
+    "folders": [
+        {
+        "name": "⚖️ ESLint",
+        "path": "../packages/eslint-config"
+      },
+      {
+        "name": "🎁 GitHub Rulesets",
+        "path": "../packages/github-rulesets"
+      },
+      {
+        "name": "🎁 Radix Colors",
+        "path": "../packages/radix-colors"
+      },
+      {
+        "name": "📖 TS Config",
+        "path": "../packages/tsconfig"
+      },
+      {
+        "name": "🎨 UI",
+        "path": "../packages/ui"
+      },
+      {
+        "name": "🎁 Repo",
+        "path": "../"
+      },
+    ],
+    "settings": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.fixAll.eslint": "explicit"
+      },
+      "files.exclude": {
+        "node_modules/": true,
+        "packages/": true,
+        "build/": true,
+        ".turbo/": true,
+        ".vercel/": true,
+        ".react-router/": true,
+      },
+    },
+  }
