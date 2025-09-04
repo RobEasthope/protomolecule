@@ -6,7 +6,8 @@
   "files": [
     "index.js",
     "protomolecule.eslint.ts",
-    "protomolecule.eslintSource.ts"
+    "protomolecule.eslintSource.ts",
+    "rules"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -18,8 +19,10 @@
   },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*",
+    "@types/eslint": "^9.6.1",
     "eslint": "^8.57.0",
     "eslint-config-canonical": "^45.0.0",
+    "typescript": "^5.4.5",
     "typescript-eslint": "^8.42.0"
   },
   "publishConfig": {
