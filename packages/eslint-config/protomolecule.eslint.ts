@@ -4,15 +4,12 @@ import { packageJson } from "./rules/packageJson";
 import { storybook } from "./rules/storybook";
 import { typescriptOverrides } from "./rules/typescriptOverrides";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
-import tseslint from "typescript-eslint";
 
 export default [
   ignoredFolders,
-  ...tseslint.configs.recommended,
-  ...tseslint.configs.stylistic,
   ...eslintConfigCanonicalAuto,
   packageJson,
   storybook,
   typescriptOverrides,
   custom,
-] as const;
+];
