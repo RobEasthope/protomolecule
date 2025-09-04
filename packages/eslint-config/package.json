@@ -9,7 +9,9 @@
     "protomolecule.eslintSource.ts"
   ],
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "tsc": "tsc --noEmit"
   },
   "peerDependencies": {
     "eslint": "^8.0.0 || ^9.0.0"
