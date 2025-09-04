@@ -1,5 +1,5 @@
 import { type Preview } from "@storybook/react-vite";
-
+// eslint-disable-next-line import/no-unassigned-import
 import "../styles/app.css";
 
 const preview: Preview = {
@@ -7,7 +7,7 @@ const preview: Preview = {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/i,
+        date: /date$/i,
       },
     },
   },
