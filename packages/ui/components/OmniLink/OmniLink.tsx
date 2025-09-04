@@ -12,12 +12,12 @@ export type OmniLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
   };
 };
 
-export const OmniLink = ({
+export function OmniLink({
   children,
   className,
   link,
   ...rest
-}: OmniLinkProps) => {
+}: OmniLinkProps) {
   if (!link && !children) {
     return null;
   }
@@ -47,4 +47,4 @@ export const OmniLink = ({
     default:
       return null;
   }
-};
+}
