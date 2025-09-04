@@ -3,14 +3,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "extends": [
-    "@protomolecule/tsconfig/base.json"
-  ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ]
+  "exclude": ["node_modules"],
+  "extends": ["@protomolecule/tsconfig/base.json"],
+  "include": ["**/*.ts", "**/*.tsx"]
 }
