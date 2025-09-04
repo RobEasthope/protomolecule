@@ -12,7 +12,7 @@ export const ignoredFileAndFolders = {
     "**/build/*",
     "**/tsconfig.json",
     "**/dist/*",
-    "**/storybook-static/*",
+    "storybook-static/*",
     "**/coverage/*",
   ],
 } satisfies Linter.Config;
