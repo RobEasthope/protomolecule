@@ -1,1 +1,1 @@
-export { default } from "./protomolecule.eslint.ts";
+export { default } from "./eslint.config.ts";
