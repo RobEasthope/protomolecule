@@ -1,6 +1,6 @@
 import { type Linter } from "eslint";
 
-export const ignoredFolders = {
+export const ignoredFileAndFolders = {
   ignores: [
     "**/.react-router/**",
     "**/node_modules/**",
