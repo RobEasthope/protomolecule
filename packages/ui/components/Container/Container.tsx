@@ -48,8 +48,7 @@ export function Container({
   return createElement(
     as,
     {
-      className: 
-        cn(containerVariants({ breakout, maxWidth }), className),
+      className: cn(containerVariants({ breakout, maxWidth }), className),
       ...props,
     },
     children,
