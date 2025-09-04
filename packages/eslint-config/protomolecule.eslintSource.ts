@@ -1,7 +1,7 @@
 // Base config that ignores react-router types folders
 import { type Linter } from "eslint";
 
-export const baseConfig = {
+export const ignoredFolders = {
   ignores: [
     "**/.react-router/**",
     "**/node_modules/**",
