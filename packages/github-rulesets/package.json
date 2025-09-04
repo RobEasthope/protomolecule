@@ -6,6 +6,9 @@
   "files": [
     "rulesets"
   ],
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*"
   }
