@@ -4,9 +4,6 @@
     "noEmit": true
   },
   "exclude": ["node_modules"],
-  "extends": [
-    "@protomolecule/tsconfig/base.json",
-    "@protomolecule/tsconfig/node.json"
-  ],
+  "extends": ["@protomolecule/tsconfig/base.json"],
   "include": ["**/*.ts", "**/*.tsx"]
 }
