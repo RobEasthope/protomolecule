@@ -5,8 +5,6 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "protomolecule.eslint.ts",
-    "protomolecule.eslintSource.ts",
     "rules"
   ],
   "scripts": {
