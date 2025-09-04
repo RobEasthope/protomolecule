@@ -21,7 +21,7 @@ export default defineType({
           }
 
           return /^[\w.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(
-            email.toLowerCase()
+            email.toLowerCase(),
           )
             ? true
             : "This is not an email";
