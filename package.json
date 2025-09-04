@@ -4,6 +4,7 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "clean": "rm -rf node_modules && turbo run clean",
     "dev": "turbo run dev --filter=@protomolecule/ui",
     "build": "turbo run build",
     "lint": "turbo run lint",
