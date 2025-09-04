@@ -15,6 +15,7 @@ export const baseConfig = {
     "**/build/*",
     ".repomix/*",
     "**/database.types.ts",
+    "storybook-static/**/*",
   ],
 } satisfies Linter.Config;
 
