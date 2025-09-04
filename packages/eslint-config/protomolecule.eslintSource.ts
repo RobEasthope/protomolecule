@@ -11,7 +11,6 @@ export const baseConfig = {
     "**/.astro/*",
     "**/.turbo/*",
     "**/build/*",
-    "storybook-static/**/*",
   ],
 } satisfies Linter.Config;
 
@@ -63,6 +62,7 @@ export const storybookConfig = {
   rules: {
     "canonical/filename-match-exported": "off",
   },
+  ignores: ["**/storybook-static/**/*"],
 } satisfies Linter.Config;
 
 // Override prop-types rules for TypeScript files since we use TypeScript interfaces
