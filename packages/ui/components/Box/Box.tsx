@@ -26,6 +26,6 @@ export function Box({
       ref,
       ...props,
     },
-    children
+    children,
   );
 }
