@@ -1,7 +1,6 @@
 import { createElement } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/utils/tailwind";
-import { stylesCheck } from "@/utils/stylesCheck";
 
 const typeVariants = cva(
   // Root/base styles
@@ -54,7 +53,7 @@ export function Type({
   return createElement(
     as,
     {
-      className: stylesCheck(cn(typeVariants({ variant }), className)),
+      className: cn(typeVariants({ variant }), className),
       ...rest,
     },
     children,

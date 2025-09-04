@@ -85,7 +85,6 @@ This is a React component library monorepo built with:
 
 5. **Utility Functions** (in UI package):
    - `src/utils/tailwind.ts`: Tailwind class management
-   - `src/utils/checkForStylingClasses.ts`: Runtime validation
    - Style checking utilities
 
 6. **Component Patterns**:
