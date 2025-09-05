@@ -1,14 +1,13 @@
 import { OmniLink } from "./OmniLink";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
 
 // Mock React Router Link
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
-    Link: vi.fn(({ children, to, ...props }) => (
+    Link: vi.fn(({ children, to, ...props }: { children: React.ReactNode; to: string }) => (
       <a href={to} {...props}>
         {children}
       </a>

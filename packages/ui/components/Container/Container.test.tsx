@@ -1,6 +1,5 @@
 import { Container } from "./Container";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 describe("Container", () => {
   it("renders children correctly", () => {

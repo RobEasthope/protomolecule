@@ -1,6 +1,5 @@
 import { Prose } from "./Prose";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 describe("Prose", () => {
   const mockContent = [

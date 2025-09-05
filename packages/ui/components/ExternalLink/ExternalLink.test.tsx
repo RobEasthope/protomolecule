@@ -1,6 +1,5 @@
 import { ExternalLink } from "./ExternalLink";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 describe("ExternalLink", () => {
   it("renders external link with children", () => {

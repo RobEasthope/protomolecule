@@ -1,6 +1,5 @@
 import { EmailLink } from "./EmailLink";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 describe("EmailLink", () => {
   it("renders email link with children", () => {

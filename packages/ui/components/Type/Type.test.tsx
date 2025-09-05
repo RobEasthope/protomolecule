@@ -1,6 +1,5 @@
 import { Type } from "./Type";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 describe("Type", () => {
   it("renders children correctly", () => {

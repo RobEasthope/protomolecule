@@ -1,6 +1,5 @@
 import { ReactRouterLink } from "./ReactRouterLink";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 
 // Mock react-router-dom
 vi.mock("react-router-dom", () => ({

@@ -1,6 +1,5 @@
 import { NextInternalLink } from "./NextInternalLink";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 
 // Mock next/link
 vi.mock("next/link", () => ({
