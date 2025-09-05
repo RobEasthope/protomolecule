@@ -3,15 +3,15 @@ import type React from "react";
 
 // Component props
 export type ExternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  href: string | undefined;
-  className?: string;
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
+  readonly className?: string;
+  readonly href: string | undefined;
 };
 
 export function ExternalLink({
-  href,
   children,
   className,
+  href,
   ...rest
 }: ExternalLinkProps) {
   if (!href && !children) {
@@ -20,10 +20,10 @@ export function ExternalLink({
 
   return (
     <a
+      className={cn("hover:text-link duration-300", className)}
       href={href}
-      target="_blank"
       rel="noopener noreferrer"
-      className={cn("duration-300 hover:text-link", className)}
+      target="_blank"
       {...rest}
     >
       {children || null}

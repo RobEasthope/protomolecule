@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Container } from "./Container";
+import { type Meta, type StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Base UI/Container",
   component: Container,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
+  title: "Base UI/Container",
 } satisfies Meta<typeof Container>;
 
 export default meta;

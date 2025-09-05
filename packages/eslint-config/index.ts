@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable canonical/filename-match-exported */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";

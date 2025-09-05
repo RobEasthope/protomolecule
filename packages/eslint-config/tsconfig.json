@@ -1,9 +1,20 @@
 {
+  "extends": "@protomolecule/tsconfig/base.json",
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "outDir": "./dist",
+    "rootDir": "./",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false
   },
-  "exclude": ["node_modules"],
-  "extends": ["@protomolecule/tsconfig/base.json"],
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["index.ts", "rules/**/*.ts", "eslint.config.ts"],
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
 }

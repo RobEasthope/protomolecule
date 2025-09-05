@@ -1,18 +1,26 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { BrowserRouter } from "react-router-dom";
 import { OmniLink } from "./OmniLink";
+import { render, screen } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 
 // Mock React Router Link
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
-    Link: vi.fn(({ to, children, ...props }) => (
-      <a href={to} {...props}>
-        {children}
-      </a>
-    )),
+    Link: vi.fn(
+      ({
+        children,
+        to,
+        ...props
+      }: {
+        children: React.ReactNode;
+        to: string;
+      }) => (
+        <a href={to} {...props}>
+          {children}
+        </a>
+      ),
+    ),
   };
 });
 
@@ -83,8 +91,8 @@ describe("OmniLink", () => {
   it("passes className to child components", () => {
     render(
       <OmniLink
-        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
         className="custom-class"
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
       >
         Styled Link
       </OmniLink>,
@@ -97,9 +105,9 @@ describe("OmniLink", () => {
   it("passes additional props to child components", () => {
     render(
       <OmniLink
-        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
-        data-testid="omni-link"
         aria-label="Test link"
+        data-testid="omni-link"
+        link={{ _type: "ExternalLinkWithTitle", href: "https://example.com" }}
       >
         Props Test
       </OmniLink>,

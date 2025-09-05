@@ -1,22 +1,21 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
 import { Prose } from "./Prose";
+import { render, screen } from "@testing-library/react";
 
 describe("Prose", () => {
   const mockContent = [
     {
-      _type: "block",
       _key: "block1",
-      style: "normal",
+      _type: "block",
       children: [
         {
-          _type: "span",
           _key: "span1",
-          text: "This is test content",
+          _type: "span",
           marks: [],
+          text: "This is test content",
         },
       ],
       markDefs: [],
+      style: "normal",
     },
   ];
 
@@ -30,7 +29,7 @@ describe("Prose", () => {
 
   it("renders portable text content", () => {
     render(
-      <Prose as="div" content={mockContent} components={mockComponents} />,
+      <Prose as="div" components={mockComponents} content={mockContent} />,
     );
 
     expect(screen.getByText("This is test content")).toBeInTheDocument();
@@ -40,9 +39,9 @@ describe("Prose", () => {
     const { container } = render(
       <Prose
         as="div"
+        components={mockComponents}
         // @ts-expect-error Testing null content
         content={null}
-        components={mockComponents}
       />,
     );
 
@@ -53,9 +52,9 @@ describe("Prose", () => {
     const { container } = render(
       <Prose
         as="div"
+        components={mockComponents}
         // @ts-expect-error Testing undefined content
         content={undefined}
-        components={mockComponents}
       />,
     );
 
@@ -66,9 +65,9 @@ describe("Prose", () => {
     render(
       <Prose
         as="div"
-        content={mockContent}
-        components={mockComponents}
         className="custom-prose"
+        components={mockComponents}
+        content={mockContent}
       />,
     );
 
@@ -78,14 +77,14 @@ describe("Prose", () => {
 
   it("renders as different HTML elements", () => {
     const { rerender } = render(
-      <Prose as="article" content={mockContent} components={mockComponents} />,
+      <Prose as="article" components={mockComponents} content={mockContent} />,
     );
 
     let container = screen.getByText("This is test content").closest("article");
     expect(container?.tagName).toBe("ARTICLE");
 
     rerender(
-      <Prose as="section" content={mockContent} components={mockComponents} />,
+      <Prose as="section" components={mockComponents} content={mockContent} />,
     );
 
     container = screen.getByText("This is test content").closest("section");
@@ -94,7 +93,7 @@ describe("Prose", () => {
 
   it("applies default prose styles", () => {
     render(
-      <Prose as="div" content={mockContent} components={mockComponents} />,
+      <Prose as="div" components={mockComponents} content={mockContent} />,
     );
 
     const container = screen.getByText("This is test content").closest("div");
@@ -105,7 +104,7 @@ describe("Prose", () => {
   it("handles single block content", () => {
     const singleBlock = mockContent[0];
     render(
-      <Prose as="div" content={singleBlock} components={mockComponents} />,
+      <Prose as="div" components={mockComponents} content={singleBlock} />,
     );
 
     expect(screen.getByText("This is test content")).toBeInTheDocument();
@@ -115,23 +114,23 @@ describe("Prose", () => {
     const multipleBlocks = [
       ...mockContent,
       {
-        _type: "block",
         _key: "block2",
-        style: "normal",
+        _type: "block",
         children: [
           {
-            _type: "span",
             _key: "span2",
-            text: "Second block",
+            _type: "span",
             marks: [],
+            text: "Second block",
           },
         ],
         markDefs: [],
+        style: "normal",
       },
     ];
 
     render(
-      <Prose as="div" content={multipleBlocks} components={mockComponents} />,
+      <Prose as="div" components={mockComponents} content={multipleBlocks} />,
     );
 
     expect(screen.getByText("This is test content")).toBeInTheDocument();
@@ -139,7 +138,7 @@ describe("Prose", () => {
   });
 
   it("handles empty array content", () => {
-    render(<Prose as="div" content={[]} components={mockComponents} />);
+    render(<Prose as="div" components={mockComponents} content={[]} />);
 
     const container = document.querySelector(".prose");
     expect(container).toBeInTheDocument();

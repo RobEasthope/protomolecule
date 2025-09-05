@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
 import { Type } from "./Type";
+import { render, screen } from "@testing-library/react";
 
 describe("Type", () => {
   it("renders children correctly", () => {

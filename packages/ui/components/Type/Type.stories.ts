@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Type } from "./Type";
+import { type Meta, type StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Base UI/Type",
   component: Type,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
+  title: "Base UI/Type",
 } satisfies Meta<typeof Type>;
 
 export default meta;

@@ -4,20 +4,20 @@ import { ReactRouterLink } from "@/components/InternalLink/ReactRouterLink";
 import React from "react";
 
 export type OmniLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  link: {
+  readonly children: React.ReactNode;
+  readonly className?: string;
+  readonly link: {
     _type: string;
     href: string;
   };
-  className?: string;
-  children: React.ReactNode;
 };
 
-export const OmniLink = ({
-  link,
-  className,
+export function OmniLink({
   children,
+  className,
+  link,
   ...rest
-}: OmniLinkProps) => {
+}: OmniLinkProps) {
   if (!link && !children) {
     return null;
   }
@@ -25,21 +25,21 @@ export const OmniLink = ({
   switch (link?._type) {
     case "EmailLinkWithTitle":
       return (
-        <EmailLink email={link?.href} className={className} {...rest}>
+        <EmailLink className={className} email={link?.href} {...rest}>
           {children}
         </EmailLink>
       );
 
     case "ExternalLinkWithTitle":
       return (
-        <ExternalLink href={link?.href} className={className} {...rest}>
+        <ExternalLink className={className} href={link?.href} {...rest}>
           {children}
         </ExternalLink>
       );
 
     case "InternalLinkWithTitle":
       return (
-        <ReactRouterLink href={link?.href} className={className} {...rest}>
+        <ReactRouterLink className={className} href={link?.href} {...rest}>
           {children}
         </ReactRouterLink>
       );
@@ -47,4 +47,4 @@ export const OmniLink = ({
     default:
       return null;
   }
-};
+}

@@ -2,11 +2,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { defineField, defineType } from "sanity";
 
 export default defineType({
-  name: "EmailLink",
-  title: "Email link",
-  type: "object",
   description: "Adds an email link",
-  icon: MdOutlineEmail,
   fields: [
     defineField({
       name: "email",
@@ -18,16 +14,16 @@ export default defineType({
             return true; // Allow undefined values
           }
 
-          return email
-            .toLowerCase()
-            .match(
-              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            )
+          return /^[\w.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(
+            email.toLowerCase(),
+          )
             ? true
             : "This is not an email";
         }),
     }),
   ],
+  icon: MdOutlineEmail,
+  name: "EmailLink",
   preview: {
     prepare() {
       return {
@@ -35,4 +31,6 @@ export default defineType({
       };
     },
   },
+  title: "Email link",
+  type: "object",
 });

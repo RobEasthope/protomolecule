@@ -1,9 +1,8 @@
-import type { PortableTextComponents } from "@portabletext/react";
-
-import { Type } from "@/components/Type/Type";
 import { EmailLink } from "@/components/EmailLink/EmailLink";
 import { ExternalLink } from "@/components/ExternalLink/ExternalLink";
 import { ReactRouterLink } from "@/components/InternalLink/ReactRouterLink";
+import { Type } from "@/components/Type/Type";
+import { type PortableTextComponents } from "@portabletext/react";
 
 // export type FullProseProps = Array<SanityKeyed<SanityBlock>>;
 
@@ -31,10 +30,10 @@ export const FullProseComponents: PortableTextComponents = {
     number: ({ children }) => <ol>{children}</ol>,
   },
   marks: {
-    strong: ({ children }) => (
-      <strong className="font-medium text-inherit">{children}</strong>
+    em: ({ children }) => <em className="text-inherit italic">{children}</em>,
+    EmailLink: ({ children, value }) => (
+      <EmailLink email={value?.email}>{children}</EmailLink>
     ),
-    em: ({ children }) => <em className="italic text-inherit">{children}</em>,
 
     // Links
     ExternalLink: ({ children, value }) => (
@@ -42,14 +41,14 @@ export const FullProseComponents: PortableTextComponents = {
     ),
     InternalLink: ({ children, value }) => (
       <ReactRouterLink
-        href={value?.page?.slug?.current}
         homePageSlug={value?.appSettings?.homePageSlug}
+        href={value?.page?.slug?.current}
       >
         {children}
       </ReactRouterLink>
     ),
-    EmailLink: ({ children, value }) => (
-      <EmailLink email={value?.email}>{children}</EmailLink>
+    strong: ({ children }) => (
+      <strong className="font-medium text-inherit">{children}</strong>
     ),
   },
   types: {

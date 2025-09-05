@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
 import { ExternalLink } from "./ExternalLink";
+import { render, screen } from "@testing-library/react";
 
 describe("ExternalLink", () => {
   it("renders external link with children", () => {
@@ -11,7 +10,7 @@ describe("ExternalLink", () => {
     expect(link).toHaveAttribute("href", "https://example.com");
   });
 
-  it('renders with target="_blank" and rel="noopener noreferrer"', () => {
+  it("renders with target='_blank' and rel='noopener noreferrer'", () => {
     render(<ExternalLink href="https://example.com">External</ExternalLink>);
 
     const link = screen.getByText("External");
@@ -38,7 +37,7 @@ describe("ExternalLink", () => {
 
   it("applies custom className", () => {
     render(
-      <ExternalLink href="https://example.com" className="custom-class">
+      <ExternalLink className="custom-class" href="https://example.com">
         Styled Link
       </ExternalLink>,
     );
@@ -58,9 +57,9 @@ describe("ExternalLink", () => {
   it("passes through additional props", () => {
     render(
       <ExternalLink
-        href="https://example.com"
-        data-testid="external-link"
         aria-label="Visit external site"
+        data-testid="external-link"
+        href="https://example.com"
       >
         Link
       </ExternalLink>,

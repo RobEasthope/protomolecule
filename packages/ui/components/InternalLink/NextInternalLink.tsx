@@ -3,17 +3,17 @@ import React from "react";
 
 // Component props
 export type NextInternalLinkProps = React.HTMLAttributes<HTMLAnchorElement> & {
-  href: string | undefined;
-  className?: string;
-  children: React.ReactNode;
-  homePageSlug?: string;
+  readonly children: React.ReactNode;
+  readonly className?: string;
+  readonly homePageSlug?: string;
+  readonly href: string | undefined;
 };
 
 export function NextInternalLink({
-  href,
   children,
   className,
   homePageSlug,
+  href,
   ...rest
 }: NextInternalLinkProps) {
   if (!href && !children) {
@@ -26,8 +26,8 @@ export function NextInternalLink({
 
   return (
     <Link
-      href={href === homePageSlug ? "/" : `/${href}`}
       className={className}
+      href={href === homePageSlug ? "/" : `/${href}`}
       role="link"
       tabIndex={0}
       {...rest}

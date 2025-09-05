@@ -2,11 +2,7 @@ import { MdOutlineEmail } from "react-icons/md";
 import { defineField, defineType } from "sanity";
 
 export default defineType({
-  name: "EmailLinkWithTitle",
-  title: "Email link",
-  type: "object",
   description: "Adds an email link",
-  icon: MdOutlineEmail,
   fields: [
     defineField({
       name: "title",
@@ -24,26 +20,28 @@ export default defineType({
             return true; // Allow undefined values
           }
 
-          return email
-            .toLowerCase()
-            .match(
-              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            )
+          return /^[\w.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(
+            email.toLowerCase(),
+          )
             ? true
             : "This is not an email";
         }),
     }),
   ],
+  icon: MdOutlineEmail,
+  name: "EmailLinkWithTitle",
   preview: {
-    select: {
-      title: "title",
-      subtitle: "email",
-    },
-    prepare({ title, subtitle }: { title: string; subtitle: string }) {
+    prepare({ subtitle, title }: { subtitle: string; title: string }) {
       return {
-        title: title || "Email link",
         subtitle: subtitle || "",
+        title: title || "Email link",
       };
     },
+    select: {
+      subtitle: "email",
+      title: "title",
+    },
   },
+  title: "Email link",
+  type: "object",
 });

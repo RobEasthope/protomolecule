@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
 import { EmailLink } from "./EmailLink";
+import { render, screen } from "@testing-library/react";
 
 describe("EmailLink", () => {
   it("renders email link with children", () => {
@@ -11,7 +10,7 @@ describe("EmailLink", () => {
     expect(link).toHaveAttribute("href", "mailto:test@example.com");
   });
 
-  it('renders with target="_blank" and rel="noopener noreferrer"', () => {
+  it("renders with target='_blank' and rel='noopener noreferrer'", () => {
     render(<EmailLink email="test@example.com">Email</EmailLink>);
 
     const link = screen.getByText("Email");
@@ -35,7 +34,7 @@ describe("EmailLink", () => {
 
   it("applies custom className", () => {
     render(
-      <EmailLink email="test@example.com" className="custom-class">
+      <EmailLink className="custom-class" email="test@example.com">
         Email Link
       </EmailLink>,
     );
@@ -47,9 +46,9 @@ describe("EmailLink", () => {
   it("passes through additional props", () => {
     render(
       <EmailLink
-        email="test@example.com"
-        data-testid="email-link"
         aria-label="Send email"
+        data-testid="email-link"
+        email="test@example.com"
       >
         Contact
       </EmailLink>,
