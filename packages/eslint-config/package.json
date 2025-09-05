@@ -23,7 +23,7 @@
     "format": "npx prettier --write .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "tsc": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*",
