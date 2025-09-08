@@ -21,8 +21,8 @@
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
     "format": "npx prettier --write .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-ui",
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
