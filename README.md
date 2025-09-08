@@ -1,6 +1,8 @@
 # Protomolecule
 
-A modern React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
+A modern, open-source React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
+
+> **Open Source**: This project is open source and free to use. Feel free to fork, modify, and use in your own projects at your own risk.
 
 ## 🚀 Quick Start
 
@@ -200,7 +202,9 @@ This repository uses Husky for git hooks and lint-staged for pre-commit checks:
 
 ## 📄 License
 
-This project is private and proprietary.
+This project is open source and available under the [MIT License](LICENSE).
+
+**Note**: This software is provided "as is", without warranty of any kind. Use at your own risk.
 
 ## 🔗 Links
 

@@ -154,4 +154,6 @@ packages/tsconfig/
 
 ## 📄 License
 
-Part of the Protomolecule monorepo - see root LICENSE file
+MIT License - see [LICENSE](../../LICENSE) file in the root directory.
+
+This software is provided "as is", without warranty of any kind. Use at your own risk.

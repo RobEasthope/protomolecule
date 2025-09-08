@@ -125,4 +125,6 @@ packages/radix-colors/
 
 ## 📄 License
 
-Private package - part of Protomolecule monorepo
+MIT License - see [LICENSE](../../LICENSE) file in the root directory.
+
+This software is provided "as is", without warranty of any kind. Use at your own risk.

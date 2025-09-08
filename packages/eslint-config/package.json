@@ -1,6 +1,7 @@
 {
   "name": "@protomolecule/eslint-config",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "type": "module",
   "exports": {

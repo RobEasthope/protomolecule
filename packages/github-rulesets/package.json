@@ -1,6 +1,7 @@
 {
   "name": "@protomolecule/github-rulesets",
   "version": "1.0.0",
+  "license": "MIT",
   "private": true,
   "description": "GitHub configuration rulesets for Protomolecule projects",
   "files": [

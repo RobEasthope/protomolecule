@@ -1,6 +1,7 @@
 {
   "name": "@protomolecule/radix-colors",
   "version": "1.0.0",
+  "license": "MIT",
   "private": true,
   "description": "Radix colors CSS imports for Protomolecule projects",
   "main": "index.css",
