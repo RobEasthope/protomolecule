@@ -13,7 +13,8 @@
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
-    "test:ui": "turbo run test:ui --filter=@protomolecule/ui"
+    "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
+    "prepare": "husky"
   },
   "devDependencies": {
     "husky": "^9.1.7",
