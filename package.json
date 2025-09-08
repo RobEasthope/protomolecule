@@ -27,13 +27,7 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs}": [
-      "eslint --fix --cache",
-      "prettier --write"
-    ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --write"
-    ]
+    "**/*": "prettier --write --ignore-unknown"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {
