@@ -1,13 +1,19 @@
 #!/bin/sh
 
+# Create a unique temporary file using process ID and timestamp
+TEMP_FILE="/tmp/staged_files_$$_$(date +%s).txt"
+
+# Ensure cleanup on exit, even if script fails
+trap 'rm -f "$TEMP_FILE"' EXIT
+
 # Save list of staged files before formatting
-git diff --cached --name-only > /tmp/staged_files.txt
+git diff --cached --name-only > "$TEMP_FILE"
 
 # Format the code
 pnpm format
 
 # Re-add only the files that were originally staged and still exist
-if [ -s /tmp/staged_files.txt ]; then
+if [ -s "$TEMP_FILE" ]; then
   files_formatted=false
   
   while IFS= read -r file; do
@@ -16,7 +22,7 @@ if [ -s /tmp/staged_files.txt ]; then
       git add -- "$file"
       files_formatted=true
     fi
-  done < /tmp/staged_files.txt
+  done < "$TEMP_FILE"
   
   if [ "$files_formatted" = true ]; then
     echo "Code was formatted. Formatting changes added to commit."
@@ -26,6 +32,3 @@ if [ -s /tmp/staged_files.txt ]; then
 else
   echo "No staged files to format."
 fi
-
-# Clean up
-rm -f /tmp/staged_files.txt

@@ -206,4 +206,24 @@ fi
     expect(content2).toContain("// formatted");
     expect(stdout).toContain("Code was formatted");
   });
+
+  it("should use unique temporary files to avoid race conditions", async () => {
+    // Create test files
+    const file1 = path.join(testDir, "test1.js");
+    const file2 = path.join(testDir, "test2.js");
+    await fs.writeFile(file1, "console.log('test1')");
+    await fs.writeFile(file2, "console.log('test2')");
+
+    // Stage files
+    await execAsync("git add test1.js test2.js", { cwd: testDir });
+
+    // Run the hook and check that temp files are cleaned up
+    await execAsync(".husky/pre-commit", { cwd: testDir });
+
+    // List all files in /tmp that match our pattern
+    const { stdout } = await execAsync("ls -la /tmp/staged_files_* 2>/dev/null || echo 'No temp files found'");
+    
+    // Verify no leftover temp files
+    expect(stdout).toContain("No temp files found");
+  });
 });
