@@ -7,8 +7,23 @@ STAGED_FILES=$(git diff --cached --name-only)
 pnpm format
 
 # Check if any of the originally staged files were modified by formatting
-if ! git diff --quiet $STAGED_FILES; then
-  echo "Code was formatted. Adding formatting changes to staged files..."
-  git add $STAGED_FILES
-  echo "Formatting changes added to commit."
+# Only check files that still exist (not deleted files)
+EXISTING_STAGED_FILES=""
+for file in $STAGED_FILES; do
+  if [ -f "$file" ]; then
+    EXISTING_STAGED_FILES="$EXISTING_STAGED_FILES $file"
+  fi
+done
+
+# Only proceed if there are existing files to check
+if [ -n "$EXISTING_STAGED_FILES" ]; then
+  if ! git diff --quiet $EXISTING_STAGED_FILES; then
+    echo "Code was formatted. Adding formatting changes to staged files..."
+    git add $EXISTING_STAGED_FILES
+    echo "Formatting changes added to commit."
+  else
+    echo "Code is already properly formatted."
+  fi
+else
+  echo "No existing files to format."
 fi
