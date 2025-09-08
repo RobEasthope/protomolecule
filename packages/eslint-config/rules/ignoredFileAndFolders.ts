@@ -14,5 +14,7 @@ export const ignoredFileAndFolders = {
     "**/dist/*",
     "storybook-static/*",
     "**/coverage/*",
+    "**/eslint.config.ts",
+    "**/eslint.config.mjs",
   ],
 } satisfies Linter.Config;
