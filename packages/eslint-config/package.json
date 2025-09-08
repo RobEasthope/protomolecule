@@ -24,7 +24,7 @@
     "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui",
     "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
-    "typecheck": "tsc --noEmit"
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "eslint-config-canonical": "^45.0.0",
