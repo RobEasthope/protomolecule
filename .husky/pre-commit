@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Get the list of staged files before formatting
+STAGED_FILES=$(git diff --cached --name-only)
+
+# Format the code
+pnpm format
+
+# Check if any of the originally staged files were modified by formatting
+if ! git diff --quiet $STAGED_FILES; then
+  echo "Code was formatted. Adding formatting changes to staged files..."
+  git add $STAGED_FILES
+  echo "Formatting changes added to commit."
+else
+  echo "Code is already properly formatted."
+fi
