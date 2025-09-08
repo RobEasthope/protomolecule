@@ -1,6 +1,8 @@
 {
   "extends": "@protomolecule/tsconfig/base.json",
   "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "outDir": "./dist",
     "rootDir": "./",
     "declaration": true,

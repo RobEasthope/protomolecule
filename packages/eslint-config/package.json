@@ -20,11 +20,11 @@
     "build": "tsc",
     "clean": "rimraf node_modules dist",
     "format": "npx prettier --write .",
-    "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-ui",
-    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
-    "typecheck": "tsc --noEmit"
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "eslint-config-canonical": "^45.0.0",

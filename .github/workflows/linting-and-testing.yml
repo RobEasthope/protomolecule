@@ -7,7 +7,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   lint:
     name: 🔬 Lint
     runs-on: ubuntu-latest
@@ -18,35 +17,21 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: 📦 Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
 
       - name: 📦 Cache ESLint
         uses: actions/cache@v4
         with:
-          path: .eslintcache
+          path: |
+            .turbo/.eslintcache-ui
+            .turbo/.eslintcache-eslint-config
           key: ${{ runner.os }}-eslint-${{ hashFiles('**/package.json', '**/.eslintrc*', '**/eslint.config.*') }}
           restore-keys: |
             ${{ runner.os }}-eslint-
 
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      - name: 🚀 Setup Turbo Cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-lint-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-lint-
+      - name: 🏗️ Build eslint-config package
+        run: pnpm --filter @protomolecule/eslint-config build
 
       - name: 🔬 Run ESLint
         id: lint
@@ -77,16 +62,8 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: 📦 Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
 
       - name: 🔧 Cache TypeScript build info
         uses: actions/cache@v4
@@ -98,21 +75,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-tsbuildinfo-
 
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      - name: 🚀 Setup Turbo Cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-build-
-
       - name: 🔎 Run TypeScript Check
         id: typecheck
         run: |
           echo "## 🔎 TypeScript Results" >> $GITHUB_STEP_SUMMARY
+          # Run the build command which includes type checking
           if pnpm run build; then
             echo "✅ **Type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
@@ -138,48 +105,19 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          run_install: false
-
-      - name: 📦 Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: 🗄️ Cache Vite build outputs
-        uses: actions/cache@v4
-        with:
-          path: |
-            dist
-            .vite
-          key: ${{ runner.os }}-vite-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-vite-
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
 
       - name: 🧪 Cache Test Results
         uses: actions/cache@v4
         with:
           path: |
-            node_modules/.vitest
-            coverage
+            packages/*/.vitest
+            packages/*/coverage
             test-results
           key: ${{ runner.os }}-vitest-${{ hashFiles('**/src/**/*.test.*', '**/src/**/*.spec.*', '**/vitest.config.*') }}
           restore-keys: |
             ${{ runner.os }}-vitest-
-
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      - name: 🚀 Setup Turbo Cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-test-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-test-
 
       - name: 🧪 Run Unit Tests
         id: tests
@@ -216,7 +154,7 @@ jobs:
     steps:
       - name: 📊 Generate Summary Report
         run: |
-          echo "## 📊 Parallel Checks Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 CI Pipeline Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Determine overall status
@@ -260,10 +198,11 @@ jobs:
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ⚡ Performance Benefits" >> $GITHUB_STEP_SUMMARY
-          echo "- **Parallel Execution**: All checks run simultaneously" >> $GITHUB_STEP_SUMMARY
-          echo "- **Fail-Fast Disabled**: All checks complete even if one fails" >> $GITHUB_STEP_SUMMARY
-          echo "- **Optimized Caching**: Each job uses specific caches for better performance" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚡ Performance Features" >> $GITHUB_STEP_SUMMARY
+          echo "- **True Parallel Execution**: All checks run simultaneously from start" >> $GITHUB_STEP_SUMMARY
+          echo "- **Composite Actions**: Reduced setup duplication" >> $GITHUB_STEP_SUMMARY
+          echo "- **Smart Caching**: pnpm store, ESLint, TypeScript, and Turbo caches" >> $GITHUB_STEP_SUMMARY
+          echo "- **Minimal Building**: Only builds what's necessary (eslint-config for linting)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "---" >> $GITHUB_STEP_SUMMARY
