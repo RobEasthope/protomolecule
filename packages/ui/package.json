@@ -18,7 +18,7 @@
     "build": "tsc --noEmit",
     "format": "npx prettier --write .",
     "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-ui",
-    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui --ignore-pattern storybook-static",
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "test": "vitest",
