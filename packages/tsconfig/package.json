@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "clean": "rimraf node_modules",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "sort-pkg-json": "npx sort-package-json"
   },
   "devDependencies": {
     "rimraf": "^6.0.1"

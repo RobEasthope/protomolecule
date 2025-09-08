@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "clean": "rimraf node_modules",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "sort-pkg-json": "npx sort-package-json"
+  },
+  "dependencies": {
+    "@radix-ui/colors": "^3.0.0"
   },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*",
     "rimraf": "^6.0.1"
-  },
-  "dependencies": {
-    "@radix-ui/colors": "^3.0.0"
   }
 }
