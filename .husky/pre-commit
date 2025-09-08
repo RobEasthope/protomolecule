@@ -11,6 +11,4 @@ if ! git diff --quiet $STAGED_FILES; then
   echo "Code was formatted. Adding formatting changes to staged files..."
   git add $STAGED_FILES
   echo "Formatting changes added to commit."
-else
-  echo "Code is already properly formatted."
 fi
