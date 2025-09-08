@@ -42,6 +42,9 @@
     "storybook": {
       "cache": false,
       "persistent": true
+    },
+    "sort-pkg-json": {
+      "outputs": []
     }
   }
 }
