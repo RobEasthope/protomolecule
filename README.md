@@ -15,7 +15,7 @@ A modern, open-source React component library monorepo built with TypeScript, St
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/protomolecule.git
+git clone https://github.com/RobEasthope/protomolecule.git
 cd protomolecule
 
 # Install dependencies
@@ -146,7 +146,7 @@ This repository uses Husky for git hooks and lint-staged for pre-commit checks:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/protomolecule.git
+   git clone https://github.com/RobEasthope/protomolecule.git
    cd protomolecule
    ```
 
