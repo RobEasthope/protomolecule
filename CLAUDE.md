@@ -25,16 +25,22 @@ pnpm dev          # Start Storybook for UI package
 pnpm storybook    # Run Storybook on port 6006
 
 # Building
-pnpm build        # Build all packages
-pnpm build-storybook
+pnpm build        # Build all packages (TypeScript compilation)
+pnpm build-storybook  # Build static Storybook site
 
 # Testing
-pnpm test         # Run all tests
+pnpm test         # Run all tests (Vitest)
 pnpm test:ui      # Run Vitest with UI for UI package
+pnpm test:hooks   # Test git hooks
 
 # Code Quality
 pnpm lint         # ESLint across all packages
 pnpm lint:fix     # Fix linting issues
+pnpm format       # Format code with Prettier
+pnpm sort-pkg-json # Sort package.json files
+
+# Maintenance
+pnpm clean        # Clean node_modules and build artifacts
 ```
 
 ## Architecture Overview
@@ -42,11 +48,13 @@ pnpm lint:fix     # Fix linting issues
 This is a React component library monorepo built with:
 
 - **Build Tool**: Turborepo for orchestration
-- **Package Manager**: pnpm with workspace support
-- **Framework**: React 19 with TypeScript
+- **Package Manager**: pnpm with workspace support (v10.15.0)
+- **Framework**: React 19 with TypeScript 5
 - **Styling**: Tailwind CSS v4 (CSS-based config)
 - **Testing**: Vitest with happy-dom environment
-- **Component Development**: Storybook for isolated development
+- **Component Development**: Storybook v9 for isolated development
+- **Code Quality**: ESLint v9, Prettier, Husky with lint-staged
+- **Node Version**: 20.x
 
 ### Package Details
 
