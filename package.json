@@ -10,6 +10,7 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "sort-pkg-json": "npx sort-package-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
