@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -16,15 +10,25 @@
       "default": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "clean": "rimraf node_modules dist",
     "build": "tsc",
-    "prepublishOnly": "pnpm run build",
+    "clean": "rimraf node_modules dist",
     "format": "npx prettier --write .",
     "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-ui",
     "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-ui",
+    "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "eslint-config-canonical": "^45.0.0",
+    "typescript-eslint": "^8.42.0"
   },
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*",
@@ -39,9 +43,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "eslint-config-canonical": "^45.0.0",
-    "typescript-eslint": "^8.42.0"
   }
 }

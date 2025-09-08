@@ -1,18 +1,18 @@
 {
   "name": "protomolecule",
-  "private": true,
   "version": "2.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
+    "build": "turbo run build",
+    "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "clean": "turbo run clean && rimraf node_modules",
     "dev": "turbo run dev --filter=@protomolecule/ui",
-    "build": "turbo run build",
     "format": "turbo run format",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "sort-pkg-json": "npx sort-package-json && pnpm run sort-pkg-json",
+    "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
-    "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
     "test:ui": "turbo run test:ui --filter=@protomolecule/ui"
   },
