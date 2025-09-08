@@ -14,13 +14,16 @@
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
+    "test:hooks": "vitest run test/hooks",
     "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@types/node": "^20.12.12",
     "husky": "^9.1.7",
     "rimraf": "^6.0.1",
-    "turbo": "^2.5.6"
+    "turbo": "^2.5.6",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {
