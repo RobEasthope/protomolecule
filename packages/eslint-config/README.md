@@ -1,22 +1,40 @@
 # @protomolecule/eslint-config
 
-Shared ESLint configuration for Protomolecule projects.
+Shared ESLint v9 configuration for Protomolecule projects with TypeScript and React support.
 
-## Installation
+## 📦 Installation
+
+This package is designed to be publishable to npm:
 
 ```bash
 npm install --save-dev @protomolecule/eslint-config
+# or
+pnpm add -D @protomolecule/eslint-config
 ```
 
-## Usage
+## 🚀 Usage
 
-In your `.eslintrc.js` or `eslint.config.js`:
+### ESLint v9 Flat Config
+
+In your `eslint.config.js`:
 
 ```javascript
-module.exports = require("@protomolecule/eslint-config");
+import eslintConfig from "@protomolecule/eslint-config";
+
+export default [
+  ...eslintConfig,
+  // your custom rules
+  {
+    rules: {
+      // override or add rules here
+    },
+  },
+];
 ```
 
-Or extend from it:
+### Legacy Config (ESLint < v9)
+
+In your `.eslintrc.js`:
 
 ```javascript
 module.exports = {
@@ -24,3 +42,63 @@ module.exports = {
   // your custom rules
 };
 ```
+
+## ✨ Features
+
+This configuration includes:
+
+- **TypeScript Support**: Full TypeScript linting with type checking
+- **React Support**: React and JSX best practices
+- **Modern JavaScript**: ES2022+ features
+- **Code Quality**: Enforces consistent code style
+- **Accessibility**: Basic a11y checks for React components
+
+## 📝 Rules Overview
+
+### Included Plugins
+
+- TypeScript ESLint rules
+- React hooks rules
+- Import ordering and resolution
+- Best practices for modern JavaScript
+
+### Key Rules
+
+- Strict TypeScript checking
+- React 19 compatible rules
+- Consistent import ordering
+- No unused variables or imports
+- Consistent naming conventions
+
+## 🛠️ Customization
+
+You can override any rules by adding them to your local config:
+
+```javascript
+export default [
+  ...eslintConfig,
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn", // downgrade from error
+      "react/prop-types": "off", // disable prop-types
+    },
+  },
+];
+```
+
+## 🔧 Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run linting on this package
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+```
+
+## 📄 License
+
+Part of the Protomolecule monorepo - see root LICENSE file
