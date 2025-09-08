@@ -1,5 +1,5 @@
 name: "Setup Monorepo"
-description: "Common setup steps for the monorepo CI/CD"
+description: "Common setup steps for the monorepo CI/CD (excluding checkout)"
 
 inputs:
   node-version:
@@ -15,11 +15,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: ⬇️ Checkout repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
-
     - name: 📦 Install pnpm
       uses: pnpm/action-setup@v4
       with:
