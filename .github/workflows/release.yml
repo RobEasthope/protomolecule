@@ -1,0 +1,140 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+      issues: read
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
+
+      - name: 🏗️ Build packages
+        run: pnpm build
+
+      - name: 📋 Pre-publish validation
+        run: |
+          echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check changeset status verbosely
+          echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
+          pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
+            echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
+          }
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
+
+          # Verify critical files exist for publishable packages
+          if [ -f "packages/eslint-config/dist/index.js" ]; then
+            echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🚀 Create Release or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: ✨ Enhance GitHub Release Notes
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the published packages
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+
+          # Generate user-friendly summary
+          USER_SUMMARY=$(PUBLISHED_PACKAGES="$PUBLISHED" node scripts/generate-release-summary.js)
+
+          # Get the latest release (just created by changesets)
+          LATEST_RELEASE=$(gh api repos/${{ github.repository }}/releases/latest --jq '.id')
+
+          if [ -n "$LATEST_RELEASE" ]; then
+            # Get current release body
+            CURRENT_BODY=$(gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE --jq '.body')
+            
+            # Combine user-friendly summary with technical changelog
+            ENHANCED_BODY="${USER_SUMMARY}
+
+          ## 📝 Technical Changelog
+
+          ${CURRENT_BODY}"
+            
+            # Update the release with enhanced notes
+            gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE \
+              --method PATCH \
+              -f body="$ENHANCED_BODY" \
+              || echo "Could not enhance release notes, continuing..."
+          fi
+
+      - name: 📊 Generate Release Summary
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Generate user-friendly summary
+          echo "### For Everyone" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          PUBLISHED_PACKAGES='${{ steps.changesets.outputs.publishedPackages }}' \
+            node scripts/generate-release-summary.js >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### Technical Details" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Parse the published packages JSON
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            # Check if jq is available and parse JSON safely
+            if command -v jq >/dev/null 2>&1; then
+              echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY || {
+                echo "⚠️ Could not parse package details (JSON parsing error)" >> $GITHUB_STEP_SUMMARY
+                echo "$PUBLISHED" >> $GITHUB_STEP_SUMMARY
+              }
+            else
+              echo "⚠️ Package details: $PUBLISHED" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "No packages were published in this release." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📊 No Release Needed
+        if: steps.changesets.outputs.published != 'true'
+        run: |
+          echo "## ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No changesets found in this push to main." >> $GITHUB_STEP_SUMMARY
+          echo "All packages are up to date." >> $GITHUB_STEP_SUMMARY

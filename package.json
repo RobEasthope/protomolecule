@@ -1,6 +1,5 @@
 {
   "name": "protomolecule",
-  "version": "2.0.0",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -20,6 +19,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.7",
     "@types/node": "^20.12.12",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
