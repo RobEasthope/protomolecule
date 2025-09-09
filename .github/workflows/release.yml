@@ -38,12 +38,54 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: ✨ Enhance GitHub Release Notes
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the published packages
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+
+          # Generate user-friendly summary
+          USER_SUMMARY=$(PUBLISHED_PACKAGES="$PUBLISHED" node scripts/generate-release-summary.js)
+
+          # Get the latest release (just created by changesets)
+          LATEST_RELEASE=$(gh api repos/${{ github.repository }}/releases/latest --jq '.id')
+
+          if [ -n "$LATEST_RELEASE" ]; then
+            # Get current release body
+            CURRENT_BODY=$(gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE --jq '.body')
+            
+            # Combine user-friendly summary with technical changelog
+            ENHANCED_BODY="${USER_SUMMARY}
+
+          ## 📝 Technical Changelog
+
+          ${CURRENT_BODY}"
+            
+            # Update the release with enhanced notes
+            gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE \
+              --method PATCH \
+              -f body="$ENHANCED_BODY" \
+              || echo "Could not enhance release notes, continuing..."
+          fi
+
       - name: 📊 Generate Release Summary
         if: steps.changesets.outputs.published == 'true'
         run: |
           echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
+
+          # Generate user-friendly summary
+          echo "### For Everyone" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          PUBLISHED_PACKAGES='${{ steps.changesets.outputs.publishedPackages }}' \
+            node scripts/generate-release-summary.js >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### Technical Details" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Parse the published packages JSON
