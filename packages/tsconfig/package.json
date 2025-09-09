@@ -2,7 +2,10 @@
   "name": "@protomolecule/tsconfig",
   "version": "1.0.0",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "base.json",
     "react-library.json",
