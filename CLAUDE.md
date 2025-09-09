@@ -89,10 +89,10 @@ When creating PRs that modify any package:
 3. **Create changeset programmatically:**
 
    ```bash
-   # Option 1: Use interactive CLI
+   # Option 1: Use interactive CLI (if available)
    pnpm changeset
 
-   # Option 2: Create file directly
+   # Option 2: Create file directly (recommended for AI)
    cat > .changeset/descriptive-name.md << 'EOF'
    ---
    "@protomolecule/package-name": minor
@@ -106,10 +106,12 @@ When creating PRs that modify any package:
 
    ```bash
    git add .changeset/*.md
-   git commit -m "chore: add changeset for [feature]"
+   git commit -m "chore: add changeset"
    ```
 
 5. **CI will block PRs without changesets** - this is mandatory
+
+**Note:** Only `@protomolecule/eslint-config` is published to NPM. Other packages (`ui`, `tsconfig`, `radix-colors`, `github-rulesets`) are private but still require changesets for version tracking.
 
 ## Monorepo Structure
 
