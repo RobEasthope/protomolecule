@@ -13,7 +13,7 @@ export const ignoredFileAndFolders = {
     "**/build/*",
     "**/tsconfig.json",
     "**/dist/*",
-    "storybook-static/*",
+    "**/storybook-static/*",
     "**/coverage/*",
     "**/eslint.config.ts",
     "**/eslint.config.mjs",
