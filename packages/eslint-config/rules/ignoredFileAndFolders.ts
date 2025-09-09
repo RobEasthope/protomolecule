@@ -5,7 +5,7 @@ export const ignoredFileAndFolders = {
     "**/.react-router/**",
     "**/node_modules/**",
     "pnpm-lock.yaml",
-    ".vscode/*",
+    "**/.vscode/*",
     "**/.claude/*",
     "**/.vercel/*",
     "**/.astro/*",
