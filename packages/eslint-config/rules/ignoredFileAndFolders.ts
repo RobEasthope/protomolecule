@@ -6,7 +6,7 @@ export const ignoredFileAndFolders = {
     "**/node_modules/**",
     "pnpm-lock.yaml",
     ".vscode/*",
-    ".claude/*",
+    "**/.claude/*",
     "**/.vercel/*",
     "**/.astro/*",
     "**/.turbo/*",
