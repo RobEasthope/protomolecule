@@ -1,5 +1,9 @@
 # Protomolecule
 
+[![CI](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml)
+[![Release](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml)
+[![npm version](https://img.shields.io/npm/v/@protomolecule/eslint-config.svg)](https://www.npmjs.com/package/@protomolecule/eslint-config)
+
 A modern, open-source React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
 
 > **Open Source**: This project is open source and free to use. Feel free to fork, modify, and use in your own projects at your own risk.
@@ -29,13 +33,22 @@ pnpm dev
 
 This monorepo contains the following packages:
 
-| Package                                                        | Description                            | Status      |
-| -------------------------------------------------------------- | -------------------------------------- | ----------- |
-| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | Private     |
-| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | Publishable |
-| [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | Publishable |
-| [`@protomolecule/radix-colors`](./packages/radix-colors)       | Radix UI color system                  | Private     |
-| [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | Private     |
+| Package                                                        | Description                            | Version | Status  |
+| -------------------------------------------------------------- | -------------------------------------- | ------- | ------- |
+| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 1.1.1   | Private |
+| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 1.0.0   | **NPM** |
+| [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 1.0.0   | Private |
+| [`@protomolecule/radix-colors`](./packages/radix-colors)       | Radix UI color system                  | 1.0.0   | Private |
+| [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 1.0.0   | Private |
+
+### 📥 Installing Public Packages
+
+```bash
+# Install the ESLint configuration
+npm install --save-dev @protomolecule/eslint-config
+# or
+pnpm add -D @protomolecule/eslint-config
+```
 
 ## 🛠️ Development
 
@@ -80,6 +93,13 @@ pnpm sort-pkg-json # Sort package.json files
 pnpm clean        # Clean node_modules and build artifacts
 ```
 
+#### Versioning & Publishing
+
+```bash
+pnpm changeset    # Create a changeset for version bumps
+pnpm changeset status  # Check pending changesets
+```
+
 ## 🏗️ Architecture
 
 ### Tech Stack
@@ -90,6 +110,7 @@ pnpm clean        # Clean node_modules and build artifacts
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (CSS-based configuration)
 - **Component Development**: [Storybook v9](https://storybook.js.org/)
 - **Testing**: [Vitest](https://vitest.dev/) with happy-dom
+- **Versioning**: [Changesets](https://github.com/changesets/changesets) for automated releases
 - **Code Quality**:
   - [ESLint v9](https://eslint.org/) for linting
   - [Prettier](https://prettier.io/) for formatting
@@ -138,6 +159,24 @@ This repository uses Husky for git hooks and lint-staged for pre-commit checks:
 
 - **Pre-commit**: Automatically formats staged files with Prettier
 - **Commit messages**: Follow conventional commits format
+- **Changesets**: Required for all package modifications
+
+## 🚀 Release Process
+
+This project uses continuous deployment:
+
+1. **Create a PR** with your changes
+2. **Include a changeset** describing your changes
+3. **CI validates** your code (lint, test, typecheck, changeset check)
+4. **On merge to main**:
+   - Versions are automatically bumped
+   - Packages are published to NPM
+   - GitHub releases are created with user-friendly summaries
+   - No manual intervention required!
+
+### Published Packages
+
+Currently, only `@protomolecule/eslint-config` is published to NPM. Other packages remain private but are still versioned for internal tracking.
 
 ## 📝 Development Guide
 
@@ -194,11 +233,45 @@ This repository uses Husky for git hooks and lint-staged for pre-commit checks:
 
 ## 🤝 Contributing
 
+### Development Workflow
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (following conventional commits)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes
+4. **Add a changeset** for any package changes:
+   ```bash
+   pnpm changeset
+   # Select packages, version bump type, and add a description
+   ```
+5. Commit your changes (following conventional commits)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+### Versioning Guidelines
+
+This project uses [Changesets](https://github.com/changesets/changesets) for version management:
+
+- **Every PR that modifies packages must include a changeset**
+- CI will block PRs without changesets when packages are modified
+- Versions are automatically bumped and packages published on merge to main
+- Follow semantic versioning:
+  - `patch`: Bug fixes and minor improvements
+  - `minor`: New features (backward compatible)
+  - `major`: Breaking changes
+
+### Commit Message Format
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+type(scope): description
+
+[optional body]
+
+[optional footer]
+```
+
+Common types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 ## 📄 License
 
