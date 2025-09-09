@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+      issues: read
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
+
+      - name: 🏗️ Build packages
+        run: pnpm build
+
+      - name: 🚀 Create Release or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 📊 Generate Release Summary
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Parse the published packages JSON
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No packages were published in this release." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📊 No Release Needed
+        if: steps.changesets.outputs.published != 'true'
+        run: |
+          echo "## ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "No changesets found in this push to main." >> $GITHUB_STEP_SUMMARY
+          echo "All packages are up to date." >> $GITHUB_STEP_SUMMARY
