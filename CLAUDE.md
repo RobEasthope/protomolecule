@@ -2,6 +2,115 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Commit and PR Conventions
+
+### Conventional Commits Format
+
+Always use conventional commits format for all commits and PR titles:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Commit Types
+
+- `feat`: New feature for the user (MINOR version bump)
+- `fix`: Bug fix for the user (PATCH version bump)
+- `docs`: Documentation only changes
+- `style`: Code style changes (formatting, semicolons, etc)
+- `refactor`: Code refactoring without feature changes
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `build`: Changes to build system or dependencies
+- `ci`: CI/CD configuration changes
+- `chore`: Other changes that don't modify src or test files
+
+### Breaking Changes
+
+- Add `!` after type for breaking changes: `feat!:` or `fix!:`
+- OR include `BREAKING CHANGE:` in the footer
+- These trigger MAJOR version bumps
+
+### Scope Examples
+
+- `feat(ui):` - Changes to UI package
+- `fix(eslint-config):` - Fixes in eslint-config package
+- `docs(readme):` - README updates
+- `build(deps):` - Dependency updates
+
+### PR Title Examples
+
+- `feat(ui): add new Button component with size variants`
+- `fix(eslint-config): correct TypeScript parsing for v5`
+- `feat!: migrate to Tailwind CSS v4`
+- `chore(deps): update vitest to v2.0`
+
+### Commit Message Examples
+
+```
+feat(ui): add loading state to Button component
+
+- Added isLoading prop
+- Shows spinner when loading
+- Disables interaction during loading
+```
+
+```
+fix!: change primary color token name
+
+BREAKING CHANGE: Renamed --color-primary to --color-brand-primary
+for consistency with design system naming conventions
+```
+
+### Rules for Claude Code
+
+1. **Always use conventional commits format** for commits and PR titles
+2. **Include scope** when changes affect a specific package
+3. **Use present tense** ("add" not "added")
+4. **Keep first line under 72 characters**
+5. **Add body for complex changes** explaining what and why
+6. **Mark breaking changes clearly** with `!` or `BREAKING CHANGE:`
+7. **Choose the most specific type** that applies
+
+## Changeset Requirements
+
+When creating PRs that modify any package:
+
+1. **Always create a changeset file** before pushing the PR
+2. **Determine version bump** based on your changes:
+   - `patch`: Bug fixes, dependency updates, small improvements
+   - `minor`: New features, new components, new exports
+   - `major`: Breaking changes, API changes, major refactors
+
+3. **Create changeset programmatically:**
+
+   ```bash
+   # Option 1: Use interactive CLI
+   pnpm changeset
+
+   # Option 2: Create file directly
+   cat > .changeset/descriptive-name.md << 'EOF'
+   ---
+   "@protomolecule/package-name": minor
+   ---
+
+   Brief description of the change for the changelog
+   EOF
+   ```
+
+4. **Include changeset in your commits:**
+
+   ```bash
+   git add .changeset/*.md
+   git commit -m "chore: add changeset for [feature]"
+   ```
+
+5. **CI will block PRs without changesets** - this is mandatory
+
 ## Monorepo Structure
 
 This is a monorepo using Turborepo and pnpm workspaces. Packages are organized as follows:
