@@ -28,6 +28,29 @@ jobs:
       - name: 🏗️ Build packages
         run: pnpm build
 
+      - name: 📋 Pre-publish validation
+        run: |
+          echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check changeset status verbosely
+          echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
+          pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
+            echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
+          }
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
+
+          # Verify critical files exist for publishable packages
+          if [ -f "packages/eslint-config/dist/index.js" ]; then
+            echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: 🚀 Create Release or Publish
         id: changesets
         uses: changesets/action@v1
@@ -91,7 +114,15 @@ jobs:
           # Parse the published packages JSON
           PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
-            echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY
+            # Check if jq is available and parse JSON safely
+            if command -v jq >/dev/null 2>&1; then
+              echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY || {
+                echo "⚠️ Could not parse package details (JSON parsing error)" >> $GITHUB_STEP_SUMMARY
+                echo "$PUBLISHED" >> $GITHUB_STEP_SUMMARY
+              }
+            else
+              echo "⚠️ Package details: $PUBLISHED" >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "No packages were published in this release." >> $GITHUB_STEP_SUMMARY
           fi

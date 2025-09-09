@@ -117,7 +117,8 @@ jobs:
             echo "📦 Package changes detected" >> $GITHUB_STEP_SUMMARY
             
             # Check for changeset files (excluding README)
-            if [ -z "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+            CHANGESET_FILES=$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md || true)
+            if [ -z "$CHANGESET_FILES" ]; then
               echo "❌ **No changeset found!**" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
               echo "This PR modifies packages but has no changeset." >> $GITHUB_STEP_SUMMARY
@@ -125,8 +126,23 @@ jobs:
               echo "status=failure" >> $GITHUB_OUTPUT
               exit 1
             else
-              echo "✅ **Changeset found**" >> $GITHUB_STEP_SUMMARY
-              echo "status=success" >> $GITHUB_OUTPUT
+              # Validate changeset files have proper YAML frontmatter
+              INVALID_CHANGESETS=""
+              for file in $CHANGESET_FILES; do
+                if ! grep -q "^---$" "$file" || ! grep -q "^---$" "$file" | head -2 | tail -1; then
+                  INVALID_CHANGESETS="$INVALID_CHANGESETS $file"
+                fi
+              done
+              
+              if [ -n "$INVALID_CHANGESETS" ]; then
+                echo "⚠️ **Invalid changeset format detected**" >> $GITHUB_STEP_SUMMARY
+                echo "Files with invalid YAML frontmatter: $INVALID_CHANGESETS" >> $GITHUB_STEP_SUMMARY
+                echo "status=failure" >> $GITHUB_OUTPUT
+                exit 1
+              else
+                echo "✅ **Valid changeset found**" >> $GITHUB_STEP_SUMMARY
+                echo "status=success" >> $GITHUB_OUTPUT
+              fi
             fi
           else
             echo "✅ **No package changes - changeset not required**" >> $GITHUB_STEP_SUMMARY

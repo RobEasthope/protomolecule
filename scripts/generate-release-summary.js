@@ -222,9 +222,29 @@ try {
     fs.writeFileSync(process.env.OUTPUT_FILE, summary);
   }
 } catch (error) {
-  console.error("Error generating release summary:", error);
-  // Don't fail the build, just output a simple message
+  // Log detailed error information for debugging
+  console.error("Error generating release summary:");
+  console.error("  Type:", error.name || "Unknown");
+  console.error("  Message:", error.message || "No message");
+
+  // Log the input that caused the error for debugging
+  if (process.env.PUBLISHED_PACKAGES) {
+    console.error(
+      "  Input data:",
+      process.env.PUBLISHED_PACKAGES.substring(0, 500),
+    );
+  }
+
+  // Log stack trace if available
+  if (error.stack && process.env.DEBUG) {
+    console.error("  Stack trace:", error.stack);
+  }
+
+  // Don't fail the build, just output a simple fallback message
   console.log("📦 Release completed successfully.");
+  console.log(
+    "Note: Could not generate enhanced release summary. See logs for details.",
+  );
 }
 
 export { generateSummary, makeUserFriendly };
