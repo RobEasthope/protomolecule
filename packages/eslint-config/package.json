@@ -23,7 +23,7 @@
     "format": "npx prettier --write .",
     "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
-    "lint:fix-staged": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --continue -- --max-warnings=Infinity || true --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
+    "lint:fix-staged": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --max-warnings=Infinity --cache --cache-location ../../.turbo/.eslintcache-eslint-config || true",
     "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
     "tsc": "tsc --noEmit"
