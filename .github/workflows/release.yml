@@ -1,4 +1,4 @@
-name: Release
+name: Continuous Release
 
 on:
   push:
@@ -9,7 +9,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
-    name: 🚀 Release
+    name: 🚀 Continuous Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔧 Setup Monorepo
         uses: ./.github/actions/setup-monorepo
@@ -28,114 +29,97 @@ jobs:
       - name: 🏗️ Build packages
         run: pnpm build
 
-      - name: 📋 Pre-publish validation
+      - name: 📋 Check for changesets
+        id: changesets-check
         run: |
-          echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Check changeset status verbosely
-          echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
-          pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
-            echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
-          }
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
-
-          # Verify critical files exist for publishable packages
-          if [ -f "packages/eslint-config/dist/index.js" ]; then
-            echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
+          if ls .changeset/*.md 1> /dev/null 2>&1; then
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+            echo "Found changeset files to process"
           else
-            echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
+            echo "No changeset files found"
           fi
 
-          echo "" >> $GITHUB_STEP_SUMMARY
+      - name: 🔄 Process changesets and version
+        if: steps.changesets-check.outputs.has_changesets == 'true'
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: 🚀 Create Release or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: pnpm changeset publish
-          createGithubReleases: true
+          # Version packages based on changesets
+          pnpm changeset version
+
+          # Commit version bumps
+          git add -A
+          git commit -m "chore: version packages [skip ci]" || echo "No changes to commit"
+
+      - name: 🚀 Publish to NPM
+        if: steps.changesets-check.outputs.has_changesets == 'true'
+        id: publish
+        run: |
+          # Publish packages
+          pnpm changeset publish > publish-output.txt 2>&1
+
+          # Extract published packages info
+          if grep -q "Publishing" publish-output.txt; then
+            echo "published=true" >> $GITHUB_OUTPUT
+            cat publish-output.txt
+          else
+            echo "published=false" >> $GITHUB_OUTPUT
+            echo "No packages were published"
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          HUSKY: 0 # Disable Husky hooks in CI
+          HUSKY: 0
 
-      - name: ✨ Enhance GitHub Release Notes
-        if: steps.changesets.outputs.published == 'true'
+      - name: 📝 Push version commits
+        if: steps.changesets-check.outputs.has_changesets == 'true'
+        run: |
+          git push origin main
+
+      - name: 🏷️ Create GitHub Release
+        if: steps.publish.outputs.published == 'true'
+        run: |
+          # Get the latest version from the most recently updated package
+          VERSION=$(node -p "
+            const fs = require('fs');
+            const packages = [
+              'packages/eslint-config/package.json',
+              'packages/tsconfig/package.json'
+            ];
+            const versions = packages
+              .filter(p => fs.existsSync(p))
+              .map(p => JSON.parse(fs.readFileSync(p, 'utf8')))
+              .filter(p => !p.private)
+              .map(p => p.version);
+            versions[0] || '0.0.0';
+          ")
+
+          # Create release
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes "Automated release from continuous deployment" \
+            --target main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📊 Generate Summary
+        if: always()
         run: |
-          # Get the published packages
-          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          echo "## 🚀 Continuous Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Generate user-friendly summary
-          USER_SUMMARY=$(PUBLISHED_PACKAGES="$PUBLISHED" node scripts/generate-release-summary.js)
-
-          # Get the latest release (just created by changesets)
-          LATEST_RELEASE=$(gh api repos/${{ github.repository }}/releases/latest --jq '.id')
-
-          if [ -n "$LATEST_RELEASE" ]; then
-            # Get current release body
-            CURRENT_BODY=$(gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE --jq '.body')
+          if [ "${{ steps.changesets-check.outputs.has_changesets }}" == "true" ]; then
+            echo "✅ Changesets processed and packages published" >> $GITHUB_STEP_SUMMARY
             
-            # Combine user-friendly summary with technical changelog
-            ENHANCED_BODY="${USER_SUMMARY}
-
-          ## 📝 Technical Changelog
-
-          ${CURRENT_BODY}"
-            
-            # Update the release with enhanced notes
-            gh api repos/${{ github.repository }}/releases/$LATEST_RELEASE \
-              --method PATCH \
-              -f body="$ENHANCED_BODY" \
-              || echo "Could not enhance release notes, continuing..."
-          fi
-
-      - name: 📊 Generate Release Summary
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Generate user-friendly summary
-          echo "### For Everyone" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          PUBLISHED_PACKAGES='${{ steps.changesets.outputs.publishedPackages }}' \
-            node scripts/generate-release-summary.js >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "### Technical Details" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Parse the published packages JSON
-          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
-          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
-            # Check if jq is available and parse JSON safely
-            if command -v jq >/dev/null 2>&1; then
-              echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY || {
-                echo "⚠️ Could not parse package details (JSON parsing error)" >> $GITHUB_STEP_SUMMARY
-                echo "$PUBLISHED" >> $GITHUB_STEP_SUMMARY
-              }
-            else
-              echo "⚠️ Package details: $PUBLISHED" >> $GITHUB_STEP_SUMMARY
+            if [ -f publish-output.txt ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "### Published Packages" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              cat publish-output.txt >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
             fi
           else
-            echo "No packages were published in this release." >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ No changesets found - no release needed" >> $GITHUB_STEP_SUMMARY
           fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
-
-      - name: 📊 No Release Needed
-        if: steps.changesets.outputs.published != 'true'
-        run: |
-          echo "## ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "No changesets found in this push to main." >> $GITHUB_STEP_SUMMARY
-          echo "All packages are up to date." >> $GITHUB_STEP_SUMMARY
