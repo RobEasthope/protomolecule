@@ -29,11 +29,10 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown",
     "**/*.{js,jsx,ts,tsx,mjs}": [
-      "prettier --write",
       "pnpm lint:fix-staged"
-    ],
-    "**/*": "prettier --write --ignore-unknown"
+    ]
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {
