@@ -86,50 +86,64 @@ jobs:
             echo "No changeset files found (excluding README.md)"
           fi
 
-      - name: 🔄 Process changesets and version
+      - name: 🔄 Configure Git
         if: steps.changesets-check.outputs.has_changesets == 'true'
         run: |
-          # Configure git
+          # Configure git for commits
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Version packages based on changesets
-          pnpm changeset version
-
-          # Commit version bumps
-          git add -A
-          git commit -m "chore: version packages [skip ci]" || echo "No changes to commit"
-
-      - name: 🚀 Publish to NPM
+      - name: 🚀 Version and Publish to NPM
         if: steps.changesets-check.outputs.has_changesets == 'true'
         id: publish
         run: |
-          # Publish packages with atomic output file
-          set +e  # Don't exit on error
-          PUBLISH_TEMP=$(mktemp publish-output-XXXXXX.txt)
-          pnpm changeset publish > "$PUBLISH_TEMP" 2>&1
-          PUBLISH_EXIT_CODE=$?
-          mv "$PUBLISH_TEMP" publish-output.txt
-          set -e  # Re-enable exit on error
+          # First, version packages based on changesets
+          pnpm changeset version
           
-          # Check if publish was successful
-          if [ $PUBLISH_EXIT_CODE -eq 0 ] && grep -q "Publishing" publish-output.txt; then
-            echo "published=true" >> $GITHUB_OUTPUT
-            echo "publish_success=true" >> $GITHUB_OUTPUT
-            cat publish-output.txt
+          # Check if there are changes to commit
+          if ! git diff --staged --quiet && ! git diff --quiet; then
+            # Stage all version changes
+            git add -A
+            
+            # Try to publish packages
+            set +e  # Don't exit on error
+            PUBLISH_TEMP=$(mktemp publish-output-XXXXXX.txt)
+            pnpm changeset publish > "$PUBLISH_TEMP" 2>&1
+            PUBLISH_EXIT_CODE=$?
+            mv "$PUBLISH_TEMP" publish-output.txt
+            set -e  # Re-enable exit on error
+            
+            # Check if publish was successful
+            if [ $PUBLISH_EXIT_CODE -eq 0 ] && grep -q "Publishing" publish-output.txt; then
+              echo "published=true" >> $GITHUB_OUTPUT
+              echo "publish_success=true" >> $GITHUB_OUTPUT
+              cat publish-output.txt
+              
+              # Commit version changes only after successful publish
+              git commit -m "chore: version packages [skip ci]"
+              echo "version_committed=true" >> $GITHUB_OUTPUT
+            else
+              echo "published=false" >> $GITHUB_OUTPUT
+              echo "publish_success=false" >> $GITHUB_OUTPUT
+              echo "version_committed=false" >> $GITHUB_OUTPUT
+              echo "⚠️ NPM publish failed - rolling back version changes"
+              cat publish-output.txt
+              
+              # Reset all changes since publish failed
+              git reset --hard HEAD
+            fi
           else
+            echo "No version changes needed"
             echo "published=false" >> $GITHUB_OUTPUT
             echo "publish_success=false" >> $GITHUB_OUTPUT
-            echo "⚠️ NPM publish failed or no packages to publish"
-            cat publish-output.txt
-            # Don't fail the workflow, but mark as unsuccessful
+            echo "version_committed=false" >> $GITHUB_OUTPUT
           fi
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
 
       - name: 📝 Push version commits
-        if: steps.changesets-check.outputs.has_changesets == 'true' && steps.publish.outputs.publish_success == 'true'
+        if: steps.publish.outputs.version_committed == 'true'
         run: |
           # Retry logic for git push (up to 3 attempts with exponential backoff)
           MAX_ATTEMPTS=3
@@ -158,58 +172,40 @@ jobs:
       - name: 🏷️ Create GitHub Release
         if: steps.publish.outputs.published == 'true'
         run: |
-          # Parse the actual published packages from the output
-          # Match both scoped (@scope/package@version) and non-scoped (package@version) packages
-          PUBLISHED_INFO=$(grep "Publishing" publish-output.txt | grep -oE "(@[^[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*|[^@[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*)" || echo "")
+          # Extract published packages more reliably from changeset output
+          # Look for lines like: 🦋  @protomolecule/eslint-config@1.0.5
+          PUBLISHED_PACKAGES=$(grep "🦋" publish-output.txt | sed 's/🦋  //' || echo "")
           
-          # Use the dedicated script to parse release information and save to file atomically
-          # Use a unique temp file to avoid race conditions
-          TEMP_FILE=$(mktemp release-info-XXXXXX.json)
-          echo "$PUBLISHED_INFO" | node scripts/parse-release-info.js > "$TEMP_FILE"
-          
-          # Atomically move the temp file to the final location
-          mv "$TEMP_FILE" release-info.json
-          
-          # Parse the release info from the saved file
-          VERSION=$(node -p "JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).version")
-          PACKAGES=$(node -p "JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).packages")
-          PACKAGE_DATA=$(node -p "JSON.stringify(JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).packageData)")
-          
-          # Generate user-friendly release summary with proper error handling
-          set +e  # Don't exit on error
-          USER_SUMMARY=$(PUBLISHED_PACKAGES="$PACKAGE_DATA" node scripts/generate-release-summary.js 2>&1)
-          SUMMARY_EXIT_CODE=$?
-          set -e  # Re-enable exit on error
-          
-          # Check if summary generation was successful
-          if [ $SUMMARY_EXIT_CODE -ne 0 ]; then
-            echo "⚠️ Warning: Failed to generate user-friendly release summary"
-            echo "Error output: $USER_SUMMARY"
-            USER_SUMMARY=""
+          if [ -z "$PUBLISHED_PACKAGES" ]; then
+            # Fallback: try to parse Publishing lines
+            PUBLISHED_PACKAGES=$(grep "Publishing" publish-output.txt | grep -oE "(@[^[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*|[^@[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*)" || echo "")
           fi
           
-          # Build release notes
-          if [ -n "$USER_SUMMARY" ] && [ $SUMMARY_EXIT_CODE -eq 0 ]; then
-            RELEASE_NOTES="$USER_SUMMARY
-
-## 📦 Technical Details
-
-Published packages: $PACKAGES"
+          # Determine version for release tag
+          if [ -n "$PUBLISHED_PACKAGES" ]; then
+            # Parse version from packages - use the highest version
+            VERSION=$(echo "$PUBLISHED_PACKAGES" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" | sort -V | tail -1)
           else
-            RELEASE_NOTES="## 🚀 Automated Release
-
-Published packages: $PACKAGES
-
-Generated by continuous deployment workflow.
-
-Note: Enhanced release summary generation failed. Check workflow logs for details."
+            # Fallback to date-based version
+            VERSION=$(date +"%Y.%m.%d")
           fi
           
-          # Create release with enhanced notes
+          # Build simple release notes
+          RELEASE_NOTES="## 📦 Published Packages
+
+$PUBLISHED_PACKAGES
+
+---
+*Automated release from continuous deployment workflow*"
+          
+          # Create GitHub release
           gh release create "v$VERSION" \
-            --title "v$VERSION" \
+            --title "Release v$VERSION" \
             --notes "$RELEASE_NOTES" \
-            --target main
+            --target main || {
+              echo "⚠️ Release creation failed, but packages were published successfully"
+              echo "Manual release can be created for version: v$VERSION"
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
