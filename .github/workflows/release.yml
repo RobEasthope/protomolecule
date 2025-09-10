@@ -155,15 +155,16 @@ jobs:
         if: steps.publish.outputs.published == 'true'
         run: |
           # Parse the actual published packages from the output
-          PUBLISHED_INFO=$(grep "Publishing" publish-output.txt | grep -oE "@[^@]+@[0-9]+\.[0-9]+\.[0-9]+" || echo "")
+          # Match both scoped (@scope/package@version) and non-scoped (package@version) packages
+          PUBLISHED_INFO=$(grep "Publishing" publish-output.txt | grep -oE "(@[^[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*|[^@[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*)" || echo "")
           
-          # Use the dedicated script to parse release information
-          RELEASE_INFO=$(echo "$PUBLISHED_INFO" | node scripts/parse-release-info.js)
+          # Use the dedicated script to parse release information and save to file
+          echo "$PUBLISHED_INFO" | node scripts/parse-release-info.js > release-info.json
           
-          # Parse the release info
-          VERSION=$(echo "$RELEASE_INFO" | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")
-          PACKAGES=$(echo "$RELEASE_INFO" | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).packages")
-          PACKAGE_DATA=$(echo "$RELEASE_INFO" | node -p "JSON.stringify(JSON.parse(require('fs').readFileSync(0, 'utf8')).packageData)")
+          # Parse the release info from the saved file
+          VERSION=$(node -p "JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).version")
+          PACKAGES=$(node -p "JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).packages")
+          PACKAGE_DATA=$(node -p "JSON.stringify(JSON.parse(require('fs').readFileSync('release-info.json', 'utf8')).packageData)")
           
           # Generate user-friendly release summary
           USER_SUMMARY=$(PUBLISHED_PACKAGES="$PACKAGE_DATA" node scripts/generate-release-summary.js 2>/dev/null || echo "")

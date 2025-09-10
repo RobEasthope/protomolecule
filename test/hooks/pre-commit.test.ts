@@ -29,6 +29,36 @@ describe("pre-commit hook", () => {
     await fs.copyFile(hookPath, path.join(testDir, ".husky/pre-commit"));
     await fs.chmod(path.join(testDir, ".husky/pre-commit"), 0o755);
 
+    // Create a package.json with lint-staged configuration
+    const packageJson = {
+      name: "test-repo",
+      version: "1.0.0",
+      "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown",
+      },
+    };
+    await fs.writeFile(
+      path.join(testDir, "package.json"),
+      JSON.stringify(packageJson, null, 2),
+    );
+
+    // Create a mock prettier command
+    const mockPrettier = `#!/bin/bash
+# Mock prettier that formats .js and .ts files
+if [[ "$1" == "--write" ]]; then
+    shift # Remove --write
+    shift # Remove --ignore-unknown
+    for file in "$@"; do
+        if [[ -f "$file" ]] && [[ "$file" == *.js || "$file" == *.ts ]]; then
+            # Add a comment to simulate formatting
+            echo "// formatted" | cat - "$file" > temp && mv temp "$file"
+        fi
+    done
+fi
+`;
+    await fs.writeFile(path.join(testDir, "prettier"), mockPrettier);
+    await fs.chmod(path.join(testDir, "prettier"), 0o755);
+
     // Create a mock pnpm format command
     const mockPnpm = `#!/bin/bash
 # Mock pnpm that only formats .js and .ts files
@@ -71,7 +101,8 @@ fi
     // Check that the file was formatted
     const content = await fs.readFile(testFile, "utf-8");
     expect(content).toContain("// formatted");
-    expect(stdout).toContain("Code was formatted");
+    // Check for successful completion in lint-staged output
+    expect(stdout).toMatch(/COMPLETED.*Running tasks for staged files/);
   });
 
   it("should handle files with spaces in names", async () => {
@@ -93,7 +124,8 @@ fi
     const content2 = await fs.readFile(file2, "utf-8");
     expect(content1).toContain("// formatted");
     expect(content2).toContain("// formatted");
-    expect(stdout).toContain("Code was formatted");
+    // Check for successful completion in lint-staged output
+    expect(stdout).toMatch(/COMPLETED.*Running tasks for staged files/);
   });
 
   it("should handle deleted files correctly", async () => {
@@ -145,16 +177,17 @@ fi
     // Run the pre-commit hook
     const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
 
-    // Check output message
-    expect(stdout).toContain("already properly formatted");
+    // Check for successful completion in lint-staged output
+    // The file should remain unchanged since it's already formatted
+    expect(stdout).toMatch(/COMPLETED.*Running tasks for staged files/);
   });
 
   it("should handle empty staging area", async () => {
     // Run the pre-commit hook with no staged files
     const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
 
-    // Check output message
-    expect(stdout).toContain("No staged files");
+    // Check output message - no files to process
+    expect(stdout).toMatch(/No staged files/);
   });
 
   it("should only format JavaScript and TypeScript files", async () => {
@@ -204,7 +237,8 @@ fi
 
     expect(content1).toContain("// formatted");
     expect(content2).toContain("// formatted");
-    expect(stdout).toContain("Code was formatted");
+    // Check for successful completion in lint-staged output
+    expect(stdout).toMatch(/COMPLETED.*Running tasks for staged files/);
   });
 
   it("should use unique temporary files to avoid race conditions", async () => {
@@ -221,8 +255,10 @@ fi
     await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // List all files in /tmp that match our pattern
-    const { stdout } = await execAsync("ls -la /tmp/staged_files_* 2>/dev/null || echo 'No temp files found'");
-    
+    const { stdout } = await execAsync(
+      "ls -la /tmp/staged_files_* 2>/dev/null || echo 'No temp files found'",
+    );
+
     // Verify no leftover temp files
     expect(stdout).toContain("No temp files found");
   });

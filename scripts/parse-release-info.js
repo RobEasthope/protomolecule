@@ -23,17 +23,17 @@ function compareSemver(a, b) {
   const va = parseVersion(a);
   const vb = parseVersion(b);
 
-  // Compare version numbers
-  if (va.major !== vb.major) return vb.major - va.major;
-  if (va.minor !== vb.minor) return vb.minor - va.minor;
-  if (va.patch !== vb.patch) return vb.patch - va.patch;
+  // Compare version numbers (positive if a > b)
+  if (va.major !== vb.major) return va.major - vb.major;
+  if (va.minor !== vb.minor) return va.minor - vb.minor;
+  if (va.patch !== vb.patch) return va.patch - vb.patch;
 
   // If versions are equal, non-prerelease > prerelease
-  if (!va.prerelease && vb.prerelease) return -1;
-  if (va.prerelease && !vb.prerelease) return 1;
+  if (!va.prerelease && vb.prerelease) return 1;
+  if (va.prerelease && !vb.prerelease) return -1;
 
-  // Both prereleases: sort alphabetically (reversed)
-  return vb.prerelease.localeCompare(va.prerelease);
+  // Both prereleases: sort alphabetically
+  return va.prerelease.localeCompare(vb.prerelease);
 }
 
 /**
@@ -49,14 +49,27 @@ function main() {
     if (input) {
       const lines = input.split("\n").filter(Boolean);
       for (const line of lines) {
-        // Match pattern: @scope/package@version or package@version
-        const match = line.match(/@?([^@]+)@([0-9]+\.[0-9]+\.[0-9]+.*)/);
+        // Match both scoped (@scope/package@version) and non-scoped (package@version) packages
+        // First try to match scoped packages
+        let match = line.match(/(@[^@]+@[0-9]+\.[0-9]+\.[0-9]+.*)/);
         if (match) {
-          const name = match[1].startsWith("@") ? match[1] : "@" + match[1];
-          packages.push({
-            name: name,
-            version: match[2],
-          });
+          // Scoped package: @scope/package@version
+          const parts = match[1].match(/(@[^@]+)@([0-9]+\.[0-9]+\.[0-9]+.*)/);
+          if (parts) {
+            packages.push({
+              name: parts[1],
+              version: parts[2],
+            });
+          }
+        } else {
+          // Try non-scoped package: package@version
+          match = line.match(/([^@]+)@([0-9]+\.[0-9]+\.[0-9]+.*)/);
+          if (match) {
+            packages.push({
+              name: match[1],
+              version: match[2],
+            });
+          }
         }
       }
     }
@@ -64,9 +77,9 @@ function main() {
     // Determine release version and package list
     let result;
     if (packages.length > 0) {
-      // Sort versions using proper semver comparison
+      // Sort versions using proper semver comparison (descending order)
       const versions = packages.map((p) => p.version);
-      const highest = versions.sort(compareSemver)[0];
+      const highest = versions.sort((a, b) => compareSemver(b, a))[0];
       const pkgList = packages.map((p) => `${p.name}@${p.version}`).join(", ");
 
       result = {
