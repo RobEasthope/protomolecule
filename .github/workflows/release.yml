@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Use RELEASE_PAT for protected branches, fallback to GITHUB_TOKEN
+          # Use RELEASE_PAT for protected branches
           token: ${{ secrets.RELEASE_PAT }}
 
       - name: 🔧 Setup Monorepo
