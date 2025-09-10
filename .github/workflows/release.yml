@@ -53,12 +53,17 @@ jobs:
       - name: 📋 Check for changesets
         id: changesets-check
         run: |
-          if ls .changeset/*.md 1> /dev/null 2>&1; then
+          # Check for changeset files, excluding README.md and config.json
+          CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "README.md" 2>/dev/null | wc -l)
+          
+          if [ "$CHANGESET_COUNT" -gt 0 ]; then
             echo "has_changesets=true" >> $GITHUB_OUTPUT
-            echo "Found changeset files to process"
+            echo "Found $CHANGESET_COUNT changeset file(s) to process"
+            # List the changesets for visibility
+            find .changeset -name "*.md" -not -name "README.md" -exec basename {} \;
           else
             echo "has_changesets=false" >> $GITHUB_OUTPUT
-            echo "No changeset files found"
+            echo "No changeset files found (excluding README.md)"
           fi
 
       - name: 🔄 Process changesets and version
