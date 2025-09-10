@@ -28,6 +28,24 @@ jobs:
       - name: 🔧 Setup Monorepo
         uses: ./.github/actions/setup-monorepo
 
+      - name: 🔐 Validate Required Secrets
+        run: |
+          # Check for required secrets
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "❌ Error: NPM_TOKEN secret is not configured"
+            echo "Please add NPM_TOKEN to your repository secrets for publishing to NPM"
+            exit 1
+          fi
+          echo "✅ NPM_TOKEN is configured"
+          
+          # Check for optional PAT (warn if missing but don't fail)
+          if [ -z "${{ secrets.RELEASE_PAT }}" ]; then
+            echo "⚠️ Warning: RELEASE_PAT is not configured"
+            echo "Using GITHUB_TOKEN - this may fail if branch protection rules are enabled"
+          else
+            echo "✅ RELEASE_PAT is configured"
+          fi
+
       - name: 🏗️ Build packages
         run: |
           pnpm build
@@ -109,59 +127,38 @@ jobs:
       - name: 📝 Push version commits
         if: steps.changesets-check.outputs.has_changesets == 'true' && steps.publish.outputs.publish_success == 'true'
         run: |
-          git push origin main
+          # Retry logic for git push (up to 3 attempts with exponential backoff)
+          MAX_ATTEMPTS=3
+          ATTEMPT=1
+          DELAY=2
+          
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "Attempt $ATTEMPT of $MAX_ATTEMPTS to push version commits..."
+            
+            if git push origin main; then
+              echo "✅ Successfully pushed version commits"
+              break
+            else
+              if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                echo "❌ Failed to push after $MAX_ATTEMPTS attempts"
+                exit 1
+              fi
+              
+              echo "⚠️ Push failed, retrying in ${DELAY} seconds..."
+              sleep $DELAY
+              DELAY=$((DELAY * 2))  # Exponential backoff
+              ATTEMPT=$((ATTEMPT + 1))
+            fi
+          done
 
       - name: 🏷️ Create GitHub Release
         if: steps.publish.outputs.published == 'true'
         run: |
-          # Dynamically find all published packages and their versions
-          RELEASE_INFO=$(node -p "
-            const fs = require('fs');
-            const path = require('path');
-            
-            // Find all package.json files in packages directory
-            const packagesDir = 'packages';
-            const packages = [];
-            
-            if (fs.existsSync(packagesDir)) {
-              const dirs = fs.readdirSync(packagesDir);
-              for (const dir of dirs) {
-                const pkgPath = path.join(packagesDir, dir, 'package.json');
-                if (fs.existsSync(pkgPath)) {
-                  try {
-                    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-                    if (!pkg.private) {
-                      packages.push({
-                        name: pkg.name,
-                        version: pkg.version
-                      });
-                    }
-                  } catch (e) {
-                    console.error('Error reading ' + pkgPath + ': ' + e.message);
-                  }
-                }
-              }
-            }
-            
-            // If we found packages, use the highest version (with proper semver sorting)
-            // Otherwise fall back to a timestamp-based version
-            if (packages.length > 0) {
-              const versions = packages.map(p => p.version);
-              // Proper semver sorting
-              const highest = versions.sort((a, b) => {
-                const [aMajor, aMinor, aPatch] = a.split('.').map(Number);
-                const [bMajor, bMinor, bPatch] = b.split('.').map(Number);
-                if (aMajor !== bMajor) return bMajor - aMajor;
-                if (aMinor !== bMinor) return bMinor - aMinor;
-                return bPatch - aPatch;
-              })[0]; // Take first (highest) after reverse sort
-              const pkgList = packages.map(p => p.name + '@' + p.version).join(', ');
-              JSON.stringify({ version: highest, packages: pkgList, packageData: packages });
-            } else {
-              const date = new Date().toISOString().split('T')[0];
-              JSON.stringify({ version: date, packages: 'No packages published', packageData: [] });
-            }
-          ")
+          # Parse the actual published packages from the output
+          PUBLISHED_INFO=$(grep "Publishing" publish-output.txt | grep -oE "@[^@]+@[0-9]+\.[0-9]+\.[0-9]+" || echo "")
+          
+          # Use the dedicated script to parse release information
+          RELEASE_INFO=$(echo "$PUBLISHED_INFO" | node scripts/parse-release-info.js)
           
           # Parse the release info
           VERSION=$(echo "$RELEASE_INFO" | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")
