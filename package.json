@@ -11,7 +11,7 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "lint:fix-staged": "turbo run lint:fix --continue -- --max-warnings=Infinity || true",
+    "lint:fix-staged": "turbo run lint:fix-staged",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
