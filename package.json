@@ -11,6 +11,7 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
+    "lint:fix-staged": "turbo run lint:fix-staged",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
@@ -28,7 +29,10 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "**/*.{js,jsx,ts,tsx,mjs}": [
+      "pnpm lint:fix-staged"
+    ]
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {

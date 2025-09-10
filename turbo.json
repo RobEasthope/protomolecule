@@ -4,7 +4,13 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**", ".tsbuildinfo"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "build/**",
+        ".tsbuildinfo"
+      ]
     },
     "build-storybook": {
       "dependsOn": ["^build"],
@@ -25,6 +31,9 @@
       "outputs": []
     },
     "lint:fix": {
+      "outputs": []
+    },
+    "lint:fix-staged": {
       "outputs": []
     },
     "clean": {
