@@ -50,25 +50,57 @@ jobs:
 
       - name: 🏗️ Build packages
         run: |
-          pnpm build
+          echo "## 🏗️ Building Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Run the build
+          pnpm build || {
+            echo "❌ Build failed" >> $GITHUB_STEP_SUMMARY
+            echo "Check the logs above for build errors" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          }
+          
+          echo "### Build Output Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Track verification results
+          VERIFICATION_FAILED=false
           
           # Verify build outputs for publishable packages
           if [ -f "packages/eslint-config/package.json" ]; then
-            if [ ! -f "packages/eslint-config/dist/index.js" ]; then
-              echo "❌ Build failed: ESLint config dist/index.js not found"
-              exit 1
+            PKG_PRIVATE=$(node -p "require('./packages/eslint-config/package.json').private || false")
+            if [ "$PKG_PRIVATE" != "true" ]; then
+              if [ ! -f "packages/eslint-config/dist/index.js" ]; then
+                echo "❌ ESLint config: dist/index.js not found" >> $GITHUB_STEP_SUMMARY
+                VERIFICATION_FAILED=true
+              else
+                echo "✅ ESLint config: build output verified" >> $GITHUB_STEP_SUMMARY
+                # Additional validation: check file size is reasonable
+                FILE_SIZE=$(stat -f%z "packages/eslint-config/dist/index.js" 2>/dev/null || stat -c%s "packages/eslint-config/dist/index.js" 2>/dev/null || echo 0)
+                if [ "$FILE_SIZE" -lt 100 ]; then
+                  echo "  ⚠️ Warning: dist/index.js seems unusually small (${FILE_SIZE} bytes)" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
             fi
           fi
           
+          # Check tsconfig if it becomes publishable
           if [ -f "packages/tsconfig/package.json" ]; then
-            PKG_PRIVATE=$(node -p "require('./packages/tsconfig/package.json').private")
-            if [ "$PKG_PRIVATE" = "false" ]; then
-              # Check for expected output files if tsconfig becomes public
-              echo "✅ TSConfig package build verified"
+            PKG_PRIVATE=$(node -p "require('./packages/tsconfig/package.json').private || false")
+            if [ "$PKG_PRIVATE" != "true" ]; then
+              # Add specific checks for tsconfig when it's publishable
+              echo "✅ TSConfig package: ready for publishing" >> $GITHUB_STEP_SUMMARY
             fi
           fi
           
-          echo "✅ Build verification passed"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$VERIFICATION_FAILED" = "true" ]; then
+            echo "❌ Build verification failed - see errors above" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ All build verifications passed" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: 📋 Pre-publish Validation
         run: |
@@ -95,7 +127,7 @@ jobs:
 
       - name: 🚀 Create Release or Publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v1.4.8
         with:
           # This will run pnpm changeset version && pnpm changeset publish
           publish: pnpm changeset publish
@@ -109,6 +141,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0 # Disable Husky hooks in CI
+          # Add retry configuration for npm operations
+          npm_config_fetch_retries: 5
+          npm_config_fetch_retry_mintimeout: 20000
+          npm_config_fetch_retry_maxtimeout: 120000
 
       - name: ✨ Enhance GitHub Release Notes  
         if: steps.changesets.outputs.published == 'true'
@@ -130,6 +166,40 @@ jobs:
           else
             echo "No packages were published in this release"
           fi
+
+      - name: 🔍 Post-Publish Verification
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "## 🔍 Post-Publish Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse published packages
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          
+          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            # Verify each published package exists on NPM
+            echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
+              PKG_NAME=$(echo "$PACKAGE_VERSION" | cut -d'@' -f1-2)
+              PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
+              
+              # Skip private packages
+              if [[ "$PKG_NAME" == *"@protomolecule/"* ]]; then
+                # Wait a moment for NPM to propagate
+                sleep 5
+                
+                # Check if package is available on NPM (only for public packages)
+                if npm view "$PACKAGE_VERSION" version >/dev/null 2>&1; then
+                  echo "✅ $PACKAGE_VERSION is available on NPM" >> $GITHUB_STEP_SUMMARY
+                else
+                  # It might be private or still propagating
+                  echo "⚠️ $PACKAGE_VERSION not immediately visible on NPM (may be private or propagating)" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            done
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Publishing process completed" >> $GITHUB_STEP_SUMMARY
 
       - name: 📊 Generate Release Summary
         if: always()
