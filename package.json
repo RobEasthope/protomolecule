@@ -30,8 +30,8 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,mjs}": [
-      "pnpm lint:fix-staged",
-      "prettier --write"
+      "prettier --write",
+      "pnpm lint:fix-staged"
     ],
     "**/*": "prettier --write --ignore-unknown"
   },
