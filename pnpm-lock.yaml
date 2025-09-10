@@ -9,10 +9,10 @@ importers:
     devDependencies:
       "@changesets/cli":
         specifier: ^2.29.7
-        version: 2.29.7(@types/node@20.12.12)
+        version: 2.29.7(@types/node@22.18.1)
       "@types/node":
-        specifier: ^20.12.12
-        version: 20.12.12
+        specifier: ^22.18.1
+        version: 22.18.1
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -27,7 +27,7 @@ importers:
         version: 2.5.6
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@20.12.12)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1)
+        version: 3.2.4(@types/node@22.18.1)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1)
 
   packages/eslint-config:
     dependencies:
@@ -3684,6 +3684,12 @@ packages:
     resolution:
       {
         integrity: sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==,
+      }
+
+  "@types/node@22.18.1":
+    resolution:
+      {
+        integrity: sha512-rzSDyhn4cYznVG+PCzGe1lwuMYJrcBS1fc3JqSa2PvtABwWo+dZ1ij5OVok3tqfpEBCBoaR4d7upFJk73HRJDw==,
       }
 
   "@types/normalize-package-data@2.4.4":
@@ -10938,6 +10944,12 @@ packages:
         integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==,
       }
 
+  undici-types@6.21.0:
+    resolution:
+      {
+        integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==,
+      }
+
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution:
       {
@@ -12425,7 +12437,7 @@ snapshots:
     dependencies:
       "@changesets/types": 6.1.0
 
-  "@changesets/cli@2.29.7(@types/node@20.12.12)":
+  "@changesets/cli@2.29.7(@types/node@22.18.1)":
     dependencies:
       "@changesets/apply-release-plan": 7.0.13
       "@changesets/assemble-release-plan": 6.0.9
@@ -12441,7 +12453,7 @@ snapshots:
       "@changesets/should-skip-package": 0.1.2
       "@changesets/types": 6.1.0
       "@changesets/write": 0.4.0
-      "@inquirer/external-editor": 1.0.1(@types/node@20.12.12)
+      "@inquirer/external-editor": 1.0.1(@types/node@22.18.1)
       "@manypkg/get-packages": 1.1.3
       ansi-colors: 4.1.3
       ci-info: 3.9.0
@@ -13150,12 +13162,12 @@ snapshots:
 
   "@humanwhocodes/retry@0.4.3": {}
 
-  "@inquirer/external-editor@1.0.1(@types/node@20.12.12)":
+  "@inquirer/external-editor@1.0.1(@types/node@22.18.1)":
     dependencies:
       chardet: 2.1.0
       iconv-lite: 0.6.3
     optionalDependencies:
-      "@types/node": 20.12.12
+      "@types/node": 22.18.1
 
   "@isaacs/balanced-match@4.0.1": {}
 
@@ -14050,6 +14062,10 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
+  "@types/node@22.18.1":
+    dependencies:
+      undici-types: 6.21.0
+
   "@types/normalize-package-data@2.4.4": {}
 
   "@types/prop-types@15.7.12": {}
@@ -14298,6 +14314,14 @@ snapshots:
     optionalDependencies:
       vite: 5.2.11(@types/node@20.12.12)(lightningcss@1.30.1)
 
+  "@vitest/mocker@3.2.4(vite@5.2.11(@types/node@22.18.1)(lightningcss@1.30.1))":
+    dependencies:
+      "@vitest/spy": 3.2.4
+      estree-walker: 3.0.3
+      magic-string: 0.30.18
+    optionalDependencies:
+      vite: 5.2.11(@types/node@22.18.1)(lightningcss@1.30.1)
+
   "@vitest/pretty-format@3.2.4":
     dependencies:
       tinyrainbow: 2.0.0
@@ -14327,7 +14351,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@20.12.12)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1)
+      vitest: 3.2.4(@types/node@22.18.1)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1)
 
   "@vitest/utils@3.2.4":
     dependencies:
@@ -18713,6 +18737,8 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  undici-types@6.21.0: {}
+
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
   unicode-match-property-ecmascript@2.0.0:
@@ -18866,6 +18892,23 @@ snapshots:
       - supports-color
       - terser
 
+  vite-node@3.2.4(@types/node@22.18.1)(lightningcss@1.30.1):
+    dependencies:
+      cac: 6.7.14
+      debug: 4.4.1
+      es-module-lexer: 1.7.0
+      pathe: 2.0.3
+      vite: 5.2.11(@types/node@22.18.1)(lightningcss@1.30.1)
+    transitivePeerDependencies:
+      - "@types/node"
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
   vite@4.5.3(@types/node@20.12.12)(lightningcss@1.30.1):
     dependencies:
       esbuild: 0.18.20
@@ -18886,11 +18929,21 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.30.1
 
+  vite@5.2.11(@types/node@22.18.1)(lightningcss@1.30.1):
+    dependencies:
+      esbuild: 0.20.2
+      postcss: 8.4.38
+      rollup: 4.18.0
+    optionalDependencies:
+      "@types/node": 22.18.1
+      fsevents: 2.3.3
+      lightningcss: 1.30.1
+
   vitest@3.2.4(@types/node@20.12.12)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1):
     dependencies:
       "@types/chai": 5.2.2
       "@vitest/expect": 3.2.4
-      "@vitest/mocker": 3.2.4(vite@5.2.11(@types/node@20.12.12)(lightningcss@1.30.1))
+      "@vitest/mocker": 3.2.4(vite@5.2.11(@types/node@22.18.1)(lightningcss@1.30.1))
       "@vitest/pretty-format": 3.2.4
       "@vitest/runner": 3.2.4
       "@vitest/snapshot": 3.2.4
@@ -18913,6 +18966,46 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       "@types/node": 20.12.12
+      "@vitest/ui": 3.2.4(vitest@3.2.4)
+      happy-dom: 14.11.0
+      jsdom: 23.2.0
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+
+  vitest@3.2.4(@types/node@22.18.1)(@vitest/ui@3.2.4)(happy-dom@14.11.0)(jsdom@23.2.0)(lightningcss@1.30.1):
+    dependencies:
+      "@types/chai": 5.2.2
+      "@vitest/expect": 3.2.4
+      "@vitest/mocker": 3.2.4(vite@5.2.11(@types/node@22.18.1)(lightningcss@1.30.1))
+      "@vitest/pretty-format": 3.2.4
+      "@vitest/runner": 3.2.4
+      "@vitest/snapshot": 3.2.4
+      "@vitest/spy": 3.2.4
+      "@vitest/utils": 3.2.4
+      chai: 5.3.3
+      debug: 4.4.1
+      expect-type: 1.2.2
+      magic-string: 0.30.18
+      pathe: 2.0.3
+      picomatch: 4.0.3
+      std-env: 3.9.0
+      tinybench: 2.9.0
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.14
+      tinypool: 1.1.1
+      tinyrainbow: 2.0.0
+      vite: 5.2.11(@types/node@22.18.1)(lightningcss@1.30.1)
+      vite-node: 3.2.4(@types/node@22.18.1)(lightningcss@1.30.1)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      "@types/node": 22.18.1
       "@vitest/ui": 3.2.4(vitest@3.2.4)
       happy-dom: 14.11.0
       jsdom: 23.2.0
