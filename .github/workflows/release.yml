@@ -7,7 +7,7 @@ on:
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # Queue releases instead of cancelling
 
 jobs:
   release:
@@ -70,6 +70,29 @@ jobs:
           
           echo "✅ Build verification passed"
 
+      - name: 📋 Pre-publish Validation
+        run: |
+          echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Check changeset status verbosely
+          echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
+          pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
+            echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
+          }
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
+          
+          # Verify critical files exist for publishable packages
+          if [ -f "packages/eslint-config/dist/index.js" ]; then
+            echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: 📋 Check for changesets
         id: changesets-check
         run: |
@@ -92,6 +115,21 @@ jobs:
           # Configure git for commits
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 🔐 Setup NPM Authentication
+        if: steps.changesets-check.outputs.has_changesets == 'true'
+        run: |
+          # Create .npmrc with auth token for publishing
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          
+          # Verify authentication is working
+          npm whoami --registry https://registry.npmjs.org || {
+            echo "❌ NPM authentication failed. Please check NPM_TOKEN secret."
+            exit 1
+          }
+          echo "✅ NPM authentication configured successfully"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: 🚀 Version and Publish to NPM
         if: steps.changesets-check.outputs.has_changesets == 'true'
@@ -228,19 +266,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📊 Generate Summary
+      - name: 📊 Generate Release Summary
         if: always()
         run: |
-          echo "## 🚀 Continuous Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ steps.changesets-check.outputs.has_changesets }}" == "true" ]; then
             if [ "${{ steps.publish.outputs.publish_success }}" == "true" ]; then
-              echo "✅ Changesets processed and packages published successfully" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "⚠️ Changesets processed but NPM publishing failed" >> $GITHUB_STEP_SUMMARY
+              echo "### ✅ Release Successful!" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
-              echo "**Action Required:** Check NPM_TOKEN and package configuration" >> $GITHUB_STEP_SUMMARY
+              echo "Packages have been published to NPM successfully." >> $GITHUB_STEP_SUMMARY
+              
+              if [ -f publish-output.txt ]; then
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
+                # Extract package info from output
+                grep -E "@[a-z0-9-]+/[a-z0-9-]+@[0-9]+\.[0-9]+\.[0-9]+" publish-output.txt | while read -r pkg; do
+                  echo "- $pkg" >> $GITHUB_STEP_SUMMARY
+                done || echo "See publishing output below for details." >> $GITHUB_STEP_SUMMARY
+              fi
+            else
+              echo "### ⚠️ Release Failed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "Changesets were found but publishing failed." >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Action Required:**" >> $GITHUB_STEP_SUMMARY
+              echo "1. Check the workflow logs for detailed error messages" >> $GITHUB_STEP_SUMMARY
+              echo "2. Verify NPM_TOKEN is correctly configured" >> $GITHUB_STEP_SUMMARY
+              echo "3. Ensure package.json files are valid" >> $GITHUB_STEP_SUMMARY
+              echo "4. Check if the .npmrc authentication step succeeded" >> $GITHUB_STEP_SUMMARY
             fi
             
             if [ -f publish-output.txt ]; then
@@ -251,9 +306,13 @@ jobs:
               echo '```' >> $GITHUB_STEP_SUMMARY
             fi
           else
-            echo "No changesets found - no release needed" >> $GITHUB_STEP_SUMMARY
+            echo "### ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No changesets found in this push to main." >> $GITHUB_STEP_SUMMARY
+            echo "All packages are up to date." >> $GITHUB_STEP_SUMMARY
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "_Workflow triggered by: ${{ github.actor }}_" >> $GITHUB_STEP_SUMMARY
+          echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
+          echo "_Workflow triggered by: @${{ github.actor }}_" >> $GITHUB_STEP_SUMMARY
