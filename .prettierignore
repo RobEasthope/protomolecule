@@ -1,0 +1,29 @@
+# Build outputs
+dist/
+build/
+.turbo/
+.next/
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+
+# Storybook
+storybook-static/
+
+# GitHub Actions workflows
+# Prettier can have issues with complex YAML workflows
+.github/workflows/*.yml
+.github/workflows/*.yaml
+
+# Changesets
+.changeset/
+
+# Generated files
+*.generated.*
+
+# Temporary files
+*.tmp
+*.temp
