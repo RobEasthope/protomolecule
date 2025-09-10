@@ -13,6 +13,7 @@ jobs:
   release:
     name: 🚀 Continuous Release
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent hanging workflows
     permissions:
       contents: write
       packages: write
@@ -100,9 +101,12 @@ jobs:
           # First, version packages based on changesets
           pnpm changeset version
           
-          # Check if there are changes to commit
-          if ! git diff --staged --quiet && ! git diff --quiet; then
-            # Stage all version changes
+          # Stage all changes immediately to avoid race condition
+          git add -A
+          
+          # Check if there are any changes to commit (either staged or unstaged)
+          if ! git diff --staged --quiet || ! git diff --quiet; then
+            # Ensure all changes are staged
             git add -A
             
             # Try to publish packages
@@ -172,22 +176,43 @@ jobs:
       - name: 🏷️ Create GitHub Release
         if: steps.publish.outputs.published == 'true'
         run: |
-          # Extract published packages more reliably from changeset output
-          # Look for lines like: 🦋  @protomolecule/eslint-config@1.0.5
-          PUBLISHED_PACKAGES=$(grep "🦋" publish-output.txt | sed 's/🦋  //' || echo "")
+          # Extract published packages from changeset output with multiple fallbacks
+          # Method 1: Look for changeset's success output (🦋 emoji)
+          PUBLISHED_PACKAGES=$(grep "🦋" publish-output.txt 2>/dev/null | sed 's/^[[:space:]]*🦋[[:space:]]*//' || echo "")
           
+          # Method 2: Look for "Publishing" or "published" lines
           if [ -z "$PUBLISHED_PACKAGES" ]; then
-            # Fallback: try to parse Publishing lines
-            PUBLISHED_PACKAGES=$(grep "Publishing" publish-output.txt | grep -oE "(@[^[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*|[^@[:space:]]+@[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*)" || echo "")
+            PUBLISHED_PACKAGES=$(grep -E "(Publishing|published)" publish-output.txt 2>/dev/null | 
+              grep -oE "@[a-z0-9-]+/[a-z0-9-]+@[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" || echo "")
           fi
           
-          # Determine version for release tag
+          # Method 3: Look for npm notice lines
+          if [ -z "$PUBLISHED_PACKAGES" ]; then
+            PUBLISHED_PACKAGES=$(grep "npm notice" publish-output.txt 2>/dev/null | 
+              grep -oE "[a-z0-9@/-]+@[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" || echo "")
+          fi
+          
+          # Validate we found packages
+          if [ -z "$PUBLISHED_PACKAGES" ]; then
+            echo "⚠️ Warning: Could not parse published packages from output"
+            echo "Full output for debugging:"
+            cat publish-output.txt
+          fi
+          
+          # Determine version for release tag with validation
           if [ -n "$PUBLISHED_PACKAGES" ]; then
             # Parse version from packages - use the highest version
             VERSION=$(echo "$PUBLISHED_PACKAGES" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" | sort -V | tail -1)
+            
+            # Validate version format
+            if ! echo "$VERSION" | grep -qE "^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?$"; then
+              echo "⚠️ Warning: Invalid version format: $VERSION"
+              VERSION=$(date +"%Y.%m.%d")
+            fi
           else
             # Fallback to date-based version
             VERSION=$(date +"%Y.%m.%d")
+            echo "ℹ️ Using date-based version: $VERSION"
           fi
           
           # Build simple release notes
