@@ -7,7 +7,7 @@ on:
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # Queue releases instead of cancelling
 
 jobs:
   release:
@@ -70,190 +70,118 @@ jobs:
           
           echo "✅ Build verification passed"
 
-      - name: 📋 Check for changesets
-        id: changesets-check
+      - name: 📋 Pre-publish Validation
         run: |
-          # Check for changeset files, excluding README.md and config.json
-          CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "README.md" 2>/dev/null | wc -l)
+          echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "$CHANGESET_COUNT" -gt 0 ]; then
-            echo "has_changesets=true" >> $GITHUB_OUTPUT
-            echo "Found $CHANGESET_COUNT changeset file(s) to process"
-            # List the changesets for visibility
-            find .changeset -name "*.md" -not -name "README.md" -exec basename {} \;
+          # Check changeset status
+          echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
+          pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
+            echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
+          }
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
+          
+          # Verify critical files exist for publishable packages
+          if [ -f "packages/eslint-config/dist/index.js" ]; then
+            echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
           else
-            echo "has_changesets=false" >> $GITHUB_OUTPUT
-            echo "No changeset files found (excluding README.md)"
-          fi
-
-      - name: 🔄 Configure Git
-        if: steps.changesets-check.outputs.has_changesets == 'true'
-        run: |
-          # Configure git for commits
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: 🚀 Version and Publish to NPM
-        if: steps.changesets-check.outputs.has_changesets == 'true'
-        id: publish
-        run: |
-          # First, version packages based on changesets
-          pnpm changeset version
-          
-          # Stage all changes immediately to avoid race condition
-          git add -A
-          
-          # Check if there are any changes to commit (either staged or unstaged)
-          if ! git diff --staged --quiet || ! git diff --quiet; then
-            # Ensure all changes are staged
-            git add -A
-            
-            # Try to publish packages
-            set +e  # Don't exit on error
-            PUBLISH_TEMP=$(mktemp publish-output-XXXXXX.txt)
-            pnpm changeset publish > "$PUBLISH_TEMP" 2>&1
-            PUBLISH_EXIT_CODE=$?
-            mv "$PUBLISH_TEMP" publish-output.txt
-            set -e  # Re-enable exit on error
-            
-            # Check if publish was successful
-            if [ $PUBLISH_EXIT_CODE -eq 0 ] && grep -q "Publishing" publish-output.txt; then
-              echo "published=true" >> $GITHUB_OUTPUT
-              echo "publish_success=true" >> $GITHUB_OUTPUT
-              cat publish-output.txt
-              
-              # Commit version changes only after successful publish
-              git commit -m "chore: version packages [skip ci]"
-              echo "version_committed=true" >> $GITHUB_OUTPUT
-            else
-              echo "published=false" >> $GITHUB_OUTPUT
-              echo "publish_success=false" >> $GITHUB_OUTPUT
-              echo "version_committed=false" >> $GITHUB_OUTPUT
-              echo "⚠️ NPM publish failed - rolling back version changes"
-              cat publish-output.txt
-              
-              # Reset all changes since publish failed
-              git reset --hard HEAD
-            fi
-          else
-            echo "No version changes needed"
-            echo "published=false" >> $GITHUB_OUTPUT
-            echo "publish_success=false" >> $GITHUB_OUTPUT
-            echo "version_committed=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          HUSKY: 0
-
-      - name: 📝 Push version commits
-        if: steps.publish.outputs.version_committed == 'true'
-        run: |
-          # Retry logic for git push (up to 3 attempts with exponential backoff)
-          MAX_ATTEMPTS=3
-          ATTEMPT=1
-          DELAY=2
-          
-          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-            echo "Attempt $ATTEMPT of $MAX_ATTEMPTS to push version commits..."
-            
-            if git push origin main; then
-              echo "✅ Successfully pushed version commits"
-              break
-            else
-              if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-                echo "❌ Failed to push after $MAX_ATTEMPTS attempts"
-                exit 1
-              fi
-              
-              echo "⚠️ Push failed, retrying in ${DELAY} seconds..."
-              sleep $DELAY
-              DELAY=$((DELAY * 2))  # Exponential backoff
-              ATTEMPT=$((ATTEMPT + 1))
-            fi
-          done
-
-      - name: 🏷️ Create GitHub Release
-        if: steps.publish.outputs.published == 'true'
-        run: |
-          # Extract published packages from changeset output with multiple fallbacks
-          # Method 1: Look for changeset's success output (🦋 emoji)
-          PUBLISHED_PACKAGES=$(grep "🦋" publish-output.txt 2>/dev/null | sed 's/^[[:space:]]*🦋[[:space:]]*//' || echo "")
-          
-          # Method 2: Look for "Publishing" or "published" lines
-          if [ -z "$PUBLISHED_PACKAGES" ]; then
-            PUBLISHED_PACKAGES=$(grep -E "(Publishing|published)" publish-output.txt 2>/dev/null | 
-              grep -oE "@[a-z0-9-]+/[a-z0-9-]+@[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" || echo "")
+            echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
           fi
           
-          # Method 3: Look for npm notice lines
-          if [ -z "$PUBLISHED_PACKAGES" ]; then
-            PUBLISHED_PACKAGES=$(grep "npm notice" publish-output.txt 2>/dev/null | 
-              grep -oE "[a-z0-9@/-]+@[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" || echo "")
-          fi
-          
-          # Validate we found packages
-          if [ -z "$PUBLISHED_PACKAGES" ]; then
-            echo "⚠️ Warning: Could not parse published packages from output"
-            echo "Full output for debugging:"
-            cat publish-output.txt
-          fi
-          
-          # Determine version for release tag with validation
-          if [ -n "$PUBLISHED_PACKAGES" ]; then
-            # Parse version from packages - use the highest version
-            VERSION=$(echo "$PUBLISHED_PACKAGES" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?" | sort -V | tail -1)
-            
-            # Validate version format
-            if ! echo "$VERSION" | grep -qE "^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?$"; then
-              echo "⚠️ Warning: Invalid version format: $VERSION"
-              VERSION=$(date +"%Y.%m.%d")
-            fi
-          else
-            # Fallback to date-based version
-            VERSION=$(date +"%Y.%m.%d")
-            echo "Using date-based version: $VERSION"
-          fi
-          
-          # Build simple release notes
-          RELEASE_NOTES="## 📦 Published Packages"$'\n\n'"$PUBLISHED_PACKAGES"$'\n\n'"___"$'\n'"*Automated release from continuous deployment workflow*"
-          
-          # Create GitHub release
-          gh release create "v$VERSION" \
-            --title "Release v$VERSION" \
-            --notes "$RELEASE_NOTES" \
-            --target main || {
-              echo "⚠️ Release creation failed, but packages were published successfully"
-              echo "Manual release can be created for version: v$VERSION"
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📊 Generate Summary
-        if: always()
-        run: |
-          echo "## 🚀 Continuous Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ "${{ steps.changesets-check.outputs.has_changesets }}" == "true" ]; then
-            if [ "${{ steps.publish.outputs.publish_success }}" == "true" ]; then
-              echo "✅ Changesets processed and packages published successfully" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "⚠️ Changesets processed but NPM publishing failed" >> $GITHUB_STEP_SUMMARY
+      - name: 🚀 Create Release or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # This will run pnpm changeset version && pnpm changeset publish
+          publish: pnpm changeset publish
+          # Commit message for version updates
+          commit: "chore: version packages [skip ci]"
+          # Title for version update PRs (if used in PR mode)
+          title: "chore: version packages"
+          # Create GitHub releases automatically
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HUSKY: 0 # Disable Husky hooks in CI
+
+      - name: ✨ Enhance GitHub Release Notes  
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The changesets action already creates GitHub releases
+          # This step can enhance them if needed
+          
+          # Get the published packages info from changesets output
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          
+          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            echo "📦 Packages were published successfully"
+            echo "$PUBLISHED" | jq '.'
+            
+            # Optionally enhance the release notes that were already created
+            # The changesets action creates releases with changelog content
+          else
+            echo "No packages were published in this release"
+          fi
+
+      - name: 📊 Generate Release Summary
+        if: always()
+        run: |
+          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.changesets.outputs.published }}" == "true" ]; then
+            echo "### ✅ Release Successful!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Display published packages
+            PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+            if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+              echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
-              echo "**Action Required:** Check NPM_TOKEN and package configuration" >> $GITHUB_STEP_SUMMARY
+              
+              # Parse and display packages nicely
+              if command -v jq >/dev/null 2>&1; then
+                echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY || {
+                  echo "⚠️ Could not parse package details" >> $GITHUB_STEP_SUMMARY
+                  echo '```json' >> $GITHUB_STEP_SUMMARY
+                  echo "$PUBLISHED" >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY
+                }
+              else
+                echo '```json' >> $GITHUB_STEP_SUMMARY
+                echo "$PUBLISHED" >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
+              fi
             fi
             
-            if [ -f publish-output.txt ]; then
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "### Publishing Output" >> $GITHUB_STEP_SUMMARY
-              echo '```' >> $GITHUB_STEP_SUMMARY
-              cat publish-output.txt >> $GITHUB_STEP_SUMMARY
-              echo '```' >> $GITHUB_STEP_SUMMARY
-            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "GitHub releases have been created with full changelogs." >> $GITHUB_STEP_SUMMARY
+            
+          elif [ "${{ steps.changesets.outputs.hasChangesets }}" == "false" ]; then
+            echo "### ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No changesets found in this push to main." >> $GITHUB_STEP_SUMMARY
+            echo "All packages are up to date." >> $GITHUB_STEP_SUMMARY
           else
-            echo "No changesets found - no release needed" >> $GITHUB_STEP_SUMMARY
+            echo "### ⚠️ Release Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Changesets were found but publishing failed." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Action Required:**" >> $GITHUB_STEP_SUMMARY
+            echo "1. Check the workflow logs for detailed error messages" >> $GITHUB_STEP_SUMMARY
+            echo "2. Verify NPM_TOKEN is correctly configured" >> $GITHUB_STEP_SUMMARY
+            echo "3. Ensure package.json files are valid" >> $GITHUB_STEP_SUMMARY
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "_Workflow triggered by: ${{ github.actor }}_" >> $GITHUB_STEP_SUMMARY
+          echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY
+          echo "_Workflow triggered by: @${{ github.actor }}_" >> $GITHUB_STEP_SUMMARY
