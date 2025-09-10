@@ -1,6 +1,6 @@
 {
   "name": "@protomolecule/eslint-config",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "type": "module",
@@ -23,6 +23,7 @@
     "format": "npx prettier --write .",
     "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
+    "lint:fix-staged": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --continue -- --max-warnings=Infinity || true --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
     "tsc": "tsc --noEmit"
