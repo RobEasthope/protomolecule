@@ -211,16 +211,11 @@ jobs:
           else
             # Fallback to date-based version
             VERSION=$(date +"%Y.%m.%d")
-            echo "ℹ️ Using date-based version: $VERSION"
+            echo "Using date-based version: $VERSION"
           fi
           
           # Build simple release notes
-          RELEASE_NOTES="## 📦 Published Packages
-
-$PUBLISHED_PACKAGES
-
----
-*Automated release from continuous deployment workflow*"
+          RELEASE_NOTES="## 📦 Published Packages"$'\n\n'"$PUBLISHED_PACKAGES"$'\n\n'"___"$'\n'"*Automated release from continuous deployment workflow*"
           
           # Create GitHub release
           gh release create "v$VERSION" \
@@ -256,7 +251,7 @@ $PUBLISHED_PACKAGES
               echo '```' >> $GITHUB_STEP_SUMMARY
             fi
           else
-            echo "ℹ️ No changesets found - no release needed" >> $GITHUB_STEP_SUMMARY
+            echo "No changesets found - no release needed" >> $GITHUB_STEP_SUMMARY
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY
