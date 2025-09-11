@@ -205,7 +205,7 @@ jobs:
               # Verify build output exists before publishing
               if [ -f "package.json" ]; then
                 # Check for common build output locations
-                if [ -d "dist" ] || [ -d "build" ] || [ -d "lib" ] || [ -f "index.css" ] || [ -f "*.d.ts" ]; then
+                if [ -d "dist" ] || [ -d "build" ] || [ -d "lib" ] || [ -f "index.css" ] || ls *.d.ts 2>/dev/null | grep -q .; then
                   echo "Build output verified for $name" >> $GITHUB_STEP_SUMMARY
                 else
                   # Check if this package has a build script
