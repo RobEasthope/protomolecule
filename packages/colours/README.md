@@ -4,7 +4,13 @@ Radix UI color system integration for Protomolecule projects, providing a compre
 
 ## 📦 Installation
 
-This is a private package within the Protomolecule monorepo. It's automatically available to other packages in the workspace.
+```bash
+npm install @protomolecule/colours
+# or
+pnpm add @protomolecule/colours
+# or
+yarn add @protomolecule/colours
+```
 
 ## 🚀 Usage
 
