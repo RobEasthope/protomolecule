@@ -4,11 +4,17 @@ React component library for Protomolecule projects with Storybook, Tailwind CSS 
 
 ## 📦 Installation
 
-This package is private and part of the Protomolecule monorepo. It's not published to npm.
+```bash
+npm install @protomolecule/ui
+# or
+pnpm add @protomolecule/ui
+# or
+yarn add @protomolecule/ui
+```
 
 ### Using in Your Project
 
-Since this is a private package within the monorepo, you can import components directly:
+Import components and utilities from the package:
 
 ```typescript
 import { Box, Container, Type } from "@protomolecule/ui/components";
