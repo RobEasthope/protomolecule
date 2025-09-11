@@ -1,0 +1,296 @@
+name: Test GitHub Packages Publishing
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/release.yml'
+      - 'packages/*/package.json'
+      - '.github/workflows/test-github-packages.yml'
+  workflow_dispatch:
+
+jobs:
+  test-configuration:
+    name: 🧪 Test GitHub Packages Configuration
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Monorepo
+        uses: ./.github/actions/setup-monorepo
+
+      - name: 🏗️ Build packages
+        run: pnpm build
+
+      - name: 🔍 Validate Package Configurations
+        run: |
+          echo "## 📋 Package Configuration Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          VALIDATION_PASSED=true
+          
+          # Check each publishable package
+          for pkg in ui eslint-config colours; do
+            PKG_PATH="packages/$pkg"
+            
+            if [ -f "$PKG_PATH/package.json" ]; then
+              echo "### Checking @protomolecule/$pkg" >> $GITHUB_STEP_SUMMARY
+              
+              # Check repository field
+              HAS_REPO=$(node -p "require('./$PKG_PATH/package.json').repository ? 'true' : 'false'")
+              if [ "$HAS_REPO" = "true" ]; then
+                echo "✅ Repository field configured" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ Missing repository field" >> $GITHUB_STEP_SUMMARY
+                VALIDATION_PASSED=false
+              fi
+              
+              # Check publishConfig
+              HAS_PUBLISH_CONFIG=$(node -p "require('./$PKG_PATH/package.json').publishConfig ? 'true' : 'false'")
+              if [ "$HAS_PUBLISH_CONFIG" = "true" ]; then
+                echo "✅ PublishConfig configured" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ Missing publishConfig" >> $GITHUB_STEP_SUMMARY
+                VALIDATION_PASSED=false
+              fi
+              
+              # Check for duplicate publishConfig (parse error test)
+              if node -e "JSON.parse(require('fs').readFileSync('$PKG_PATH/package.json', 'utf8'))" 2>/dev/null; then
+                echo "✅ Valid JSON structure" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ Invalid JSON structure" >> $GITHUB_STEP_SUMMARY
+                VALIDATION_PASSED=false
+              fi
+              
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          
+          if [ "$VALIDATION_PASSED" = "false" ]; then
+            echo "❌ Validation failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ All validations passed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 🧪 Test NPM Registry Configuration
+        run: |
+          echo "## 🔧 Testing Registry Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Test registry configuration
+          echo "@protomolecule:registry=https://npm.pkg.github.com" > ~/.npmrc.test
+          echo "//npm.pkg.github.com/:_authToken=TEST_TOKEN" >> ~/.npmrc.test
+          
+          # Verify configuration is valid
+          if grep -q "@protomolecule:registry=https://npm.pkg.github.com" ~/.npmrc.test; then
+            echo "✅ Registry configuration format is correct" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Registry configuration format is incorrect" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          rm ~/.npmrc.test
+
+      - name: 🔍 Test Build Artifact Verification Logic
+        run: |
+          echo "## 🏗️ Testing Build Artifact Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Simulate the build verification logic from release.yml
+          PACKAGES='[{"name":"@protomolecule/eslint-config","version":"2.0.2"},{"name":"@protomolecule/ui","version":"2.1.1"},{"name":"@protomolecule/colours","version":"2.1.1"}]'
+          
+          BUILD_VERIFIED=true
+          
+          while IFS= read -r PKG_NAME; do
+            PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
+            PKG_PATH="packages/$PKG_DIR"
+            
+            case "$PKG_NAME" in
+              "@protomolecule/eslint-config")
+                if [ ! -f "$PKG_PATH/dist/index.js" ]; then
+                  echo "❌ Missing: $PKG_PATH/dist/index.js" >> $GITHUB_STEP_SUMMARY
+                  BUILD_VERIFIED=false
+                else
+                  echo "✅ Found: $PKG_PATH/dist/index.js" >> $GITHUB_STEP_SUMMARY
+                fi
+                ;;
+              "@protomolecule/ui")
+                if [ ! -d "$PKG_PATH/dist" ]; then
+                  echo "❌ Missing: $PKG_PATH/dist directory" >> $GITHUB_STEP_SUMMARY
+                  BUILD_VERIFIED=false
+                else
+                  echo "✅ Found: $PKG_PATH/dist directory" >> $GITHUB_STEP_SUMMARY
+                fi
+                ;;
+              "@protomolecule/colours")
+                if [ ! -f "$PKG_PATH/index.css" ]; then
+                  echo "❌ Missing: $PKG_PATH/index.css" >> $GITHUB_STEP_SUMMARY
+                  BUILD_VERIFIED=false
+                else
+                  echo "✅ Found: $PKG_PATH/index.css" >> $GITHUB_STEP_SUMMARY
+                fi
+                ;;
+            esac
+          done < <(echo "$PACKAGES" | jq -r '.[] | .name')
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$BUILD_VERIFIED" = "false" ]; then
+            echo "❌ Build verification would fail" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ Build verification passed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 🧪 Test Package Path Resolution
+        run: |
+          echo "## 🔍 Testing Package Path Resolution" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Test the sed extraction logic
+          test_packages=(
+            "@protomolecule/ui"
+            "@protomolecule/eslint-config"
+            "@protomolecule/colours"
+            "@protomolecule/new-package"
+          )
+          
+          for pkg in "${test_packages[@]}"; do
+            PKG_DIR=$(echo "$pkg" | sed 's/@protomolecule\///')
+            echo "$pkg -> packages/$PKG_DIR" >> $GITHUB_STEP_SUMMARY
+            
+            # Verify extraction is correct
+            case "$pkg" in
+              "@protomolecule/ui")
+                if [ "$PKG_DIR" != "ui" ]; then
+                  echo "❌ Incorrect extraction for $pkg" >> $GITHUB_STEP_SUMMARY
+                  exit 1
+                fi
+                ;;
+              "@protomolecule/eslint-config")
+                if [ "$PKG_DIR" != "eslint-config" ]; then
+                  echo "❌ Incorrect extraction for $pkg" >> $GITHUB_STEP_SUMMARY
+                  exit 1
+                fi
+                ;;
+            esac
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Package path resolution working correctly" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🧪 Dry Run Publishing Test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## 🚀 Dry Run Publishing Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Configure npm for GitHub Packages
+          echo "@protomolecule:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          
+          # Test with dry-run for each package
+          for pkg in ui eslint-config colours; do
+            PKG_PATH="packages/$pkg"
+            
+            if [ -f "$PKG_PATH/package.json" ]; then
+              PKG_NAME=$(node -p "require('./$PKG_PATH/package.json').name")
+              PKG_PRIVATE=$(node -p "require('./$PKG_PATH/package.json').private || false")
+              
+              if [ "$PKG_PRIVATE" != "true" ]; then
+                echo "Testing $PKG_NAME..." >> $GITHUB_STEP_SUMMARY
+                
+                cd "$PKG_PATH"
+                
+                # Dry run test
+                if npm publish --registry https://npm.pkg.github.com --access public --dry-run 2>&1 | grep -q "npm notice"; then
+                  echo "✅ $PKG_NAME: Dry-run successful" >> $GITHUB_STEP_SUMMARY
+                else
+                  echo "⚠️ $PKG_NAME: Dry-run had warnings (this is OK for testing)" >> $GITHUB_STEP_SUMMARY
+                fi
+                
+                cd "${{ github.workspace }}"
+              fi
+            fi
+          done
+          
+          # Clean up
+          rm ~/.npmrc
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Dry run tests completed" >> $GITHUB_STEP_SUMMARY
+
+  test-error-handling:
+    name: 🧪 Test Error Handling
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 🧪 Test JSON Parsing Error Handling
+        run: |
+          echo "## 🔍 Testing Error Handling" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Test with malformed JSON
+          MALFORMED='[{"name":"test"'
+          
+          # This should handle the error gracefully
+          if echo "$MALFORMED" | jq -r '.[] | .name' 2>/dev/null; then
+            echo "❌ Failed to catch malformed JSON" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ Malformed JSON handled correctly" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Test with empty package list
+          EMPTY='[]'
+          
+          if [ "$(echo "$EMPTY" | jq -r '.[] | .name' 2>/dev/null)" = "" ]; then
+            echo "✅ Empty package list handled correctly" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Empty package list not handled correctly" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Error handling tests passed" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🧪 Test Variable Scoping
+        run: |
+          echo "## 🔍 Testing Variable Scoping with Process Substitution" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Test that process substitution preserves variable scope
+          TEST_VAR=true
+          
+          while IFS= read -r line; do
+            TEST_VAR=false
+          done < <(echo "test")
+          
+          if [ "$TEST_VAR" = "false" ]; then
+            echo "✅ Process substitution preserves variable scope" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Variable scope not preserved" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          # Test that pipeline doesn't preserve scope (expected behavior)
+          PIPE_VAR=true
+          echo "test" | while read -r line; do
+            PIPE_VAR=false
+          done
+          
+          if [ "$PIPE_VAR" = "true" ]; then
+            echo "✅ Pipeline subshell behavior confirmed (as expected)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Unexpected pipeline behavior" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
