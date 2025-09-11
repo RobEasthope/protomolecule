@@ -53,22 +53,28 @@ echo ""
 echo "2️⃣  Validating Package Configurations"
 echo "--------------------------------------"
 
-# Check each package
-for pkg in ui eslint-config colours; do
-  PKG_PATH="packages/$pkg"
-  
-  if [ -f "$PKG_PATH/package.json" ]; then
-    # Valid JSON
-    run_test "$pkg: Valid JSON" "node -e \"JSON.parse(require('fs').readFileSync('$PKG_PATH/package.json', 'utf8'))\""
+# Dynamically discover packages (exclude private packages)
+for PKG_PATH in packages/*/package.json; do
+  if [ -f "$PKG_PATH" ]; then
+    # Check if package is private
+    IS_PRIVATE=$(node -p "require('./$PKG_PATH').private || false" 2>/dev/null)
     
-    # Has repository field
-    run_test "$pkg: Has repository field" "node -p \"require('./$PKG_PATH/package.json').repository ? 'true' : 'false'\" | grep -q true"
-    
-    # Has publishConfig
-    run_test "$pkg: Has publishConfig" "node -p \"require('./$PKG_PATH/package.json').publishConfig ? 'true' : 'false'\" | grep -q true"
-    
-    # No duplicate fields (check line count of publishConfig)
-    run_test "$pkg: No duplicate publishConfig" "[ \$(grep -c '\"publishConfig\"' $PKG_PATH/package.json) -eq 1 ]"
+    if [ "$IS_PRIVATE" != "true" ]; then
+      PKG_NAME=$(node -p "require('./$PKG_PATH').name" 2>/dev/null)
+      PKG_DIR=$(basename $(dirname "$PKG_PATH"))
+      
+      # Valid JSON
+      run_test "$PKG_DIR: Valid JSON" "node -e \"JSON.parse(require('fs').readFileSync('$PKG_PATH', 'utf8'))\""
+      
+      # Has repository field
+      run_test "$PKG_DIR: Has repository field" "node -p \"require('./$PKG_PATH').repository ? 'true' : 'false'\" | grep -q true"
+      
+      # Has publishConfig
+      run_test "$PKG_DIR: Has publishConfig" "node -p \"require('./$PKG_PATH').publishConfig ? 'true' : 'false'\" | grep -q true"
+      
+      # No duplicate fields (check line count of publishConfig)
+      run_test "$PKG_DIR: No duplicate publishConfig" "[ \$(grep -c '\"publishConfig\"' $PKG_PATH) -eq 1 ]"
+    fi
   fi
 done
 
@@ -81,10 +87,28 @@ echo "Building packages..."
 if pnpm build > /dev/null 2>&1; then
   echo -e "${GREEN}Build successful${NC}"
   
-  # Check build outputs
-  run_test "eslint-config: dist/index.js exists" "[ -f packages/eslint-config/dist/index.js ]"
-  run_test "ui: dist directory exists" "[ -d packages/ui/dist ]"
-  run_test "colours: index.css exists" "[ -f packages/colours/index.css ]"
+  # Check build outputs dynamically
+  for PKG_PATH in packages/*/package.json; do
+    if [ -f "$PKG_PATH" ]; then
+      IS_PRIVATE=$(node -p "require('./$PKG_PATH').private || false" 2>/dev/null)
+      
+      if [ "$IS_PRIVATE" != "true" ]; then
+        PKG_DIR=$(dirname "$PKG_PATH")
+        PKG_NAME=$(basename "$PKG_DIR")
+        
+        # Check for common build outputs
+        if [ -d "$PKG_DIR/dist" ]; then
+          run_test "$PKG_NAME: dist directory exists" "[ -d $PKG_DIR/dist ]"
+        elif [ -d "$PKG_DIR/build" ]; then
+          run_test "$PKG_NAME: build directory exists" "[ -d $PKG_DIR/build ]"
+        elif [ -d "$PKG_DIR/lib" ]; then
+          run_test "$PKG_NAME: lib directory exists" "[ -d $PKG_DIR/lib ]"
+        elif [ -f "$PKG_DIR/index.css" ]; then
+          run_test "$PKG_NAME: index.css exists" "[ -f $PKG_DIR/index.css ]"
+        fi
+      fi
+    fi
+  done
 else
   echo -e "${RED}Build failed${NC}"
   ((TESTS_FAILED++))

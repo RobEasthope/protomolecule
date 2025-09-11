@@ -202,6 +202,19 @@ jobs:
                 continue
               fi
               
+              # Verify build output exists before publishing
+              if [ -f "package.json" ]; then
+                # Check for common build output locations
+                if [ -d "dist" ] || [ -d "build" ] || [ -d "lib" ] || [ -f "index.css" ] || [ -f "*.d.ts" ]; then
+                  echo "Build output verified for $name" >> $GITHUB_STEP_SUMMARY
+                else
+                  # Check if this package has a build script
+                  if grep -q '"build":' package.json; then
+                    echo "⚠️ Warning: No obvious build output found for $name (checked dist/, build/, lib/)" >> $GITHUB_STEP_SUMMARY
+                  fi
+                fi
+              fi
+              
               # Capture publish output and check result
               if output=$(npm publish --access public 2>&1); then
                 echo "✅ $name@$version published successfully" >> $GITHUB_STEP_SUMMARY
