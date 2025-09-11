@@ -1,5 +1,11 @@
 # @protomolecule/eslint-config
 
+## 2.1.0
+
+### Minor Changes
+
+- 6baaf4b: Add Astro file linting support to eslint-config package
+
 ## 2.0.2
 
 ### Patch Changes

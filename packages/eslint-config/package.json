@@ -1,6 +1,6 @@
 {
   "name": "@protomolecule/eslint-config",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "repository": {
     "type": "git",
@@ -36,7 +36,9 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
+    "astro-eslint-parser": "^1.0.0",
     "eslint-config-canonical": "^45.0.0",
+    "eslint-plugin-astro": "^1.0.0",
     "typescript-eslint": "^8.42.0"
   },
   "devDependencies": {
