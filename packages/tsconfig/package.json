@@ -11,6 +11,8 @@
   "scripts": {
     "clean": "rimraf node_modules",
     "format": "npx prettier --write .",
+    "lint:md": "markdownlint-cli2 '**/*.md' '!**/node_modules/**'",
+    "lint:md:fix": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' --fix",
     "sort-pkg-json": "npx sort-package-json"
   },
   "devDependencies": {

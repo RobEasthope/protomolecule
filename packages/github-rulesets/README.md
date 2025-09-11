@@ -70,6 +70,7 @@ await octokit.repos.createRepoRuleset({
 
 1. Copy the ruleset JSON file
 2. Modify the rules as needed:
+
    ```json
    {
      "name": "Custom Protection",
@@ -86,6 +87,7 @@ await octokit.repos.createRepoRuleset({
      ]
    }
    ```
+
 3. Import the modified ruleset
 
 ### Common Customizations

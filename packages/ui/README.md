@@ -150,7 +150,7 @@ pnpm storybook
 pnpm build-storybook
 ```
 
-Access at: http://localhost:6006
+Access at: <http://localhost:6006>
 
 ### Story Structure
 
