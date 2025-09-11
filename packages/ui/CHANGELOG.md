@@ -1,5 +1,15 @@
 # @protomolecule/ui
 
+## 3.0.0
+
+### Major Changes
+
+- 6e5085d: BREAKING CHANGE: Rename Prose component to SanityProse to avoid conflicts with future work
+
+  - `Prose` component is now `SanityProse`
+  - `ProseProps` type is now `SanityProseProps`
+  - All imports need to be updated from `Prose` to `SanityProse`
+
 ## 2.1.2
 
 ### Patch Changes

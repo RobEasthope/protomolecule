@@ -1,6 +1,6 @@
 {
   "name": "@protomolecule/ui",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "React component library for Protomolecule projects",
   "repository": {
     "type": "git",
