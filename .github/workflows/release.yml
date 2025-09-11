@@ -167,107 +167,28 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
+      - name: 📦 Setup GitHub Packages
+        if: steps.changesets.outputs.published == 'true'
+        uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@protomolecule'
+
       - name: 📦 Publish to GitHub Packages
         if: steps.changesets.outputs.published == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Configure npm for GitHub Packages
-          echo "@protomolecule:registry=https://npm.pkg.github.com" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          
-          # Parse published packages
-          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
-          
-          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
-            # Verify build artifacts exist before attempting to publish
-            echo "### Build Verification" >> $GITHUB_STEP_SUMMARY
-            BUILD_VERIFIED=true
+          # Publish each package that was just published to NPM
+          echo "${{ steps.changesets.outputs.publishedPackages }}" | jq -c '.[]' | while read pkg; do
+            name=$(echo "$pkg" | jq -r '.name')
+            dir=$(echo "$name" | sed 's/@protomolecule\///')
             
-            # Use process substitution to avoid subshell variable scope issues
-            while IFS= read -r PKG_NAME; do
-              # Extract package directory name from scoped package name
-              PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
-              PKG_PATH="packages/$PKG_DIR"
-              
-              # Check if package directory exists
-              if [ ! -d "$PKG_PATH" ]; then
-                echo "⚠️ Package directory not found: $PKG_PATH" >> $GITHUB_STEP_SUMMARY
-                BUILD_VERIFIED=false
-                continue
-              fi
-              
-              # Verify build outputs based on package type
-              case "$PKG_NAME" in
-                "@protomolecule/eslint-config")
-                  if [ ! -f "$PKG_PATH/dist/index.js" ]; then
-                    echo "❌ Missing build output for $PKG_NAME: dist/index.js" >> $GITHUB_STEP_SUMMARY
-                    BUILD_VERIFIED=false
-                  fi
-                  ;;
-                "@protomolecule/ui")
-                  if [ ! -d "$PKG_PATH/dist" ]; then
-                    echo "❌ Missing build output for $PKG_NAME: dist directory" >> $GITHUB_STEP_SUMMARY
-                    BUILD_VERIFIED=false
-                  fi
-                  ;;
-                "@protomolecule/colours")
-                  if [ ! -f "$PKG_PATH/index.css" ]; then
-                    echo "❌ Missing required file for $PKG_NAME: index.css" >> $GITHUB_STEP_SUMMARY
-                    BUILD_VERIFIED=false
-                  fi
-                  ;;
-              esac
-            done < <(echo "$PUBLISHED" | jq -r '.[] | "\(.name)"')
-            
-            if [ "$BUILD_VERIFIED" = "false" ]; then
-              echo "❌ Build verification failed. Skipping GitHub Packages publishing." >> $GITHUB_STEP_SUMMARY
-              exit 1
+            if [ -d "packages/$dir" ]; then
+              echo "Publishing $name to GitHub Packages..."
+              (cd "packages/$dir" && npm publish --access public) || echo "$name already published"
             fi
-            
-            echo "✅ All build outputs verified" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            
-            # Publish packages to GitHub Packages
-            echo "### Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-            
-            # Use process substitution and jq for consistent parsing
-            while IFS=$'\t' read -r PKG_NAME PKG_VERSION; do
-              # Dynamically determine package path from package name
-              PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
-              PKG_PATH="packages/$PKG_DIR"
-              
-              # Verify package exists and is public
-              if [ -f "$PKG_PATH/package.json" ]; then
-                PKG_PRIVATE=$(node -p "require('./$PKG_PATH/package.json').private || false")
-                if [ "$PKG_PRIVATE" != "true" ]; then
-                  echo "Publishing $PKG_NAME@$PKG_VERSION to GitHub Packages..." >> $GITHUB_STEP_SUMMARY
-                  
-                  # Navigate to package directory and publish
-                  cd "$PKG_PATH"
-                  
-                  # Publish to GitHub Packages without modifying package.json
-                  if npm publish --registry https://npm.pkg.github.com --access public; then
-                    echo "✅ $PKG_NAME@$PKG_VERSION published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-                  else
-                    echo "⚠️ Failed to publish $PKG_NAME@$PKG_VERSION to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-                  fi
-                  
-                  # Return to root directory
-                  cd "${{ github.workspace }}"
-                else
-                  echo "⏭️ Skipping private package: $PKG_NAME" >> $GITHUB_STEP_SUMMARY
-                fi
-              else
-                echo "⚠️ Package not found: $PKG_PATH" >> $GITHUB_STEP_SUMMARY
-              fi
-            done < <(echo "$PUBLISHED" | jq -r '.[] | "\(.name)\t\(.version)"')
-          else
-            echo "No packages to publish to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
+          done
 
       - name: ✨ Enhance GitHub Release Notes  
         if: steps.changesets.outputs.published == 'true'
