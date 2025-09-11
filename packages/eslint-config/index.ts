@@ -1,5 +1,6 @@
 /* eslint-disable canonical/filename-match-exported */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { astro } from "./rules/astro";
 import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";
@@ -13,6 +14,7 @@ const config: any[] = [
   packageJson,
   storybook,
   typescriptOverrides,
+  ...astro,
   preferences,
 ];
 
