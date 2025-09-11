@@ -1,5 +1,18 @@
 # @protomolecule/ui
 
+## 2.0.0
+
+### Major Changes
+
+- e6fdc43: feat!: rename @protomolecule/radix-colors to @protomolecule/colours
+
+  BREAKING CHANGE: Package renamed from @protomolecule/radix-colors to @protomolecule/colours. Update all imports accordingly.
+
+### Patch Changes
+
+- Updated dependencies [e6fdc43]
+  - @protomolecule/colours@2.0.0
+
 ## 1.1.2
 
 ### Patch Changes
