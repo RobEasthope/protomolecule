@@ -7,16 +7,24 @@
     "access": "public"
   },
   "type": "module",
-  "main": "index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
-    "index.ts",
-    "components",
-    "utils",
-    "test-setup.ts",
-    "vitest.d.ts"
+    "dist",
+    "README.md"
   ],
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json && vite build --config vite.config.build.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build",
     "build-storybook": "storybook build",
     "clean": "rimraf node_modules",
     "dev": "storybook dev -p 6006 --no-open",
