@@ -1,6 +1,6 @@
-# @protomolecule/colours
+# @protomolecule/github-rulesets
 
-## 2.0.1
+## 1.0.1
 
 ### Patch Changes
 
@@ -13,11 +13,3 @@
   - Added npm scripts for manual markdown linting (lint:md and lint:md:fix)
   - Added turbo tasks for running markdown linting across all packages
   - Added lint:md scripts to each package for package-level linting
-
-## 2.0.0
-
-### Major Changes
-
-- e6fdc43: feat!: rename @protomolecule/radix-colors to @protomolecule/colours
-
-  BREAKING CHANGE: Package renamed from @protomolecule/radix-colors to @protomolecule/colours. Update all imports accordingly.
