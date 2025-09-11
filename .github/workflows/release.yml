@@ -167,6 +167,74 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
+      - name: 📦 Publish to GitHub Packages
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Configure npm for GitHub Packages
+          echo "@RobEasthope:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          
+          # Parse published packages
+          PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
+          
+          if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
+              PKG_NAME=$(echo "$PACKAGE_VERSION" | cut -d'@' -f1-2)
+              PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
+              PKG_PATH=""
+              
+              # Determine package path
+              case "$PKG_NAME" in
+                "@protomolecule/ui")
+                  PKG_PATH="packages/ui"
+                  ;;
+                "@protomolecule/eslint-config")
+                  PKG_PATH="packages/eslint-config"
+                  ;;
+                "@protomolecule/colours")
+                  PKG_PATH="packages/colours"
+                  ;;
+                *)
+                  echo "⚠️ Unknown package: $PKG_NAME" >> $GITHUB_STEP_SUMMARY
+                  continue
+                  ;;
+              esac
+              
+              # Only publish public packages to GitHub Packages
+              if [ -f "$PKG_PATH/package.json" ]; then
+                PKG_PRIVATE=$(node -p "require('./$PKG_PATH/package.json').private || false")
+                if [ "$PKG_PRIVATE" != "true" ]; then
+                  echo "Publishing $PKG_NAME to GitHub Packages..." >> $GITHUB_STEP_SUMMARY
+                  
+                  # Navigate to package directory and publish
+                  cd "$PKG_PATH"
+                  
+                  # Update package.json temporarily to set the repository for GitHub Packages
+                  npm pkg set publishConfig.registry="https://npm.pkg.github.com"
+                  
+                  # Publish to GitHub Packages
+                  if npm publish --registry https://npm.pkg.github.com; then
+                    echo "✅ $PKG_NAME published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "⚠️ Failed to publish $PKG_NAME to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+                  fi
+                  
+                  # Return to root directory
+                  cd "${{ github.workspace }}"
+                else
+                  echo "⏭️ Skipping private package: $PKG_NAME" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            done
+          else
+            echo "No packages to publish to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: ✨ Enhance GitHub Release Notes  
         if: steps.changesets.outputs.published == 'true'
         env:
