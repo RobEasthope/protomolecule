@@ -24,10 +24,10 @@
     "test:ui": "turbo run test:ui --filter=@protomolecule/ui"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown",
-    "**/*.{js,jsx,ts,tsx,mjs}": [
-      "pnpm lint:fix-staged"
+    "package.json": [
+      "prettier --write --ignore-unknown"
     ],
+    "**/*": "prettier --write --ignore-unknown",
     ".github/workflows/*.yml": [
       "npx yaml-lint"
     ],
