@@ -167,18 +167,16 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
-      - name: 📦 Setup GitHub Packages
-        if: steps.changesets.outputs.published == 'true'
-        uses: actions/setup-node@v4
-        with:
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@protomolecule'
-
       - name: 📦 Publish to GitHub Packages
         if: steps.changesets.outputs.published == 'true'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Using same pattern as Changesets - direct token in env
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Configure npm for GitHub Packages (similar to how Changesets configures for NPM)
+          echo "@protomolecule:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
+          
           # Publish each package that was just published to NPM
           echo "${{ steps.changesets.outputs.publishedPackages }}" | jq -c '.[]' | while read pkg; do
             name=$(echo "$pkg" | jq -r '.name')
