@@ -1,5 +1,4 @@
 ---
-"protomolecule": minor
 "@protomolecule/ui": patch
 "@protomolecule/eslint-config": patch
 "@protomolecule/tsconfig": patch
