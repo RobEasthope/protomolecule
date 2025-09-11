@@ -12,27 +12,16 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "lint:fix-staged": "turbo run lint:fix-staged",
-    "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
-    "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
     "lint:md": "turbo run lint:md",
     "lint:md:fix": "turbo run lint:md:fix",
+    "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
+    "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
+    "prepare": "husky",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
     "test:hooks": "vitest run test/hooks",
-    "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.29.7",
-    "@types/node": "^22.18.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.6",
-    "markdownlint-cli2": "^0.18.1",
-    "rimraf": "^6.0.1",
-    "turbo": "^2.5.6",
-    "vitest": "^3.2.4",
-    "yaml-lint": "^1.7.0"
+    "test:ui": "turbo run test:ui --filter=@protomolecule/ui"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
@@ -45,6 +34,17 @@
     "**/*.md": [
       "markdownlint-cli2 --fix"
     ]
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "^22.18.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "markdownlint-cli2": "^0.18.1",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.5.6",
+    "vitest": "^3.2.4",
+    "yaml-lint": "^1.7.0"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {

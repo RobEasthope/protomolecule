@@ -1,8 +1,8 @@
 {
   "name": "@protomolecule/tsconfig",
   "version": "1.0.1",
-  "license": "MIT",
   "private": true,
+  "license": "MIT",
   "files": [
     "base.json",
     "react-library.json",
