@@ -32,6 +32,19 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0
 
+  packages/colours:
+    dependencies:
+      "@radix-ui/colors":
+        specifier: ^3.0.0
+        version: 3.0.0
+    devDependencies:
+      "@protomolecule/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+
   packages/eslint-config:
     dependencies:
       eslint:
@@ -72,19 +85,6 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
 
-  packages/radix-colors:
-    dependencies:
-      "@radix-ui/colors":
-        specifier: ^3.0.0
-        version: 3.0.0
-    devDependencies:
-      "@protomolecule/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
-
   packages/tsconfig:
     devDependencies:
       rimraf:
@@ -96,9 +96,9 @@ importers:
       "@portabletext/react":
         specifier: ^3.1.0
         version: 3.1.0(react@19.1.1)
-      "@protomolecule/radix-colors":
+      "@protomolecule/colours":
         specifier: workspace:*
-        version: link:../radix-colors
+        version: link:../colours
       "@radix-ui/react-slot":
         specifier: ^1.0.2
         version: 1.0.2(@types/react@19.1.12)(react@19.1.1)

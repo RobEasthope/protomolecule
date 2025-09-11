@@ -89,7 +89,7 @@ const className = cn(
 
 This package uses Tailwind CSS v4 with CSS-based configuration. The configuration is located in the package root and includes:
 
-- Custom color system via `@protomolecule/radix-colors`
+- Custom color system via `@protomolecule/colours`
 - Responsive design utilities
 - Component-specific styles
 

@@ -38,7 +38,7 @@ This monorepo contains the following packages:
 | [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 1.1.1   | Private |
 | [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 1.0.0   | **NPM** |
 | [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 1.0.0   | Private |
-| [`@protomolecule/radix-colors`](./packages/radix-colors)       | Radix UI color system                  | 1.0.0   | Private |
+| [`@protomolecule/colours`](./packages/colours)                 | Radix UI color system                  | 1.0.0   | Private |
 | [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 1.0.0   | Private |
 
 ### 📥 Installing Public Packages
