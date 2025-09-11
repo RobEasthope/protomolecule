@@ -181,29 +181,64 @@ jobs:
           PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
           
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            # Verify build artifacts exist before attempting to publish
+            echo "### Build Verification" >> $GITHUB_STEP_SUMMARY
+            BUILD_VERIFIED=true
+            
+            echo "$PUBLISHED" | jq -r '.[] | "\(.name)"' | while read -r PKG_NAME; do
+              # Extract package directory name from scoped package name
+              PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
+              PKG_PATH="packages/$PKG_DIR"
+              
+              # Check if package directory exists
+              if [ ! -d "$PKG_PATH" ]; then
+                echo "⚠️ Package directory not found: $PKG_PATH" >> $GITHUB_STEP_SUMMARY
+                BUILD_VERIFIED=false
+                continue
+              fi
+              
+              # Verify build outputs based on package type
+              case "$PKG_NAME" in
+                "@protomolecule/eslint-config")
+                  if [ ! -f "$PKG_PATH/dist/index.js" ]; then
+                    echo "❌ Missing build output for $PKG_NAME: dist/index.js" >> $GITHUB_STEP_SUMMARY
+                    BUILD_VERIFIED=false
+                  fi
+                  ;;
+                "@protomolecule/ui")
+                  if [ ! -d "$PKG_PATH/dist" ]; then
+                    echo "❌ Missing build output for $PKG_NAME: dist directory" >> $GITHUB_STEP_SUMMARY
+                    BUILD_VERIFIED=false
+                  fi
+                  ;;
+                "@protomolecule/colours")
+                  if [ ! -f "$PKG_PATH/index.css" ]; then
+                    echo "❌ Missing required file for $PKG_NAME: index.css" >> $GITHUB_STEP_SUMMARY
+                    BUILD_VERIFIED=false
+                  fi
+                  ;;
+              esac
+            done
+            
+            if [ "$BUILD_VERIFIED" = "false" ]; then
+              echo "❌ Build verification failed. Skipping GitHub Packages publishing." >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+            
+            echo "✅ All build outputs verified" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Publish packages to GitHub Packages
+            echo "### Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
             echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
               PKG_NAME=$(echo "$PACKAGE_VERSION" | cut -d'@' -f1-2)
               PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
-              PKG_PATH=""
               
-              # Determine package path
-              case "$PKG_NAME" in
-                "@protomolecule/ui")
-                  PKG_PATH="packages/ui"
-                  ;;
-                "@protomolecule/eslint-config")
-                  PKG_PATH="packages/eslint-config"
-                  ;;
-                "@protomolecule/colours")
-                  PKG_PATH="packages/colours"
-                  ;;
-                *)
-                  echo "⚠️ Unknown package: $PKG_NAME" >> $GITHUB_STEP_SUMMARY
-                  continue
-                  ;;
-              esac
+              # Dynamically determine package path from package name
+              PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
+              PKG_PATH="packages/$PKG_DIR"
               
-              # Only publish public packages to GitHub Packages
+              # Verify package exists and is public
               if [ -f "$PKG_PATH/package.json" ]; then
                 PKG_PRIVATE=$(node -p "require('./$PKG_PATH/package.json').private || false")
                 if [ "$PKG_PRIVATE" != "true" ]; then
@@ -212,11 +247,8 @@ jobs:
                   # Navigate to package directory and publish
                   cd "$PKG_PATH"
                   
-                  # Update package.json temporarily to set the repository for GitHub Packages
-                  npm pkg set publishConfig.registry="https://npm.pkg.github.com"
-                  
-                  # Publish to GitHub Packages
-                  if npm publish --registry https://npm.pkg.github.com; then
+                  # Publish to GitHub Packages without modifying package.json
+                  if npm publish --registry https://npm.pkg.github.com --access public; then
                     echo "✅ $PKG_NAME published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
                   else
                     echo "⚠️ Failed to publish $PKG_NAME to GitHub Packages" >> $GITHUB_STEP_SUMMARY
@@ -227,6 +259,8 @@ jobs:
                 else
                   echo "⏭️ Skipping private package: $PKG_NAME" >> $GITHUB_STEP_SUMMARY
                 fi
+              else
+                echo "⚠️ Package not found: $PKG_PATH" >> $GITHUB_STEP_SUMMARY
               fi
             done
           else
