@@ -2,7 +2,7 @@
 "@protomolecule/ui": patch
 "@protomolecule/eslint-config": patch
 "@protomolecule/tsconfig": patch
-"@protomolecule/radix-colors": patch
+"@protomolecule/colours": patch
 "@protomolecule/github-rulesets": patch
 ---
 
