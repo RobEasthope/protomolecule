@@ -1,4 +1,4 @@
 @import "tailwindcss";
 @import "./base.css";
 @import "./utilities.css";
-@import "@protomolecule/radix-colors";
+@import "@protomolecule/colours";
