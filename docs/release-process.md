@@ -8,7 +8,8 @@ Protomolecule uses a fully automated continuous deployment pipeline:
 
 - **Changesets** for version management
 - **GitHub Actions** for CI/CD
-- **NPM** for package publishing
+- **NPM** for primary package publishing
+- **GitHub Packages** for secondary package publishing
 - **Semantic versioning** for version numbers
 
 ## Automated Release Flow
@@ -22,7 +23,8 @@ graph TD
     E --> F[Changesets create Version PR]
     F --> G[Version PR merged]
     G --> H[Packages published to NPM]
-    H --> I[GitHub Release created]
+    H --> I[Packages published to GitHub Packages]
+    I --> J[GitHub Release created]
 ```
 
 ## For Contributors
@@ -153,6 +155,7 @@ The release process is triggered automatically when changes are merged to `main`
 4. **Automatic Publishing**
    - Packages built and tested
    - Published to NPM registry
+   - Published to GitHub Packages registry
    - GitHub Release created
    - Announcement posted
 
@@ -207,13 +210,29 @@ Pre-release versions look like: `2.0.0-beta.0`
 
 ## Published Packages
 
-The following packages are published to NPM:
+The following packages are published to both NPM and GitHub Packages:
 
 | Package                        | NPM                                                                                                                                 | Description             |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | `@protomolecule/ui`            | [![npm](https://img.shields.io/npm/v/@protomolecule/ui.svg)](https://www.npmjs.com/package/@protomolecule/ui)                       | React component library |
 | `@protomolecule/eslint-config` | [![npm](https://img.shields.io/npm/v/@protomolecule/eslint-config.svg)](https://www.npmjs.com/package/@protomolecule/eslint-config) | ESLint configuration    |
 | `@protomolecule/colours`       | [![npm](https://img.shields.io/npm/v/@protomolecule/colours.svg)](https://www.npmjs.com/package/@protomolecule/colours)             | Radix UI colour system  |
+
+### Installing from Different Registries
+
+**From NPM (default):**
+
+```bash
+npm install @protomolecule/ui
+```
+
+**From GitHub Packages:**
+
+```bash
+# Configure npm to use GitHub Packages for @protomolecule scope
+echo "@protomolecule:registry=https://npm.pkg.github.com" >> .npmrc
+npm install @protomolecule/ui
+```
 
 Private packages (`@protomolecule/tsconfig`, `@protomolecule/github-rulesets`) are versioned but not published.
 
@@ -237,6 +256,7 @@ Runs on push to `main`:
 - Creates Version PR via Changesets
 - On Version PR merge:
   - Publishes to NPM
+  - Publishes to GitHub Packages
   - Creates GitHub Release
   - Posts release summary
 
