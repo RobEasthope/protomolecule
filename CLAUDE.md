@@ -111,7 +111,9 @@ When creating PRs that modify any package:
 
 5. **CI will block PRs without changesets** - this is mandatory
 
-**Note:** Only `@protomolecule/eslint-config` is published to NPM. Other packages (`ui`, `tsconfig`, `radix-colors`, `github-rulesets`) are private but still require changesets for version tracking.
+**IMPORTANT:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
+
+**Note:** Only `@protomolecule/eslint-config` is published to NPM. Other packages (`ui`, `tsconfig`, `colours`, `github-rulesets`) are private but still require changesets for version tracking.
 
 ## Monorepo Structure
 
