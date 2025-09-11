@@ -72,11 +72,11 @@ pnpm build-storybook
 
 ### Content Components
 
-| Component      | Description                  | Use Case               |
-| -------------- | ---------------------------- | ---------------------- |
-| **Prose**      | Rich text with Portable Text | Dynamic content        |
-| **BasicProse** | Simple prose component       | Basic formatting       |
-| **FullProse**  | Full-featured prose          | All formatting options |
+| Component       | Description                  | Use Case               |
+| --------------- | ---------------------------- | ---------------------- |
+| **SanityProse** | Rich text with Portable Text | Dynamic content        |
+| **BasicProse**  | Simple prose component       | Basic formatting       |
+| **FullProse**   | Full-featured prose          | All formatting options |
 
 ## 🛠️ Utilities
 
