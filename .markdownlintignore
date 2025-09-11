@@ -1,0 +1,9 @@
+node_modules/
+**/node_modules/
+dist/
+build/
+coverage/
+.next/
+.turbo/
+storybook-static/
+pnpm-lock.yaml

@@ -14,6 +14,8 @@
     "lint:fix-staged": "turbo run lint:fix-staged",
     "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
     "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
+    "lint:md": "markdownlint-cli2 '**/*.md' '!**/node_modules/**'",
+    "lint:md:fix": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' --fix",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
@@ -26,6 +28,7 @@
     "@types/node": "^22.18.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
+    "markdownlint-cli2": "^0.18.1",
     "rimraf": "^6.0.1",
     "turbo": "^2.5.6",
     "vitest": "^3.2.4",
@@ -38,6 +41,9 @@
     ],
     ".github/workflows/*.yml": [
       "npx yaml-lint"
+    ],
+    "**/*.md": [
+      "markdownlint-cli2 --fix"
     ]
   },
   "packageManager": "pnpm@10.15.0",
