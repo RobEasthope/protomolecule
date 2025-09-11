@@ -2,7 +2,10 @@
 
 [![CI](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml)
 [![Release](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml)
+
+[![npm version](https://img.shields.io/npm/v/@protomolecule/ui.svg)](https://www.npmjs.com/package/@protomolecule/ui)
 [![npm version](https://img.shields.io/npm/v/@protomolecule/eslint-config.svg)](https://www.npmjs.com/package/@protomolecule/eslint-config)
+[![npm version](https://img.shields.io/npm/v/@protomolecule/colours.svg)](https://www.npmjs.com/package/@protomolecule/colours)
 
 A modern, open-source React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
 
