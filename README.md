@@ -35,19 +35,29 @@ This monorepo contains the following packages:
 
 | Package                                                        | Description                            | Version | Status  |
 | -------------------------------------------------------------- | -------------------------------------- | ------- | ------- |
-| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 1.1.1   | Private |
-| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 1.0.0   | **NPM** |
-| [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 1.0.0   | Private |
-| [`@protomolecule/colours`](./packages/colours)                 | Radix UI color system                  | 1.0.0   | Private |
-| [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 1.0.0   | Private |
+| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 2.0.0   | **NPM** |
+| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 2.0.1   | **NPM** |
+| [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 2.0.0   | Private |
+| [`@protomolecule/colours`](./packages/colours)                 | Radix UI color system                  | 2.0.0   | **NPM** |
+| [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 2.0.0   | Private |
 
 ### 📥 Installing Public Packages
 
 ```bash
+# Install the UI component library
+npm install @protomolecule/ui
+# or
+pnpm add @protomolecule/ui
+
 # Install the ESLint configuration
 npm install --save-dev @protomolecule/eslint-config
 # or
 pnpm add -D @protomolecule/eslint-config
+
+# Install the colour system
+npm install @protomolecule/colours
+# or
+pnpm add @protomolecule/colours
 ```
 
 ## 🛠️ Development
@@ -176,7 +186,13 @@ This project uses continuous deployment:
 
 ### Published Packages
 
-Currently, only `@protomolecule/eslint-config` is published to NPM. Other packages remain private but are still versioned for internal tracking.
+The following packages are published to NPM:
+
+- `@protomolecule/ui` - React component library
+- `@protomolecule/eslint-config` - ESLint configuration
+- `@protomolecule/colours` - Radix UI color system
+
+Other packages (`tsconfig`, `github-rulesets`) remain private but are still versioned for internal tracking.
 
 ## 📝 Development Guide
 

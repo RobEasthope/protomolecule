@@ -113,7 +113,13 @@ When creating PRs that modify any package:
 
 **IMPORTANT:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
 
-**Note:** Only `@protomolecule/eslint-config` is published to NPM. Other packages (`ui`, `tsconfig`, `colours`, `github-rulesets`) are private but still require changesets for version tracking.
+**Published to NPM:**
+
+- `@protomolecule/ui` - React component library
+- `@protomolecule/eslint-config` - ESLint configuration
+- `@protomolecule/colours` - Radix UI color system
+
+**Private packages** (`tsconfig`, `github-rulesets`) still require changesets for version tracking but are not published to NPM.
 
 ## Monorepo Structure
 
@@ -171,19 +177,19 @@ This is a React component library monorepo built with:
 
 ### Package Details
 
-1. **@protomolecule/ui**: React components with Storybook
+1. **@protomolecule/ui**: React components with Storybook (published to NPM)
    - Components with co-located tests, stories, and Sanity schemas
    - Multi-framework support (Next.js and React Router)
    - Utilities for Tailwind class management
    - Includes Tailwind CSS v4 configuration
 
-2. **@protomolecule/eslint-config**: Shared ESLint rules (publishable)
+2. **@protomolecule/eslint-config**: Shared ESLint rules (published to NPM)
 
 3. **@protomolecule/github-rulesets**: GitHub repository configuration (private)
 
-4. **@protomolecule/colours**: Radix UI color imports (private)
+4. **@protomolecule/colours**: Radix UI color imports (published to NPM)
 
-5. **@protomolecule/tsconfig**: Shared TypeScript configurations (publishable)
+5. **@protomolecule/tsconfig**: Shared TypeScript configurations (private)
 
 ### Key Architectural Patterns
 
