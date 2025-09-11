@@ -99,7 +99,7 @@ await octokit.repos.createRepoRuleset({
 
 ## 📁 Package Structure
 
-```
+```text
 packages/github-rulesets/
 ├── Protect production ruleset.json
 ├── package.json

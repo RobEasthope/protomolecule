@@ -119,13 +119,13 @@ pnpm changeset status  # Check pending changesets
 
 ### Project Structure
 
-```
+```text
 protomolecule/
 ├── packages/
 │   ├── ui/                    # React component library
 │   ├── eslint-config/         # Shared ESLint configuration
 │   ├── tsconfig/              # Shared TypeScript configurations
-│   ├── radix-colors/          # Radix UI color system
+│   ├── colours/               # Radix UI color system
 │   └── github-rulesets/       # GitHub configuration
 ├── .husky/                    # Git hooks
 ├── turbo.json                 # Turborepo configuration
@@ -263,7 +263,7 @@ This project uses [Changesets](https://github.com/changesets/changesets) for ver
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 type(scope): description
 
 [optional body]
