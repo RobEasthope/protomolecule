@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Always use conventional commits format for all commits and PR titles:
 
-```
+```text
 <type>[optional scope]: <description>
 
 [optional body]
@@ -51,7 +51,7 @@ Always use conventional commits format for all commits and PR titles:
 
 ### Commit Message Examples
 
-```
+```text
 feat(ui): add loading state to Button component
 
 - Added isLoading prop
@@ -59,7 +59,7 @@ feat(ui): add loading state to Button component
 - Disables interaction during loading
 ```
 
-```
+```text
 fix!: change primary color token name
 
 BREAKING CHANGE: Renamed --color-primary to --color-brand-primary
@@ -117,12 +117,12 @@ When creating PRs that modify any package:
 
 This is a monorepo using Turborepo and pnpm workspaces. Packages are organized as follows:
 
-```
+```text
 packages/
 ├── ui/                    # React component library with Storybook (includes Tailwind CSS v4 config)
 ├── eslint-config/         # Shared ESLint configuration
 ├── github-rulesets/       # GitHub configuration rulesets
-├── radix-colors/          # Radix UI color system CSS
+├── colours/               # Radix UI color system CSS
 └── tsconfig/              # Shared TypeScript configurations
 ```
 

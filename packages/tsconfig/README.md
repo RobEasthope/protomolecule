@@ -134,7 +134,7 @@ pnpm clean
 
 ## 📁 Package Structure
 
-```
+```text
 packages/tsconfig/
 ├── base.json       # Base configuration
 ├── react.json      # React applications

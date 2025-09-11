@@ -118,7 +118,7 @@ Testing stack:
 
 Components with CMS integration include:
 
-```
+```text
 component/
 ├── Component.tsx          # React component
 ├── Component.test.tsx     # Tests
@@ -150,7 +150,7 @@ pnpm storybook
 pnpm build-storybook
 ```
 
-Access at: http://localhost:6006
+Access at: <http://localhost:6006>
 
 ### Story Structure
 
@@ -196,7 +196,7 @@ Uses shared configuration from `@protomolecule/eslint-config`:
 
 ## 📁 Project Structure
 
-```
+```text
 packages/ui/
 ├── src/
 │   ├── components/        # React components

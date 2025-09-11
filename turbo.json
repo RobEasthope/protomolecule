@@ -36,6 +36,12 @@
     "lint:fix-staged": {
       "outputs": []
     },
+    "lint:md": {
+      "outputs": []
+    },
+    "lint:md:fix": {
+      "outputs": []
+    },
     "clean": {
       "outputs": []
     },

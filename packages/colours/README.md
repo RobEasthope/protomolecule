@@ -102,11 +102,11 @@ Each color has 12 steps from 1-12:
 
 ### File Structure
 
-```
+```text
 packages/colours/
 ├── index.css        # Main export with all imports
-├── base.css         # Base color imports
-├── semantic.css     # Semantic color imports
+├── base.css         # Base color imports (if present)
+├── semantic.css     # Semantic color imports (if present)
 ├── package.json
 └── README.md
 ```
