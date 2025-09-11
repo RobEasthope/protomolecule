@@ -17,11 +17,14 @@ export { NextInternalLink } from "./components/InternalLink/NextInternalLink";
 
 export { ReactRouterLink } from "./components/InternalLink/ReactRouterLink";
 export { OmniLink } from "./components/OmniLink/OmniLink";
-export { BasicProseComponents } from "./components/Prose/components/BasicProse/BasicProse";
-export { default as BasicProseSchema } from "./components/Prose/components/BasicProse/BasicProse.schema";
-export { FullProseComponents } from "./components/Prose/components/FullProse/FullProse";
-export { default as FullProseSchema } from "./components/Prose/components/FullProse/FullProse.schema";
-export { Prose } from "./components/Prose/Prose";
+export { BasicProseComponents } from "./components/SanityProse/components/BasicProse/BasicProse";
+export { default as BasicProseSchema } from "./components/SanityProse/components/BasicProse/BasicProse.schema";
+export { FullProseComponents } from "./components/SanityProse/components/FullProse/FullProse";
+export { default as FullProseSchema } from "./components/SanityProse/components/FullProse/FullProse.schema";
+export {
+  SanityProse,
+  type SanityProseProps,
+} from "./components/SanityProse/SanityProse";
 export { Type } from "./components/Type/Type";
 
 // Utilities
