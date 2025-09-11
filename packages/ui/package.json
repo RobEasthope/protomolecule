@@ -1,15 +1,14 @@
 {
   "name": "@protomolecule/ui",
   "version": "2.1.1",
-  "license": "MIT",
   "description": "React component library for Protomolecule projects",
-  "publishConfig": {
-    "access": "public"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RobEasthope/protomolecule.git",
+    "directory": "packages/ui"
   },
+  "license": "MIT",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -17,14 +16,15 @@
       "require": "./dist/index.cjs"
     }
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json && vite build --config vite.config.build.ts",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
     "build-storybook": "storybook build",
     "clean": "rimraf node_modules",
     "dev": "storybook dev -p 6006 --no-open",
@@ -33,10 +33,12 @@
     "lint:fix-staged": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --max-warnings=Infinity --cache --cache-location ../../.turbo/.eslintcache-ui || true",
     "lint:md": "markdownlint-cli2 '**/*.md' '!**/node_modules/**'",
     "lint:md:fix": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' --fix",
+    "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
     "storybook": "storybook dev -p 6006 --no-open",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@portabletext/react": "^3.1.0",
@@ -85,5 +87,8 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,11 +1,13 @@
 {
   "name": "@protomolecule/colours",
   "version": "2.1.1",
-  "license": "MIT",
   "description": "Radix colors CSS imports for Protomolecule projects",
-  "publishConfig": {
-    "access": "public"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RobEasthope/protomolecule.git",
+    "directory": "packages/colours"
   },
+  "license": "MIT",
   "main": "index.css",
   "files": [
     "index.css"
@@ -23,5 +25,8 @@
   "devDependencies": {
     "@protomolecule/tsconfig": "workspace:*",
     "rimraf": "^6.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

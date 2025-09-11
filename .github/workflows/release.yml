@@ -167,6 +167,94 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
+      - name: 📦 Publish to GitHub Packages
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          # Using same pattern as Changesets - direct token in env
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Disable command echoing to prevent token exposure
+          set +x
+          
+          echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Configure npm for GitHub Packages (similar to how Changesets configures for NPM)
+          echo "@protomolecule:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
+          
+          # Track if any failures occur
+          rm -f /tmp/github-packages-failed
+          
+          # Publish each package that was just published to NPM
+          echo "${{ steps.changesets.outputs.publishedPackages }}" | jq -c '.[]' | while read pkg; do
+            name=$(echo "$pkg" | jq -r '.name')
+            version=$(echo "$pkg" | jq -r '.version')
+            dir=$(echo "$name" | sed 's/@protomolecule\///')
+            
+            if [ -d "packages/$dir" ]; then
+              echo "Publishing $name@$version to GitHub Packages..."
+              
+              # Navigate to package directory with error handling
+              if ! cd "packages/$dir"; then
+                echo "❌ Failed to navigate to packages/$dir" >> $GITHUB_STEP_SUMMARY
+                echo "FAILURE" > /tmp/github-packages-failed
+                continue
+              fi
+              
+              # Verify build output exists before publishing
+              if [ -f "package.json" ]; then
+                # Check for common build output locations
+                if [ -d "dist" ] || [ -d "build" ] || [ -d "lib" ] || [ -f "index.css" ] || ls *.d.ts 2>/dev/null | grep -q .; then
+                  echo "Build output verified for $name" >> $GITHUB_STEP_SUMMARY
+                else
+                  # Check if this package has a build script
+                  if grep -q '"build":' package.json; then
+                    echo "⚠️ Warning: No obvious build output found for $name (checked dist/, build/, lib/)" >> $GITHUB_STEP_SUMMARY
+                  fi
+                fi
+              fi
+              
+              # Capture publish output and check result
+              if output=$(npm publish --access public 2>&1); then
+                echo "✅ $name@$version published successfully" >> $GITHUB_STEP_SUMMARY
+              elif echo "$output" | grep -qE "(cannot publish over|409 Conflict|You cannot publish over the previously published)"; then
+                echo "⏭️ $name@$version already published" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ $name@$version failed to publish" >> $GITHUB_STEP_SUMMARY
+                echo "<details><summary>Error details</summary>" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
+                echo "$output" | head -20 >> $GITHUB_STEP_SUMMARY
+                echo '```' >> $GITHUB_STEP_SUMMARY
+                echo "</details>" >> $GITHUB_STEP_SUMMARY
+                echo "FAILURE" > /tmp/github-packages-failed
+              fi
+              
+              # Return to workspace root
+              cd "${{ github.workspace }}"
+            else
+              echo "⚠️ Package directory not found: packages/$dir" >> $GITHUB_STEP_SUMMARY
+              echo "FAILURE" > /tmp/github-packages-failed
+            fi
+          done
+          
+          # Clean up npmrc modifications
+          sed -i.bak '/@protomolecule:registry/d' ~/.npmrc
+          sed -i.bak '/npm.pkg.github.com/d' ~/.npmrc
+          rm -f ~/.npmrc.bak
+          
+          # Check if any failures occurred
+          if [ -f /tmp/github-packages-failed ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **Some packages failed to publish to GitHub Packages**" >> $GITHUB_STEP_SUMMARY
+            rm -f /tmp/github-packages-failed
+            exit 1
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **All packages published successfully to GitHub Packages**" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: ✨ Enhance GitHub Release Notes  
         if: steps.changesets.outputs.published == 'true'
         env:
