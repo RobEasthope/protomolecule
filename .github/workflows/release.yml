@@ -186,8 +186,19 @@ jobs:
           # Track if any failures occur
           rm -f /tmp/github-packages-failed
           
+          # Store the published packages JSON in a variable to avoid parsing issues
+          PUBLISHED_PKGS='${{ steps.changesets.outputs.publishedPackages }}'
+          
+          # Check if we have valid JSON before attempting to parse
+          if ! echo "$PUBLISHED_PKGS" | jq empty 2>/dev/null; then
+            echo "⚠️ Warning: Published packages output is not valid JSON" >> $GITHUB_STEP_SUMMARY
+            echo "Raw output: $PUBLISHED_PKGS" >> $GITHUB_STEP_SUMMARY
+            # Try to continue anyway in case the packages were published
+            PUBLISHED_PKGS='[]'
+          fi
+          
           # Publish each package that was just published to NPM
-          echo "${{ steps.changesets.outputs.publishedPackages }}" | jq -c '.[]' | while read pkg; do
+          echo "$PUBLISHED_PKGS" | jq -c '.[]' 2>/dev/null | while read pkg; do
             name=$(echo "$pkg" | jq -r '.name')
             version=$(echo "$pkg" | jq -r '.version')
             dir=$(echo "$name" | sed 's/@protomolecule\///')
