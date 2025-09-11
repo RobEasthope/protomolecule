@@ -93,6 +93,27 @@ jobs:
             fi
           fi
           
+          # Check UI package
+          if [ -f "packages/ui/package.json" ]; then
+            PKG_PRIVATE=$(node -p "require('./packages/ui/package.json').private || false")
+            if [ "$PKG_PRIVATE" != "true" ]; then
+              echo "✅ UI package: ready for publishing" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+          
+          # Check colours package
+          if [ -f "packages/colours/package.json" ]; then
+            PKG_PRIVATE=$(node -p "require('./packages/colours/package.json').private || false")
+            if [ "$PKG_PRIVATE" != "true" ]; then
+              if [ -f "packages/colours/index.css" ]; then
+                echo "✅ Colours package: ready for publishing (index.css found)" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ Colours package: index.css not found" >> $GITHUB_STEP_SUMMARY
+                VERIFICATION_FAILED=true
+              fi
+            fi
+          fi
+          
           echo "" >> $GITHUB_STEP_SUMMARY
           
           if [ "$VERIFICATION_FAILED" = "true" ]; then
