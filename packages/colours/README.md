@@ -1,4 +1,4 @@
-# @protomolecule/radix-colors
+# @protomolecule/colours
 
 Radix UI color system integration for Protomolecule projects, providing a comprehensive palette with dark mode support.
 
@@ -13,7 +13,7 @@ This is a private package within the Protomolecule monorepo. It's automatically 
 Import the color system in your main CSS file:
 
 ```css
-@import "@protomolecule/radix-colors";
+@import "@protomolecule/colours";
 
 /* Use color variables */
 .my-component {
@@ -28,7 +28,7 @@ Import the color system in your main CSS file:
 Import at the application root:
 
 ```javascript
-import "@protomolecule/radix-colors";
+import "@protomolecule/colours";
 ```
 
 ### With Tailwind CSS
@@ -103,7 +103,7 @@ Each color has 12 steps from 1-12:
 ### File Structure
 
 ```
-packages/radix-colors/
+packages/colours/
 ├── index.css        # Main export with all imports
 ├── base.css         # Base color imports
 ├── semantic.css     # Semantic color imports

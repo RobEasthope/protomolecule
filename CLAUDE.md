@@ -179,7 +179,7 @@ This is a React component library monorepo built with:
 
 3. **@protomolecule/github-rulesets**: GitHub repository configuration (private)
 
-4. **@protomolecule/radix-colors**: Radix UI color imports (private)
+4. **@protomolecule/colours**: Radix UI color imports (private)
 
 5. **@protomolecule/tsconfig**: Shared TypeScript configurations (publishable)
 
