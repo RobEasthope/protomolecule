@@ -1,0 +1,5 @@
+ignore:
+  - pnpm-lock.yaml
+  - pnpm-workspace.yaml
+  - "**/pnpm-lock.yaml"
+  - "**/pnpm-workspace.yaml"
