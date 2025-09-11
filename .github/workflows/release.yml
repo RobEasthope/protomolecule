@@ -174,7 +174,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           
           # Configure npm for GitHub Packages
-          echo "@RobEasthope:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "@protomolecule:registry=https://npm.pkg.github.com" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
           
           # Parse published packages
@@ -185,7 +185,8 @@ jobs:
             echo "### Build Verification" >> $GITHUB_STEP_SUMMARY
             BUILD_VERIFIED=true
             
-            echo "$PUBLISHED" | jq -r '.[] | "\(.name)"' | while read -r PKG_NAME; do
+            # Use process substitution to avoid subshell variable scope issues
+            while IFS= read -r PKG_NAME; do
               # Extract package directory name from scoped package name
               PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
               PKG_PATH="packages/$PKG_DIR"
@@ -218,7 +219,7 @@ jobs:
                   fi
                   ;;
               esac
-            done
+            done < <(echo "$PUBLISHED" | jq -r '.[] | "\(.name)"')
             
             if [ "$BUILD_VERIFIED" = "false" ]; then
               echo "❌ Build verification failed. Skipping GitHub Packages publishing." >> $GITHUB_STEP_SUMMARY
@@ -230,10 +231,9 @@ jobs:
             
             # Publish packages to GitHub Packages
             echo "### Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
-            echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
-              PKG_NAME=$(echo "$PACKAGE_VERSION" | cut -d'@' -f1-2)
-              PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
-              
+            
+            # Use process substitution and jq for consistent parsing
+            while IFS=$'\t' read -r PKG_NAME PKG_VERSION; do
               # Dynamically determine package path from package name
               PKG_DIR=$(echo "$PKG_NAME" | sed 's/@protomolecule\///')
               PKG_PATH="packages/$PKG_DIR"
@@ -242,16 +242,16 @@ jobs:
               if [ -f "$PKG_PATH/package.json" ]; then
                 PKG_PRIVATE=$(node -p "require('./$PKG_PATH/package.json').private || false")
                 if [ "$PKG_PRIVATE" != "true" ]; then
-                  echo "Publishing $PKG_NAME to GitHub Packages..." >> $GITHUB_STEP_SUMMARY
+                  echo "Publishing $PKG_NAME@$PKG_VERSION to GitHub Packages..." >> $GITHUB_STEP_SUMMARY
                   
                   # Navigate to package directory and publish
                   cd "$PKG_PATH"
                   
                   # Publish to GitHub Packages without modifying package.json
                   if npm publish --registry https://npm.pkg.github.com --access public; then
-                    echo "✅ $PKG_NAME published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+                    echo "✅ $PKG_NAME@$PKG_VERSION published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
                   else
-                    echo "⚠️ Failed to publish $PKG_NAME to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+                    echo "⚠️ Failed to publish $PKG_NAME@$PKG_VERSION to GitHub Packages" >> $GITHUB_STEP_SUMMARY
                   fi
                   
                   # Return to root directory
@@ -262,7 +262,7 @@ jobs:
               else
                 echo "⚠️ Package not found: $PKG_PATH" >> $GITHUB_STEP_SUMMARY
               fi
-            done
+            done < <(echo "$PUBLISHED" | jq -r '.[] | "\(.name)\t\(.version)"')
           else
             echo "No packages to publish to GitHub Packages" >> $GITHUB_STEP_SUMMARY
           fi
