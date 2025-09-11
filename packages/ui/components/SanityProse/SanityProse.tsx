@@ -3,19 +3,19 @@ import { cn } from "@/utils/tailwind";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { type TypedObject } from "sanity";
 
-export type ProseProps = {
+export type SanityProseProps = {
   readonly as: string;
   readonly className?: string;
   readonly components: unknown;
   readonly content: TypedObject | TypedObject[];
 };
 
-export function Prose({
+export function SanityProse({
   as = "div",
   className,
   components,
   content,
-}: ProseProps) {
+}: SanityProseProps) {
   if (!content) {
     return null;
   }
