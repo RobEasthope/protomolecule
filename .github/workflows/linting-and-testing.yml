@@ -48,7 +48,7 @@ jobs:
             echo "❌ **Root linting failed**" >> $GITHUB_STEP_SUMMARY
             LINT_FAILED=true
           fi
-          
+
           if [ "$LINT_FAILED" = "false" ]; then
             echo "✅ **All linting passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
@@ -101,7 +101,7 @@ jobs:
             echo "❌ **Root type checking failed**" >> $GITHUB_STEP_SUMMARY
             TYPECHECK_FAILED=true
           fi
-          
+
           if [ "$TYPECHECK_FAILED" = "false" ]; then
             echo "✅ **All type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
