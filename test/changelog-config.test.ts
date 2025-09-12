@@ -7,7 +7,11 @@ const require = createRequire(import.meta.url);
 
 describe("Changelog Configuration", () => {
   it("should have changelog config file", () => {
-    const configPath = join(process.cwd(), ".changeset", "changelog-config.js");
+    const configPath = join(
+      process.cwd(),
+      ".changeset",
+      "changelogFunctions.js",
+    );
     expect(existsSync(configPath)).toBe(true);
   });
 
@@ -28,7 +32,7 @@ describe("Changelog Configuration", () => {
     let error: Error | null = null;
 
     try {
-      changelogConfig = await import("../.changeset/changelog-config.js");
+      changelogConfig = await import("../.changeset/changelogFunctions.js");
     } catch (error_) {
       error = error_ as Error;
     }
@@ -39,7 +43,7 @@ describe("Changelog Configuration", () => {
   });
 
   it("should export required changelog functions", async () => {
-    const changelogConfig = await import("../.changeset/changelog-config.js");
+    const changelogConfig = await import("../.changeset/changelogFunctions.js");
     const config = changelogConfig.default;
 
     expect(typeof config.getDependencyReleaseLine).toBe("function");
@@ -48,7 +52,7 @@ describe("Changelog Configuration", () => {
   });
 
   it("should generate PR titles correctly", async () => {
-    const changelogConfig = await import("../.changeset/changelog-config.js");
+    const changelogConfig = await import("../.changeset/changelogFunctions.js");
     const config = changelogConfig.default;
 
     // Test with no changesets
