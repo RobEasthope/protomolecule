@@ -5,6 +5,12 @@
 
 set -euo pipefail
 
+# Load .env file if it exists
+if [ -f .env ]; then
+  echo "📄 Loading environment variables from .env file..."
+  export $(grep -v '^#' .env | xargs)
+fi
+
 echo "🧪 Testing GitHub Packages Publishing Logic"
 echo "==========================================="
 echo ""
