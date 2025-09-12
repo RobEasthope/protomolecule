@@ -31,11 +31,11 @@ describe("pre-commit hook", () => {
 
     // Create a package.json with lint-staged configuration
     const packageJson = {
-      name: "test-repo",
-      version: "1.0.0",
       "lint-staged": {
         "**/*": "prettier --write --ignore-unknown",
       },
+      name: "test-repo",
+      version: "1.0.0",
     };
     await fs.writeFile(
       path.join(testDir, "package.json"),
@@ -84,7 +84,7 @@ fi
     process.env.PATH = originalPath;
 
     // Clean up test directory
-    await fs.rm(testDir, { recursive: true, force: true });
+    await fs.rm(testDir, { force: true, recursive: true });
   });
 
   it("should format staged JavaScript files", async () => {
@@ -99,7 +99,7 @@ fi
     const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // Check that the file was formatted
-    const content = await fs.readFile(testFile, "utf-8");
+    const content = await fs.readFile(testFile, "utf8");
     expect(content).toContain("// formatted");
     // Check for successful completion in lint-staged output
     expect(stdout).toMatch(/COMPLETED.*Running tasks for staged files/);
@@ -113,15 +113,15 @@ fi
     await fs.writeFile(file2, "console.log('another')");
 
     // Stage the files - need to escape for shell
-    await execAsync(`git add "test file.js"`, { cwd: testDir });
-    await execAsync(`git add "another file.js"`, { cwd: testDir });
+    await execAsync('git add "test file.js"', { cwd: testDir });
+    await execAsync('git add "another file.js"', { cwd: testDir });
 
     // Run the pre-commit hook
     const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // Check that both files were formatted
-    const content1 = await fs.readFile(file1, "utf-8");
-    const content2 = await fs.readFile(file2, "utf-8");
+    const content1 = await fs.readFile(file1, "utf8");
+    const content2 = await fs.readFile(file2, "utf8");
     expect(content1).toContain("// formatted");
     expect(content2).toContain("// formatted");
     // Check for successful completion in lint-staged output
@@ -143,10 +143,10 @@ fi
     await execAsync("git add keep.js", { cwd: testDir });
 
     // Run the pre-commit hook
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // Check that only the existing file was formatted
-    const content = await fs.readFile(keepFile, "utf-8");
+    const content = await fs.readFile(keepFile, "utf8");
     expect(content).toContain("// formatted");
 
     // Verify delete.js doesn't exist
@@ -207,9 +207,9 @@ fi
     await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // Check that only JS file was formatted
-    const jsContent = await fs.readFile(jsFile, "utf-8");
-    const mdContent = await fs.readFile(mdFile, "utf-8");
-    const cssContent = await fs.readFile(cssFile, "utf-8");
+    const jsContent = await fs.readFile(jsFile, "utf8");
+    const mdContent = await fs.readFile(mdFile, "utf8");
+    const cssContent = await fs.readFile(cssFile, "utf8");
 
     expect(jsContent).toContain("// formatted");
     expect(mdContent).toBe("# README");
@@ -225,15 +225,15 @@ fi
     await fs.writeFile(file2, "console.log('test')");
 
     // Stage the files separately to avoid shell escaping issues
-    await execAsync(`git add "test\\$file.js"`, { cwd: testDir });
-    await execAsync(`git add "test'file.js"`, { cwd: testDir });
+    await execAsync('git add "test\\$file.js"', { cwd: testDir });
+    await execAsync('git add "test\'file.js"', { cwd: testDir });
 
     // Run the pre-commit hook
     const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
 
     // Check that files were formatted
-    const content1 = await fs.readFile(file1, "utf-8");
-    const content2 = await fs.readFile(file2, "utf-8");
+    const content1 = await fs.readFile(file1, "utf8");
+    const content2 = await fs.readFile(file2, "utf8");
 
     expect(content1).toContain("// formatted");
     expect(content2).toContain("// formatted");

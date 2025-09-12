@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { describe, expect, it } from "vitest";
 
 describe("Release Workflow Dependencies", () => {
   it("should have all required changeset dependencies", () => {
@@ -10,8 +10,8 @@ describe("Release Workflow Dependencies", () => {
     const requiredDeps = ["@changesets/cli", "@changesets/get-github-info"];
 
     const allDeps = {
-      ...(packageJson.dependencies || {}),
-      ...(packageJson.devDependencies || {}),
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
     };
 
     for (const dep of requiredDeps) {
@@ -46,10 +46,10 @@ describe("Release Workflow Dependencies", () => {
 
     // Ensure turbo is available for build commands
     const allDeps = {
-      ...(packageJson.dependencies || {}),
-      ...(packageJson.devDependencies || {}),
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
     };
 
-    expect(allDeps["turbo"]).toBeDefined();
+    expect(allDeps.turbo).toBeDefined();
   });
 });

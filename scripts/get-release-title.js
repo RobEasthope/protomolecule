@@ -9,8 +9,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = import.meta.filename;
+const __dirname = import.meta.dirname;
 
 /**
  * Read and parse all changeset files from the .changeset directory
@@ -22,7 +22,7 @@ function getChangesets() {
 
   const changesets = [];
 
-  files.forEach((file) => {
+  for (const file of files) {
     if (file.endsWith(".md") && file !== "README.md") {
       const filePath = path.join(changesetDir, file);
       const content = fs.readFileSync(filePath, "utf8");
@@ -33,15 +33,15 @@ function getChangesets() {
       let frontmatter = "";
       let summary = "";
 
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+      for (let index = 0; index < lines.length; index++) {
+        const line = lines[index];
         if (line === "---") {
           if (!inFrontmatter) {
             inFrontmatter = true;
           } else {
             // End of frontmatter, rest is summary
             summary = lines
-              .slice(i + 1)
+              .slice(index + 1)
               .join("\n")
               .trim();
             break;
@@ -71,7 +71,7 @@ function getChangesets() {
         });
       }
     }
-  });
+  }
 
   return changesets;
 }
@@ -122,9 +122,9 @@ function generateTitle() {
     let hasFixes = false;
     let hasDocs = false;
 
-    changesets.forEach((changeset) => {
+    for (const changeset of changesets) {
       // Track packages and their version bump types
-      changeset.packages.forEach((pkg) => {
+      for (const pkg of changeset.packages) {
         if (!allPackages.has(pkg.name)) {
           allPackages.set(pkg.name, pkg.type);
         } else {
@@ -133,7 +133,7 @@ function generateTitle() {
           const higher = getHigherVersionBump(current, pkg.type);
           allPackages.set(pkg.name, higher);
         }
-      });
+      }
 
       // Analyze summary for change types
       const summary = changeset.summary.toLowerCase();
@@ -141,6 +141,7 @@ function generateTitle() {
       if (summary.includes("breaking") || summary.includes("!:")) {
         hasBreaking = true;
       }
+
       if (
         summary.startsWith("feat") ||
         summary.includes("feature") ||
@@ -148,6 +149,7 @@ function generateTitle() {
       ) {
         hasFeatures = true;
       }
+
       if (
         summary.startsWith("fix") ||
         summary.includes("fix") ||
@@ -155,10 +157,11 @@ function generateTitle() {
       ) {
         hasFixes = true;
       }
+
       if (summary.startsWith("docs") || summary.includes("documentation")) {
         hasDocs = true;
       }
-    });
+    }
 
     // Generate title based on what we found
     const packageNames = Array.from(allPackages.keys());

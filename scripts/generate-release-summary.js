@@ -8,6 +8,8 @@
 
 import fs from "fs";
 import path from "path";
+// If running directly (for testing)
+import { fileURLToPath } from "url";
 
 // Parse published packages from environment variable
 const publishedPackages = process.env.PUBLISHED_PACKAGES
@@ -30,13 +32,21 @@ function getPackageShortName(packageName) {
  * @returns {string} Version bump type ('major', 'minor', or 'patch')
  */
 function getVersionBumpType(oldVersion, newVersion) {
-  if (!oldVersion || !newVersion) return "patch";
+  if (!oldVersion || !newVersion) {
+    return "patch";
+  }
 
   const oldParts = oldVersion.split(".");
   const newParts = newVersion.split(".");
 
-  if (oldParts[0] !== newParts[0]) return "major";
-  if (oldParts[1] !== newParts[1]) return "minor";
+  if (oldParts[0] !== newParts[0]) {
+    return "major";
+  }
+
+  if (oldParts[1] !== newParts[1]) {
+    return "minor";
+  }
+
   return "patch";
 }
 
@@ -55,7 +65,7 @@ function generateReleaseSummary(packages) {
   const minor = [];
   const patch = [];
 
-  packages.forEach((pkg) => {
+  for (const pkg of packages) {
     const shortName = getPackageShortName(pkg.name);
     // For simplicity, we'll determine bump type from description or default to patch
     // In a real implementation, we'd analyze the actual version change
@@ -72,7 +82,7 @@ function generateReleaseSummary(packages) {
     } else {
       patch.push(shortName);
     }
-  });
+  }
 
   // Build title parts
   const parts = [];
@@ -80,9 +90,11 @@ function generateReleaseSummary(packages) {
   if (major.length > 0) {
     parts.push(`major: ${major.join(", ")}`);
   }
+
   if (minor.length > 0) {
     parts.push(`feat: ${minor.join(", ")}`);
   }
+
   if (patch.length > 0) {
     parts.push(`fix: ${patch.join(", ")}`);
   }
@@ -106,9 +118,7 @@ function generateReleaseSummary(packages) {
   return "chore: version packages";
 }
 
-// If running directly (for testing)
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
+const __filename = import.meta.filename;
 
 if (process.argv[1] === __filename) {
   const summary = generateReleaseSummary(publishedPackages);

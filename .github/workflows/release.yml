@@ -5,15 +5,15 @@ on:
     branches:
       - main
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false  # Queue releases instead of cancelling
+  cancel-in-progress: false # Queue releases instead of cancelling
 
 jobs:
   release:
     name: 🚀 Continuous Release
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Prevent hanging workflows
+    timeout-minutes: 15 # Prevent hanging workflows
     permissions:
       contents: write
       packages: write
@@ -40,7 +40,7 @@ jobs:
             exit 1
           fi
           echo "✅ NPM_TOKEN is configured"
-          
+
           # Check for optional PAT (warn if missing but don't fail)
           if [ -z "${{ secrets.RELEASE_PAT }}" ]; then
             echo "⚠️ Warning: RELEASE_PAT is not configured"
@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "## 🔍 Validating Release Dependencies" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Run validation script and capture output
           if node scripts/validate-release-deps.js; then
             echo "✅ All release dependencies are properly configured" >> $GITHUB_STEP_SUMMARY
@@ -67,20 +67,20 @@ jobs:
         run: |
           echo "## 🏗️ Building Packages" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Run the build
           pnpm build || {
             echo "❌ Build failed" >> $GITHUB_STEP_SUMMARY
             echo "Check the logs above for build errors" >> $GITHUB_STEP_SUMMARY
             exit 1
           }
-          
+
           echo "### Build Output Verification" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Track verification results
           VERIFICATION_FAILED=false
-          
+
           # Verify build outputs for publishable packages
           if [ -f "packages/eslint-config/package.json" ]; then
             PKG_PRIVATE=$(node -p "require('./packages/eslint-config/package.json').private || false")
@@ -98,7 +98,7 @@ jobs:
               fi
             fi
           fi
-          
+
           # Check tsconfig if it becomes publishable
           if [ -f "packages/tsconfig/package.json" ]; then
             PKG_PRIVATE=$(node -p "require('./packages/tsconfig/package.json').private || false")
@@ -107,7 +107,7 @@ jobs:
               echo "✅ TSConfig package: ready for publishing" >> $GITHUB_STEP_SUMMARY
             fi
           fi
-          
+
           # Check UI package
           if [ -f "packages/ui/package.json" ]; then
             PKG_PRIVATE=$(node -p "require('./packages/ui/package.json').private || false")
@@ -115,7 +115,7 @@ jobs:
               echo "✅ UI package: ready for publishing" >> $GITHUB_STEP_SUMMARY
             fi
           fi
-          
+
           # Check colours package
           if [ -f "packages/colours/package.json" ]; then
             PKG_PRIVATE=$(node -p "require('./packages/colours/package.json').private || false")
@@ -128,9 +128,9 @@ jobs:
               fi
             fi
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "$VERIFICATION_FAILED" = "true" ]; then
             echo "❌ Build verification failed - see errors above" >> $GITHUB_STEP_SUMMARY
             exit 1
@@ -142,23 +142,23 @@ jobs:
         run: |
           echo "## 📋 Pre-publish Validation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Check changeset status
           echo "### Changeset Status" >> $GITHUB_STEP_SUMMARY
           pnpm changeset status --verbose >> $GITHUB_STEP_SUMMARY 2>&1 || {
             echo "⚠️ Note: Some packages may have unreleased changes" >> $GITHUB_STEP_SUMMARY
           }
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Package Build Validation" >> $GITHUB_STEP_SUMMARY
-          
+
           # Verify critical files exist for publishable packages
           if [ -f "packages/eslint-config/dist/index.js" ]; then
             echo "✅ ESLint config build output verified" >> $GITHUB_STEP_SUMMARY
           else
             echo "⚠️ ESLint config build output not found at expected location" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
 
       - name: 🏷️ Generate Release Title
@@ -202,24 +202,24 @@ jobs:
         run: |
           echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Store workspace directory with explicit fallback
           WORKSPACE_ROOT="${GITHUB_WORKSPACE:-$(pwd)}"
-          
+
           # Create a temporary file to track results
           RESULTS_FILE="/tmp/github-packages-results.txt"
           > "$RESULTS_FILE"
-          
+
           # Store the published packages JSON
           PUBLISHED_PKGS='${{ steps.changesets.outputs.publishedPackages }}'
-          
+
           # Validate JSON
           if ! echo "$PUBLISHED_PKGS" | jq empty 2>/dev/null; then
             echo "⚠️ Warning: Published packages output is not valid JSON" >> $GITHUB_STEP_SUMMARY
             echo "Raw output: $PUBLISHED_PKGS" >> $GITHUB_STEP_SUMMARY
             PUBLISHED_PKGS='[]'
           fi
-          
+
           # Function to setup GitHub Packages registry (using personal namespace)
           setup_github_registry() {
             # Create a separate npmrc for GitHub Packages
@@ -228,7 +228,7 @@ jobs:
           //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
           EOF
           }
-          
+
           # Function to check if package exists
           check_package_exists() {
             local pkg_name="$1"
@@ -239,7 +239,7 @@ jobs:
               --registry=https://npm.pkg.github.com \
               2>/dev/null
           }
-          
+
           # Function to publish with retries
           publish_with_retry() {
             local pkg_name="$1"
@@ -306,10 +306,10 @@ jobs:
             echo "  ❌ All attempts exhausted"
             return 1
           }
-          
+
           # Setup GitHub registry
           setup_github_registry
-          
+
           # Process each package
           echo "$PUBLISHED_PKGS" | jq -c '.[]' 2>/dev/null | while IFS= read -r pkg; do
             name=$(echo "$pkg" | jq -r '.name')
@@ -343,20 +343,20 @@ jobs:
             
             cd "$WORKSPACE_ROOT"
           done
-          
+
           # Clean up
           rm -f ~/.npmrc.github
-          
+
           # Generate summary
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📊 GitHub Packages Publishing Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Count results
           SUCCESS_COUNT=$(grep -c "^SUCCESS:" "$RESULTS_FILE" 2>/dev/null || echo 0)
           SKIPPED_COUNT=$(grep -c "^SKIPPED:" "$RESULTS_FILE" 2>/dev/null || echo 0)
           FAILED_COUNT=$(grep -c "^FAILED:" "$RESULTS_FILE" 2>/dev/null || echo 0)
-          
+
           # Display successes
           if [ "$SUCCESS_COUNT" -gt 0 ]; then
             echo "### ✅ Successfully Published ($SUCCESS_COUNT)" >> $GITHUB_STEP_SUMMARY
@@ -365,7 +365,7 @@ jobs:
             done
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           # Display skipped
           if [ "$SKIPPED_COUNT" -gt 0 ]; then
             echo "### ⏭️ Already Published ($SKIPPED_COUNT)" >> $GITHUB_STEP_SUMMARY
@@ -374,7 +374,7 @@ jobs:
             done
             echo "" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           # Display failures
           if [ "$FAILED_COUNT" -gt 0 ]; then
             echo "### ❌ Failed ($FAILED_COUNT)" >> $GITHUB_STEP_SUMMARY
@@ -388,26 +388,26 @@ jobs:
             rm -f "$RESULTS_FILE"
             exit 1
           fi
-          
+
           # Success message
           if [ "$FAILED_COUNT" -eq 0 ]; then
             echo "✅ **All packages processed successfully!**" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           # Clean up
           rm -f "$RESULTS_FILE"
 
-      - name: ✨ Enhance GitHub Release Notes  
+      - name: ✨ Enhance GitHub Release Notes
         if: steps.changesets.outputs.published == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # The changesets action already creates GitHub releases
           # This step can enhance them if needed
-          
+
           # Get the published packages info from changesets output
           PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
-          
+
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
             echo "📦 Packages were published successfully"
             echo "$PUBLISHED" | jq '.'
@@ -423,10 +423,10 @@ jobs:
         run: |
           echo "## 🔍 Post-Publish Verification" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Parse published packages
           PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
-          
+
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
             # Verify each published package exists on NPM
             echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
@@ -448,7 +448,7 @@ jobs:
               fi
             done
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Publishing process completed" >> $GITHUB_STEP_SUMMARY
 
@@ -501,7 +501,7 @@ jobs:
             echo "2. Verify NPM_TOKEN is correctly configured" >> $GITHUB_STEP_SUMMARY
             echo "3. Ensure package.json files are valid" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "_Release triggered by commit: \`${{ github.sha }}\`_" >> $GITHUB_STEP_SUMMARY

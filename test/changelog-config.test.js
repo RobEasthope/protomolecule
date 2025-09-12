@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
 import { existsSync } from "fs";
-import { join } from "path";
 import { createRequire } from "module";
+import { join } from "path";
+import { describe, expect, it } from "vitest";
 
 const require = createRequire(import.meta.url);
 
@@ -16,9 +16,10 @@ describe("Changelog Configuration", () => {
     try {
       require.resolve("@changesets/get-github-info");
       hasPackage = true;
-    } catch (e) {
+    } catch {
       hasPackage = false;
     }
+
     expect(hasPackage).toBe(true);
   });
 
@@ -28,8 +29,8 @@ describe("Changelog Configuration", () => {
 
     try {
       changelogConfig = await import("../.changeset/changelog-config.js");
-    } catch (e) {
-      error = e;
+    } catch (error_) {
+      error = error_;
     }
 
     expect(error).toBeNull();
@@ -57,8 +58,8 @@ describe("Changelog Configuration", () => {
     // Test with feature changeset
     const featureTitle = await config.generatePRTitle([
       {
-        summary: "feat: add new component",
         releases: [{ name: "@protomolecule/ui", type: "minor" }],
+        summary: "feat: add new component",
       },
     ]);
     expect(featureTitle).toContain("ui");
