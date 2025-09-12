@@ -7,10 +7,6 @@
 
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = import.meta.filename;
-const __dirname = import.meta.dirname;
 
 type PackageChange = {
   name: string;
@@ -28,14 +24,14 @@ type Changeset = {
  * @returns Array of parsed changesets
  */
 function getChangesets(): Changeset[] {
-  const changesetDir = path.join(process.cwd(), ".changeset");
-  const files = fs.readdirSync(changesetDir);
+  const changesetDirectory = path.join(process.cwd(), ".changeset");
+  const files = fs.readdirSync(changesetDirectory);
 
   const changesets: Changeset[] = [];
 
   for (const file of files) {
     if (file.endsWith(".md") && file !== "README.md") {
-      const filePath = path.join(changesetDir, file);
+      const filePath = path.join(changesetDirectory, file);
       const content = fs.readFileSync(filePath, "utf8");
 
       // Parse the frontmatter
@@ -127,11 +123,10 @@ function generateTitle(): string {
 
     // Analyze all changesets
     const allPackages = new Map<string, string>();
-    const changeTypes = new Set<string>();
     let hasBreaking = false;
     let hasFeatures = false;
     let hasFixes = false;
-    let hasDocs = false;
+    let hasDocumentation = false;
 
     for (const changeset of changesets) {
       // Track packages and their version bump types
@@ -140,7 +135,7 @@ function generateTitle(): string {
           allPackages.set(pkg.name, pkg.type);
         } else {
           // Use the more significant version bump type
-          const current = allPackages.get(pkg.name)!;
+          const current = allPackages.get(pkg.name) ?? "patch";
           const higher = getHigherVersionBump(current, pkg.type);
           allPackages.set(pkg.name, higher);
         }
@@ -170,7 +165,7 @@ function generateTitle(): string {
       }
 
       if (summary.startsWith("docs") || summary.includes("documentation")) {
-        hasDocs = true;
+        hasDocumentation = true;
       }
     }
 
@@ -179,12 +174,12 @@ function generateTitle(): string {
     const hasMajor = Array.from(allPackages.values()).includes("major");
     const hasMinor = Array.from(allPackages.values()).includes("minor");
 
-    let title = "chore";
+    let titlePrefix = "chore";
     let description = "";
 
     // Determine title prefix and description
     if (hasBreaking || hasMajor) {
-      title = "chore!";
+      titlePrefix = "chore!";
       if (packageNames.length === 1) {
         description = `release ${packageNames[0]} with breaking changes`;
       } else if (packageNames.length <= 3) {
@@ -216,7 +211,7 @@ function generateTitle(): string {
       } else {
         description = `release ${packageNames.length} packages with bug fixes`;
       }
-    } else if (hasDocs) {
+    } else if (hasDocumentation) {
       if (packageNames.length === 1) {
         description = `release ${packageNames[0]} with documentation updates`;
       } else {
@@ -233,7 +228,7 @@ function generateTitle(): string {
       }
     }
 
-    return `${title}: ${description}`;
+    return `${titlePrefix}: ${description}`;
   } catch (error) {
     console.error("Error generating title:", error);
     return "chore: version packages";
@@ -241,5 +236,6 @@ function generateTitle(): string {
 }
 
 // Output the title
-const title = generateTitle();
-console.log(title);
+const generatedTitle = generateTitle();
+// eslint-disable-next-line no-console
+console.log(generatedTitle);
