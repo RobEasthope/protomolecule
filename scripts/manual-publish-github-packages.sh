@@ -5,8 +5,21 @@ set -e
 if [ -f .env ]; then
   echo "📄 Loading environment variables from .env file..."
   set -a
-  source .env 2>/dev/null || echo "⚠️ Warning: Could not load .env file"
+  if source .env 2>/tmp/env-error.log; then
+    # Validate critical variables were loaded
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+      echo "✅ Environment variables loaded successfully"
+    else
+      echo "⚠️ Warning: .env file loaded but GITHUB_TOKEN not set"
+    fi
+  else
+    echo "⚠️ Warning: Error loading .env file"
+    if [ -s /tmp/env-error.log ]; then
+      echo "   Error details: $(cat /tmp/env-error.log)"
+    fi
+  fi
   set +a
+  rm -f /tmp/env-error.log
 fi
 
 echo "🚀 Manual GitHub Packages Publishing"
