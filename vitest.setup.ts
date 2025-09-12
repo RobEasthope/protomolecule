@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unassigned-import
 import "@testing-library/jest-dom";
 
 // Mock IntersectionObserver if needed for components
