@@ -43,15 +43,15 @@ function getChangesets(): Changeset[] {
       for (let index = 0; index < lines.length; index++) {
         const line = lines[index];
         if (line === "---") {
-          if (!inFrontmatter) {
-            inFrontmatter = true;
-          } else {
+          if (inFrontmatter) {
             // End of frontmatter, rest is summary
             summary = lines
               .slice(index + 1)
               .join("\n")
               .trim();
             break;
+          } else {
+            inFrontmatter = true;
           }
         } else if (inFrontmatter) {
           frontmatter += line + "\n";
@@ -131,13 +131,13 @@ function generateTitle(): string {
     for (const changeset of changesets) {
       // Track packages and their version bump types
       for (const pkg of changeset.packages) {
-        if (!allPackages.has(pkg.name)) {
-          allPackages.set(pkg.name, pkg.type);
-        } else {
+        if (allPackages.has(pkg.name)) {
           // Use the more significant version bump type
           const current = allPackages.get(pkg.name) ?? "patch";
           const higher = getHigherVersionBump(current, pkg.type);
           allPackages.set(pkg.name, higher);
+        } else {
+          allPackages.set(pkg.name, pkg.type);
         }
       }
 
@@ -217,15 +217,12 @@ function generateTitle(): string {
       } else {
         description = `release ${packageNames.length} packages with documentation updates`;
       }
+    } else if (packageNames.length === 1) {
+      description = `release ${packageNames[0]}`;
+    } else if (packageNames.length <= 3) {
+      description = `release ${packageNames.join(", ")}`;
     } else {
-      // Default case
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]}`;
-      } else if (packageNames.length <= 3) {
-        description = `release ${packageNames.join(", ")}`;
-      } else {
-        description = `release ${packageNames.length} packages`;
-      }
+      description = `release ${packageNames.length} packages`;
     }
 
     return `${titlePrefix}: ${description}`;
