@@ -3,7 +3,7 @@
  * This extends the default changelog behavior to provide better PR naming
  */
 
-import { getInfo, getInfoFromPullRequest } from "@changesets/get-github-info";
+import { getInfo } from "@changesets/get-github-info";
 
 const changelogFunctions = {
   /**
@@ -17,7 +17,7 @@ const changelogFunctions = {
       return "";
     }
 
-    const changesetLink = `- Updated dependencies [${changesets.map((c) => c.commit).filter(Boolean)}]:`;
+    const changesetLink = `- Updated dependencies [${changesets.map((changeset) => changeset.commit).filter(Boolean)}]:`;
 
     const updatedDependenciesList = dependenciesUpdated.map(
       (dependency) => `  - ${dependency.name}@${dependency.newVersion}`,
@@ -29,22 +29,21 @@ const changelogFunctions = {
   /**
    * Generate a single release line for the changelog
    * @param {object} changeset - The changeset object
-   * @param {string} type - The type of change (major, minor, patch)
    * @returns {Promise<string>} Formatted release line with commit/PR links
    */
-  getReleaseLine: async (changeset, type) => {
+  getReleaseLine: async (changeset) => {
     const [firstLine, ...futureLines] = changeset.summary
       .split("\n")
-      .map((l) => l.trimEnd());
+      .map((line) => line.trimEnd());
 
     if (changeset.commit) {
       const { links } = await getInfo({
         commit: changeset.commit,
         repo: "RobEasthope/protomolecule",
       });
-      return `- ${links.commit}${links.pull === null ? "" : ` ${links.pull}`} - ${firstLine}\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
+      return `- ${links.commit}${links.pull === null ? "" : ` ${links.pull}`} - ${firstLine}\n${futureLines.map((line) => `  ${line}`).join("\n")}`;
     } else {
-      return `- ${firstLine}\n${futureLines.map((l) => `  ${l}`).join("\n")}`;
+      return `- ${firstLine}\n${futureLines.map((line) => `  ${line}`).join("\n")}`;
     }
   },
 };
