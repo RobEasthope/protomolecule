@@ -16,7 +16,7 @@ describe("Release Workflow Dependencies", () => {
   it("should have all required changeset dependencies", () => {
     const packageJsonPath = join(process.cwd(), "package.json");
     const packageJson: PackageJson = JSON.parse(
-      readFileSync(packageJsonPath, "utf-8"),
+      readFileSync(packageJsonPath, "utf8"),
     );
 
     const requiredDeps = ["@changesets/cli", "@changesets/get-github-info"];
@@ -34,7 +34,7 @@ describe("Release Workflow Dependencies", () => {
   it("should have changeset config defined", () => {
     const packageJsonPath = join(process.cwd(), ".changeset/config.json");
     const changesetConfig: ChangesetConfig = JSON.parse(
-      readFileSync(packageJsonPath, "utf-8"),
+      readFileSync(packageJsonPath, "utf8"),
     );
 
     expect(changesetConfig).toBeDefined();
@@ -44,7 +44,7 @@ describe("Release Workflow Dependencies", () => {
   it("should have valid changeset changelog config", () => {
     const packageJsonPath = join(process.cwd(), ".changeset/config.json");
     const changesetConfig: ChangesetConfig = JSON.parse(
-      readFileSync(packageJsonPath, "utf-8"),
+      readFileSync(packageJsonPath, "utf8"),
     );
 
     // If using custom changelog, validate it points to our config
@@ -56,7 +56,7 @@ describe("Release Workflow Dependencies", () => {
   it("should have GitHub Action dependencies installed", () => {
     const packageJsonPath = join(process.cwd(), "package.json");
     const packageJson: PackageJson = JSON.parse(
-      readFileSync(packageJsonPath, "utf-8"),
+      readFileSync(packageJsonPath, "utf8"),
     );
 
     // Check for pnpm in package manager field

@@ -34,7 +34,7 @@ if (existsSync(changesetConfigPath)) {
   console.log("✅ Changeset config exists");
 
   try {
-    const config = JSON.parse(readFileSync(changesetConfigPath, "utf-8"));
+    const config = JSON.parse(readFileSync(changesetConfigPath, "utf8"));
 
     // If using custom changelog, validate it exists
     if (Array.isArray(config.changelog)) {
@@ -79,7 +79,7 @@ if (existsSync(changesetConfigPath)) {
 // Check package.json for proper setup
 const packageJsonPath = join(process.cwd(), "package.json");
 if (existsSync(packageJsonPath)) {
-  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 
   if (
     packageJson.packageManager &&
