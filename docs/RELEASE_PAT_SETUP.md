@@ -113,7 +113,7 @@ Update the token if:
 
 ## Related Documentation
 
-- [Manual GitHub Packages Publishing](./GITHUB_PACKAGES_MANUAL_PUBLISH.md) - Step-by-step manual publishing guide
+- [Manual GitHub Packages Publishing](./github-packages-manual-publish.md) - Step-by-step manual publishing guide
 - [Release Process](./release-process.md) - Overview of the automated release workflow
 - [GitHub PAT Documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 - [GitHub Packages Permissions](https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages)

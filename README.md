@@ -24,6 +24,11 @@ A modern, open-source React component library monorepo built with TypeScript, St
 - [**Contributing Guide**](./docs/contributing.md) - How to contribute to the project
 - [**Release Process**](./docs/release-process.md) - Understanding our automated releases
 
+### Release & Publishing
+
+- [**RELEASE_PAT Setup Guide**](./docs/RELEASE_PAT_SETUP.md) - Configure Personal Access Token for releases
+- [**Manual GitHub Packages Publishing**](./docs/github-packages-manual-publish.md) - Manual publishing instructions
+
 ### Package Documentation
 
 - [**UI Components**](./packages/ui/README.md) - React component library with Storybook
@@ -31,6 +36,12 @@ A modern, open-source React component library monorepo built with TypeScript, St
 - [**Colours**](./packages/colours/README.md) - Radix UI colour system
 - [**TypeScript Config**](./packages/tsconfig/README.md) - Shared TypeScript configurations
 - [**GitHub Rulesets**](./packages/github-rulesets/README.md) - Repository configuration
+
+### Quick Links for Maintainers
+
+1. Configure [RELEASE_PAT](./docs/RELEASE_PAT_SETUP.md) for automated releases
+2. Learn about the [Release Process](./docs/release-process.md)
+3. Manual publishing with [GitHub Packages Guide](./docs/github-packages-manual-publish.md)
 
 ## 🚀 Quick Start
 
@@ -54,9 +65,9 @@ This monorepo contains the following packages:
 
 | Package                                                        | Description                            | Version | Status  |
 | -------------------------------------------------------------- | -------------------------------------- | ------- | ------- |
-| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 2.0.0   | **NPM** |
-| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 2.0.1   | **NPM** |
-| [`@protomolecule/colours`](./packages/colours)                 | Radix UI colour system                 | 2.0.0   | **NPM** |
+| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 3.0.2   | **NPM** |
+| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 2.1.3   | **NPM** |
+| [`@protomolecule/colours`](./packages/colours)                 | Radix UI colour system                 | 2.1.4   | **NPM** |
 | [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 2.0.0   | Private |
 | [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 2.0.0   | Private |
 

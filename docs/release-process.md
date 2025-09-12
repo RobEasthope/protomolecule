@@ -475,9 +475,9 @@ Users can watch the repository for release notifications.
 
 ### Common Issues
 
-- **GitHub Packages 403 errors**: See [Manual Publishing Guide](./GITHUB_PACKAGES_MANUAL_PUBLISH.md)
+- **GitHub Packages 403 errors**: See [Manual Publishing Guide](./github-packages-manual-publish.md)
 - **Token permission issues**: See [RELEASE_PAT Setup](./RELEASE_PAT_SETUP.md)
-- **First-time publishing**: Follow the [Manual Publishing Guide](./GITHUB_PACKAGES_MANUAL_PUBLISH.md)
+- **First-time publishing**: Follow the [Manual Publishing Guide](./github-packages-manual-publish.md)
 
 ## Future Improvements
 
@@ -492,6 +492,6 @@ Planned enhancements:
 ## Related Documentation
 
 - [RELEASE_PAT Setup Guide](./RELEASE_PAT_SETUP.md) - Configure your Personal Access Token
-- [Manual GitHub Packages Publishing](./GITHUB_PACKAGES_MANUAL_PUBLISH.md) - Manual publishing instructions
+- [Manual GitHub Packages Publishing](./github-packages-manual-publish.md) - Manual publishing instructions
 - [Contributing Guide](./contributing.md) - How to contribute to the project
 - [Development Guide](./development.md) - Local development setup
