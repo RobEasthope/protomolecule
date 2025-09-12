@@ -12,6 +12,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Read and parse all changeset files from the .changeset directory
+ * @returns {Array<{file: string, packages: Array<{name: string, type: string}>, summary: string}>} Array of parsed changesets
+ */
 function getChangesets() {
   const changesetDir = path.join(process.cwd(), ".changeset");
   const files = fs.readdirSync(changesetDir);
@@ -72,6 +76,36 @@ function getChangesets() {
   return changesets;
 }
 
+/**
+ * Determine the priority of a version bump type
+ * @param {string} type - Version bump type (major, minor, patch)
+ * @returns {number} Priority value (higher is more significant)
+ */
+function getVersionBumpPriority(type) {
+  const priorities = {
+    major: 3,
+    minor: 2,
+    patch: 1,
+  };
+  return priorities[type] || 0;
+}
+
+/**
+ * Compare two version bump types and return the more significant one
+ * @param {string} current - Current version bump type
+ * @param {string} candidate - Candidate version bump type
+ * @returns {string} The more significant version bump type
+ */
+function getHigherVersionBump(current, candidate) {
+  return getVersionBumpPriority(candidate) > getVersionBumpPriority(current)
+    ? candidate
+    : current;
+}
+
+/**
+ * Generate a descriptive PR title based on pending changesets
+ * @returns {string} Generated PR title
+ */
 function generateTitle() {
   try {
     const changesets = getChangesets();
@@ -94,14 +128,10 @@ function generateTitle() {
         if (!allPackages.has(pkg.name)) {
           allPackages.set(pkg.name, pkg.type);
         } else {
-          // Upgrade to higher bump type if needed
+          // Use the more significant version bump type
           const current = allPackages.get(pkg.name);
-          if (
-            pkg.type === "major" ||
-            (pkg.type === "minor" && current === "patch")
-          ) {
-            allPackages.set(pkg.name, pkg.type);
-          }
+          const higher = getHigherVersionBump(current, pkg.type);
+          allPackages.set(pkg.name, higher);
         }
       });
 

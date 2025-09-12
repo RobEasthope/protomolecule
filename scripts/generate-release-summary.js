@@ -16,13 +16,18 @@ const publishedPackages = process.env.PUBLISHED_PACKAGES
 
 /**
  * Extract package names without scope
+ * @param {string} packageName - Full package name with scope (e.g., '@protomolecule/ui')
+ * @returns {string} Package name without scope (e.g., 'ui')
  */
 function getPackageShortName(packageName) {
   return packageName.replace("@protomolecule/", "");
 }
 
 /**
- * Determine version bump type
+ * Determine version bump type by comparing version strings
+ * @param {string} oldVersion - Previous version (e.g., '1.2.3')
+ * @param {string} newVersion - New version (e.g., '1.3.0')
+ * @returns {string} Version bump type ('major', 'minor', or 'patch')
  */
 function getVersionBumpType(oldVersion, newVersion) {
   if (!oldVersion || !newVersion) return "patch";
@@ -37,6 +42,8 @@ function getVersionBumpType(oldVersion, newVersion) {
 
 /**
  * Generate a descriptive PR title based on packages being released
+ * @param {Array<{name: string, version: string, description?: string}>} packages - Array of package objects
+ * @returns {string} Generated PR title
  */
 function generateReleaseSummary(packages) {
   if (!packages || packages.length === 0) {

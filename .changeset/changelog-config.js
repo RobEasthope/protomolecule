@@ -6,6 +6,12 @@
 import { getInfo, getInfoFromPullRequest } from "@changesets/get-github-info";
 
 const changelogFunctions = {
+  /**
+   * Generate changelog line for dependency updates
+   * @param {Array} changesets - Array of changesets that caused dependency updates
+   * @param {Array} dependenciesUpdated - Array of updated dependencies
+   * @returns {Promise<string>} Formatted dependency update line
+   */
   getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
     if (dependenciesUpdated.length === 0) return "";
     
@@ -18,6 +24,12 @@ const changelogFunctions = {
     return [changesetLink, ...updatedDependenciesList].join("\n");
   },
   
+  /**
+   * Generate a single release line for the changelog
+   * @param {Object} changeset - The changeset object
+   * @param {string} type - The type of change (major, minor, patch)
+   * @returns {Promise<string>} Formatted release line with commit/PR links
+   */
   getReleaseLine: async (changeset, type) => {
     const [firstLine, ...futureLines] = changeset.summary
       .split("\n")
@@ -38,9 +50,11 @@ const changelogFunctions = {
 /**
  * Get summary for PR title generation
  * This will be used by the GitHub Action to create descriptive PR titles
+ * @param {Array} pendingChangesets - Array of changeset objects to analyze
+ * @returns {Promise<string>} - Generated PR title
  */
-changelogFunctions.generatePRTitle = async (changesets) => {
-  if (!changesets || changesets.length === 0) {
+changelogFunctions.generatePRTitle = async (pendingChangesets) => {
+  if (!pendingChangesets || pendingChangesets.length === 0) {
     return "chore: version packages";
   }
 
@@ -48,7 +62,7 @@ changelogFunctions.generatePRTitle = async (changesets) => {
   const packages = new Map();
   const changeTypes = new Set();
 
-  changesets.forEach(changeset => {
+  pendingChangesets.forEach(changeset => {
     // Track all packages being updated
     changeset.releases.forEach(release => {
       const pkgName = release.name.replace('@protomolecule/', '');
