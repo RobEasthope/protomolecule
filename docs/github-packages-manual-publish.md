@@ -139,7 +139,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   echo "Please run:"
   echo "  export GITHUB_TOKEN=your_release_pat_here"
   echo ""
-  echo "See docs/RELEASE_PAT_SETUP.md for token setup instructions"
+  echo "See docs/release-pat-setup.md for token setup instructions"
   exit 1
 fi
 
