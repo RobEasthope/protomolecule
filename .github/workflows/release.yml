@@ -49,6 +49,20 @@ jobs:
             echo "✅ RELEASE_PAT is configured"
           fi
 
+      - name: 🔍 Validate Release Dependencies
+        run: |
+          echo "## 🔍 Validating Release Dependencies" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Run validation script and capture output
+          if node scripts/validate-release-deps.js; then
+            echo "✅ All release dependencies are properly configured" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Release dependency validation failed" >> $GITHUB_STEP_SUMMARY
+            echo "Check the logs above for details" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
       - name: 🏗️ Build packages
         run: |
           echo "## 🏗️ Building Packages" >> $GITHUB_STEP_SUMMARY
