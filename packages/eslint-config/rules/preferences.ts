@@ -10,6 +10,7 @@ export const preferences = {
     },
   },
   rules: {
+    "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
     "func-style": ["error", "declaration"],
     "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
