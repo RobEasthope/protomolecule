@@ -8,26 +8,28 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 const execAsync = promisify(exec);
 
 describe("pre-commit hook", () => {
-  let testDir: string;
+  let testDirectory: string;
   let originalPath: string;
   const hookPath = path.resolve(process.cwd(), ".husky/pre-commit");
 
   beforeEach(async () => {
     // Create a temporary test directory
-    testDir = await fs.mkdtemp(path.join(os.tmpdir(), "pre-commit-test-"));
+    testDirectory = await fs.mkdtemp(
+      path.join(os.tmpdir(), "pre-commit-test-"),
+    );
     originalPath = process.env.PATH || "";
 
     // Initialize git repo in test directory
-    await execAsync("git init", { cwd: testDir });
+    await execAsync("git init", { cwd: testDirectory });
     await execAsync('git config user.email "test@example.com"', {
-      cwd: testDir,
+      cwd: testDirectory,
     });
-    await execAsync('git config user.name "Test User"', { cwd: testDir });
+    await execAsync('git config user.name "Test User"', { cwd: testDirectory });
 
     // Copy the pre-commit hook to test directory
-    await fs.mkdir(path.join(testDir, ".husky"), { recursive: true });
-    await fs.copyFile(hookPath, path.join(testDir, ".husky/pre-commit"));
-    await fs.chmod(path.join(testDir, ".husky/pre-commit"), 0o755);
+    await fs.mkdir(path.join(testDirectory, ".husky"), { recursive: true });
+    await fs.copyFile(hookPath, path.join(testDirectory, ".husky/pre-commit"));
+    await fs.chmod(path.join(testDirectory, ".husky/pre-commit"), 0o755);
 
     // Create a package.json with lint-staged configuration
     const packageJson = {
@@ -38,7 +40,7 @@ describe("pre-commit hook", () => {
       version: "1.0.0",
     };
     await fs.writeFile(
-      path.join(testDir, "package.json"),
+      path.join(testDirectory, "package.json"),
       JSON.stringify(packageJson, null, 2),
     );
 
@@ -56,8 +58,8 @@ if [[ "$1" == "--write" ]]; then
     done
 fi
 `;
-    await fs.writeFile(path.join(testDir, "prettier"), mockPrettier);
-    await fs.chmod(path.join(testDir, "prettier"), 0o755);
+    await fs.writeFile(path.join(testDirectory, "prettier"), mockPrettier);
+    await fs.chmod(path.join(testDirectory, "prettier"), 0o755);
 
     // Create a mock pnpm format command
     const mockPnpm = `#!/bin/bash
@@ -72,11 +74,11 @@ if [ "$1" = "format" ]; then
     done
 fi
 `;
-    await fs.writeFile(path.join(testDir, "pnpm"), mockPnpm);
-    await fs.chmod(path.join(testDir, "pnpm"), 0o755);
+    await fs.writeFile(path.join(testDirectory, "pnpm"), mockPnpm);
+    await fs.chmod(path.join(testDirectory, "pnpm"), 0o755);
 
     // Add test directory to PATH
-    process.env.PATH = `${testDir}:${originalPath}`;
+    process.env.PATH = `${testDirectory}:${originalPath}`;
   });
 
   afterEach(async () => {
@@ -84,19 +86,21 @@ fi
     process.env.PATH = originalPath;
 
     // Clean up test directory
-    await fs.rm(testDir, { force: true, recursive: true });
+    await fs.rm(testDirectory, { force: true, recursive: true });
   });
 
   it("should format staged JavaScript files", async () => {
     // Create a test file
-    const testFile = path.join(testDir, "test.js");
+    const testFile = path.join(testDirectory, "test.js");
     await fs.writeFile(testFile, "console.log('test')");
 
     // Stage the file
-    await execAsync("git add test.js", { cwd: testDir });
+    await execAsync("git add test.js", { cwd: testDirectory });
 
     // Run the pre-commit hook
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    const { stdout } = await execAsync(".husky/pre-commit", {
+      cwd: testDirectory,
+    });
 
     // Check that the file was formatted
     const content = await fs.readFile(testFile, "utf8");
@@ -107,17 +111,19 @@ fi
 
   it("should handle files with spaces in names", async () => {
     // Create files with spaces
-    const file1 = path.join(testDir, "test file.js");
-    const file2 = path.join(testDir, "another file.js");
+    const file1 = path.join(testDirectory, "test file.js");
+    const file2 = path.join(testDirectory, "another file.js");
     await fs.writeFile(file1, "console.log('test')");
     await fs.writeFile(file2, "console.log('another')");
 
     // Stage the files - need to escape for shell
-    await execAsync('git add "test file.js"', { cwd: testDir });
-    await execAsync('git add "another file.js"', { cwd: testDir });
+    await execAsync('git add "test file.js"', { cwd: testDirectory });
+    await execAsync('git add "another file.js"', { cwd: testDirectory });
 
     // Run the pre-commit hook
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    const { stdout } = await execAsync(".husky/pre-commit", {
+      cwd: testDirectory,
+    });
 
     // Check that both files were formatted
     const content1 = await fs.readFile(file1, "utf8");
@@ -130,20 +136,20 @@ fi
 
   it("should handle deleted files correctly", async () => {
     // Create and commit initial files
-    const keepFile = path.join(testDir, "keep.js");
-    const deleteFile = path.join(testDir, "delete.js");
+    const keepFile = path.join(testDirectory, "keep.js");
+    const deleteFile = path.join(testDirectory, "delete.js");
     await fs.writeFile(keepFile, "console.log('keep')");
     await fs.writeFile(deleteFile, "console.log('delete')");
-    await execAsync("git add .", { cwd: testDir });
-    await execAsync('git commit -m "Initial commit"', { cwd: testDir });
+    await execAsync("git add .", { cwd: testDirectory });
+    await execAsync('git commit -m "Initial commit"', { cwd: testDirectory });
 
     // Stage deletion of one file and modification of another
-    await execAsync("git rm delete.js", { cwd: testDir });
+    await execAsync("git rm delete.js", { cwd: testDirectory });
     await fs.writeFile(keepFile, "console.log('modified')");
-    await execAsync("git add keep.js", { cwd: testDir });
+    await execAsync("git add keep.js", { cwd: testDirectory });
 
     // Run the pre-commit hook
-    await execAsync(".husky/pre-commit", { cwd: testDir });
+    await execAsync(".husky/pre-commit", { cwd: testDirectory });
 
     // Check that only the existing file was formatted
     const content = await fs.readFile(keepFile, "utf8");
@@ -155,7 +161,7 @@ fi
 
   it("should report when code is already formatted", async () => {
     // Create a pre-formatted file
-    const testFile = path.join(testDir, "test.js");
+    const testFile = path.join(testDirectory, "test.js");
     await fs.writeFile(testFile, "// formatted\nconsole.log('test')");
 
     // Update mock pnpm to not re-format already formatted files
@@ -169,13 +175,15 @@ if [ "$1" = "format" ]; then
     done
 fi
 `;
-    await fs.writeFile(path.join(testDir, "pnpm"), mockPnpm);
+    await fs.writeFile(path.join(testDirectory, "pnpm"), mockPnpm);
 
     // Stage the file
-    await execAsync("git add test.js", { cwd: testDir });
+    await execAsync("git add test.js", { cwd: testDirectory });
 
     // Run the pre-commit hook
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    const { stdout } = await execAsync(".husky/pre-commit", {
+      cwd: testDirectory,
+    });
 
     // Check for successful completion in lint-staged output
     // The file should remain unchanged since it's already formatted
@@ -184,7 +192,9 @@ fi
 
   it("should handle empty staging area", async () => {
     // Run the pre-commit hook with no staged files
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    const { stdout } = await execAsync(".husky/pre-commit", {
+      cwd: testDirectory,
+    });
 
     // Check output message - no files to process
     expect(stdout).toMatch(/No staged files/);
@@ -192,19 +202,19 @@ fi
 
   it("should only format JavaScript and TypeScript files", async () => {
     // Create different file types
-    const jsFile = path.join(testDir, "test.js");
-    const mdFile = path.join(testDir, "README.md");
-    const cssFile = path.join(testDir, "style.css");
+    const jsFile = path.join(testDirectory, "test.js");
+    const mdFile = path.join(testDirectory, "README.md");
+    const cssFile = path.join(testDirectory, "style.css");
 
     await fs.writeFile(jsFile, "console.log('test')");
     await fs.writeFile(mdFile, "# README");
     await fs.writeFile(cssFile, "body { color: red; }");
 
     // Stage all files
-    await execAsync("git add .", { cwd: testDir });
+    await execAsync("git add .", { cwd: testDirectory });
 
     // Run the pre-commit hook
-    await execAsync(".husky/pre-commit", { cwd: testDir });
+    await execAsync(".husky/pre-commit", { cwd: testDirectory });
 
     // Check that only JS file was formatted
     const jsContent = await fs.readFile(jsFile, "utf8");
@@ -218,18 +228,20 @@ fi
 
   it("should handle special characters in filenames", async () => {
     // Create files with special characters
-    const file1 = path.join(testDir, "test$file.js");
-    const file2 = path.join(testDir, "test'file.js");
+    const file1 = path.join(testDirectory, "test$file.js");
+    const file2 = path.join(testDirectory, "test'file.js");
 
     await fs.writeFile(file1, "console.log('test')");
     await fs.writeFile(file2, "console.log('test')");
 
     // Stage the files separately to avoid shell escaping issues
-    await execAsync('git add "test\\$file.js"', { cwd: testDir });
-    await execAsync('git add "test\'file.js"', { cwd: testDir });
+    await execAsync('git add "test\\$file.js"', { cwd: testDirectory });
+    await execAsync('git add "test\'file.js"', { cwd: testDirectory });
 
     // Run the pre-commit hook
-    const { stdout } = await execAsync(".husky/pre-commit", { cwd: testDir });
+    const { stdout } = await execAsync(".husky/pre-commit", {
+      cwd: testDirectory,
+    });
 
     // Check that files were formatted
     const content1 = await fs.readFile(file1, "utf8");
@@ -243,16 +255,16 @@ fi
 
   it("should use unique temporary files to avoid race conditions", async () => {
     // Create test files
-    const file1 = path.join(testDir, "test1.js");
-    const file2 = path.join(testDir, "test2.js");
+    const file1 = path.join(testDirectory, "test1.js");
+    const file2 = path.join(testDirectory, "test2.js");
     await fs.writeFile(file1, "console.log('test1')");
     await fs.writeFile(file2, "console.log('test2')");
 
     // Stage files
-    await execAsync("git add test1.js test2.js", { cwd: testDir });
+    await execAsync("git add test1.js test2.js", { cwd: testDirectory });
 
     // Run the hook and check that temp files are cleaned up
-    await execAsync(".husky/pre-commit", { cwd: testDir });
+    await execAsync(".husky/pre-commit", { cwd: testDirectory });
 
     // List all files in /tmp that match our pattern
     const { stdout } = await execAsync(
