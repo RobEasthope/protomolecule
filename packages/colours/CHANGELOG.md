@@ -1,5 +1,11 @@
 # @protomolecule/colours
 
+## 2.1.6
+
+### Patch Changes
+
+- 31f216f: Improve shell script error handling by adding pipefail option
+
 ## 2.1.5
 
 ### Patch Changes
