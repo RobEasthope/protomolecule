@@ -56,11 +56,11 @@ describe("Changelog Configuration", () => {
     const config = changelogConfig.default;
 
     // Test with no changesets
-    const emptyTitle = await config.generatePRTitle([]);
+    const emptyTitle = await config.generatePRTitle?.([]);
     expect(emptyTitle).toBe("chore: version packages");
 
     // Test with feature changeset
-    const featureTitle = await config.generatePRTitle([
+    const featureTitle = await config.generatePRTitle?.([
       {
         releases: [{ name: "@protomolecule/ui", type: "minor" }],
         summary: "feat: add new component",

@@ -19,7 +19,9 @@ global.IntersectionObserver = class IntersectionObserver {
 };
 
 // Mock window.matchMedia for responsive components
+// @ts-expect-error - window may not exist in node environment
 if (typeof window !== "undefined") {
+  // @ts-expect-error - window may not exist in node environment
   Object.defineProperty(window, "matchMedia", {
     value: vi.fn().mockImplementation((query) => ({
       addEventListener: vi.fn(),
