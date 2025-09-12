@@ -15,7 +15,7 @@ Use manual publishing when:
 
 Before starting, ensure you have:
 
-1. **RELEASE_PAT token** with required scopes (see [RELEASE_PAT Setup Guide](./RELEASE_PAT_SETUP.md))
+1. **RELEASE_PAT token** with required scopes (see [RELEASE_PAT Setup Guide](./release-pat-setup.md))
 2. **Node.js and pnpm** installed locally
 3. **Built packages** ready for publishing
 
@@ -229,7 +229,7 @@ export GITHUB_TOKEN=your_release_pat_here
 
 | Issue                     | Cause                          | Solution                                                                               |
 | ------------------------- | ------------------------------ | -------------------------------------------------------------------------------------- |
-| **403 Forbidden**         | Missing `write:packages` scope | Regenerate token with correct scopes (see [RELEASE_PAT Setup](./RELEASE_PAT_SETUP.md)) |
+| **403 Forbidden**         | Missing `write:packages` scope | Regenerate token with correct scopes (see [RELEASE_PAT Setup](./release-pat-setup.md)) |
 | **404 Not Found**         | Package namespace not linked   | This is normal for first publish, continue with manual steps                           |
 | **Version conflict**      | Version already exists         | Bump version in package.json first                                                     |
 | **Authentication failed** | Invalid or expired token       | Generate new token                                                                     |
@@ -270,7 +270,7 @@ Once packages are manually published:
 
 ## Related Documentation
 
-- [RELEASE_PAT Setup Guide](./RELEASE_PAT_SETUP.md) - Setting up your Personal Access Token
+- [RELEASE_PAT Setup Guide](./release-pat-setup.md) - Setting up your Personal Access Token
 - [Release Workflow](./.github/workflows/release.yml) - The automated release process
 - [GitHub Packages Documentation](https://docs.github.com/en/packages)
 

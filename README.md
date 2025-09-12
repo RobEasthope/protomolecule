@@ -26,7 +26,7 @@ A modern, open-source React component library monorepo built with TypeScript, St
 
 ### Release & Publishing
 
-- [**RELEASE_PAT Setup Guide**](./docs/RELEASE_PAT_SETUP.md) - Configure Personal Access Token for releases
+- [**RELEASE_PAT Setup Guide**](./docs/release-pat-setup.md) - Configure Personal Access Token for releases
 - [**Manual GitHub Packages Publishing**](./docs/github-packages-manual-publish.md) - Manual publishing instructions
 
 ### Package Documentation
@@ -39,7 +39,7 @@ A modern, open-source React component library monorepo built with TypeScript, St
 
 ### Quick Links for Maintainers
 
-1. Configure [RELEASE_PAT](./docs/RELEASE_PAT_SETUP.md) for automated releases
+1. Configure [RELEASE_PAT](./docs/release-pat-setup.md) for automated releases
 2. Learn about the [Release Process](./docs/release-process.md)
 3. Manual publishing with [GitHub Packages Guide](./docs/github-packages-manual-publish.md)
 
