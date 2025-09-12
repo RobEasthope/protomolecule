@@ -111,8 +111,16 @@ Update the token if:
 | Workflow fails        | Missing `workflow` scope | Add workflow scope if needed   |
 | Authentication failed | Token expired            | Generate new token             |
 
+## See Also
+
+For complete release setup, you need both tokens:
+
+- **This guide**: GitHub Personal Access Token (RELEASE_PAT)
+- **[NPM Token Setup](./npm-token-setup.md)**: NPM publishing token (NPM_TOKEN)
+
 ## Related Documentation
 
+- [NPM Token Setup Guide](./npm-token-setup.md) - Configure NPM publishing token
 - [Manual GitHub Packages Publishing](./github-packages-manual-publish.md) - Step-by-step manual publishing guide
 - [Release Process](./release-process.md) - Overview of the automated release workflow
 - [GitHub PAT Documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
