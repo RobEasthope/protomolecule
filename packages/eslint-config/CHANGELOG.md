@@ -1,5 +1,28 @@
 # @protomolecule/eslint-config
 
+## 2.1.4
+
+### Patch Changes
+
+- e6a328b: docs: add comprehensive GitHub Packages manual publishing documentation
+
+  - Created detailed manual publishing guide with step-by-step instructions
+  - Added automated script for manual GitHub Packages publishing
+  - Created documentation index (docs/README.md) for easier navigation
+  - Added cross-references between all release-related documentation
+  - Updated release process docs with troubleshooting section
+  - Linked all documentation for better discoverability
+
+- 8a3048f: Configure GitHub Packages with personal namespace and add individual publish scripts
+
+  - Updated all GitHub Packages configuration to use personal namespace (RobEasthope) instead of organization
+  - Fixed manual publish script hanging issue by redirecting stdin from /dev/null
+  - Added individual publish scripts for each package for more granular control
+  - Improved error detection and reporting in publish scripts
+  - Scripts now automatically load .env file for convenience
+  - Enhanced .env file error handling to catch and report syntax errors
+  - Updated documentation to explain personal namespace setup
+
 ## 2.1.3
 
 ### Patch Changes
