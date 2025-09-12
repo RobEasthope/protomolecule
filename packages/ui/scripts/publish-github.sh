@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 # Publish @protomolecule/ui to GitHub Packages
 # Usage: ./scripts/publish-github.sh
