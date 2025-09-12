@@ -2,6 +2,8 @@
 
 This guide provides instructions for manually publishing packages to GitHub Packages, which is required for first-time publishing or troubleshooting failed automated releases.
 
+> **Note**: This repository uses a personal namespace (`RobEasthope`) for GitHub Packages while keeping the `@protomolecule` scope for package names. This is because the `protomolecule` organization name is already taken on GitHub.
+
 ## When to Use This Guide
 
 Use manual publishing when:
@@ -37,9 +39,9 @@ Create a temporary npm configuration for GitHub Packages:
 # Export your token (replace with your actual RELEASE_PAT)
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxx
 
-# Create GitHub Packages npm config
+# Create GitHub Packages npm config (using personal namespace)
 cat > ~/.npmrc.github << EOF
-@protomolecule:registry=https://npm.pkg.github.com
+@protomolecule:registry=https://npm.pkg.github.com/RobEasthope
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 EOF
 ```
@@ -141,10 +143,10 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-# Setup auth
+# Setup auth (using personal namespace)
 echo "📝 Setting up authentication..."
 cat > ~/.npmrc.github << EOF
-@protomolecule:registry=https://npm.pkg.github.com
+@protomolecule:registry=https://npm.pkg.github.com/RobEasthope
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 EOF
 
@@ -240,9 +242,9 @@ export GITHUB_TOKEN=your_release_pat_here
 To see what's already published:
 
 ```bash
-# List all packages in @protomolecule scope
+# List all packages in @protomolecule scope (under personal namespace)
 curl -H "Authorization: token $GITHUB_TOKEN" \
-  https://api.github.com/orgs/protomolecule/packages?package_type=npm
+  https://api.github.com/users/RobEasthope/packages?package_type=npm
 ```
 
 ### Version Conflicts

@@ -194,11 +194,11 @@ jobs:
             PUBLISHED_PKGS='[]'
           fi
           
-          # Function to setup GitHub Packages registry
+          # Function to setup GitHub Packages registry (using personal namespace)
           setup_github_registry() {
             # Create a separate npmrc for GitHub Packages
             cat > ~/.npmrc.github <<EOF
-          @protomolecule:registry=https://npm.pkg.github.com
+          @protomolecule:registry=https://npm.pkg.github.com/RobEasthope
           //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
           EOF
           }
