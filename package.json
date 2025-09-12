@@ -8,7 +8,7 @@
     "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "clean": "turbo run clean && rimraf node_modules",
     "dev": "turbo run dev --filter=@protomolecule/ui",
-    "format": "turbo run format",
+    "format": "pnpm format:root && turbo run format",
     "format:root": "prettier --write '**/*.{js,jsx,ts,tsx,mjs,json,md,yml,yaml}' --ignore-path .gitignore --ignore-pattern 'packages/**'",
     "lint": "pnpm lint:root && turbo run lint",
     "lint:fix": "pnpm lint:root:fix && turbo run lint:fix",
