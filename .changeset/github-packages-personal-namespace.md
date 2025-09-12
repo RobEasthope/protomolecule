@@ -11,4 +11,5 @@ Configure GitHub Packages with personal namespace and add individual publish scr
 - Added individual publish scripts for each package for more granular control
 - Improved error detection and reporting in publish scripts
 - Scripts now automatically load .env file for convenience
+- Enhanced .env file error handling to catch and report syntax errors
 - Updated documentation to explain personal namespace setup
