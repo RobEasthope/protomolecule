@@ -110,6 +110,95 @@ function getHigherVersionBump(current: string, candidate: string): string {
 }
 
 /**
+ * Analyze changesets for change types
+ * @param changesets - Array of changesets to analyze
+ * @returns Object with change type flags
+ */
+function analyzeChangeTypes(changesets: Changeset[]): {
+  hasBreaking: boolean;
+  hasDocumentation: boolean;
+  hasFeatures: boolean;
+  hasFixes: boolean;
+} {
+  let hasBreaking = false;
+  let hasFeatures = false;
+  let hasFixes = false;
+  let hasDocumentation = false;
+
+  for (const changeset of changesets) {
+    const summary = changeset.summary.toLowerCase();
+
+    if (summary.includes("breaking") || summary.includes("!:")) {
+      hasBreaking = true;
+    }
+
+    if (
+      summary.startsWith("feat") ||
+      summary.includes("feature") ||
+      summary.includes("add")
+    ) {
+      hasFeatures = true;
+    }
+
+    if (
+      summary.startsWith("fix") ||
+      summary.includes("fix") ||
+      summary.includes("bug")
+    ) {
+      hasFixes = true;
+    }
+
+    if (summary.startsWith("docs") || summary.includes("documentation")) {
+      hasDocumentation = true;
+    }
+  }
+
+  return { hasBreaking, hasDocumentation, hasFeatures, hasFixes };
+}
+
+/**
+ * Track packages and their version bump types
+ * @param changesets - Array of changesets to analyze
+ * @returns Map of package names to their highest version bump type
+ */
+function trackPackageVersions(changesets: Changeset[]): Map<string, string> {
+  const allPackages = new Map<string, string>();
+
+  for (const changeset of changesets) {
+    for (const pkg of changeset.packages) {
+      if (allPackages.has(pkg.name)) {
+        const current = allPackages.get(pkg.name) ?? "patch";
+        const higher = getHigherVersionBump(current, pkg.type);
+        allPackages.set(pkg.name, higher);
+      } else {
+        allPackages.set(pkg.name, pkg.type);
+      }
+    }
+  }
+
+  return allPackages;
+}
+
+/**
+ * Generate release description based on package count and change types
+ * @param packageNames - Array of package names
+ * @param suffix - Description suffix for the type of changes
+ * @returns Formatted description string
+ */
+function formatReleaseDescription(
+  packageNames: string[],
+  suffix: string,
+): string {
+  if (packageNames.length === 1) {
+    return `release ${packageNames[0]}${suffix}`;
+  } else if (packageNames.length <= 3) {
+    return `release ${packageNames.join(", ")}${suffix}`;
+  } else {
+    return `release ${packageNames.length} packages${suffix}`;
+  }
+}
+
+/**
  * Generate a descriptive PR title based on pending changesets
  * @returns Generated PR title
  */
@@ -121,108 +210,45 @@ function generateTitle(): string {
       return "chore: version packages";
     }
 
-    // Analyze all changesets
-    const allPackages = new Map<string, string>();
-    let hasBreaking = false;
-    let hasFeatures = false;
-    let hasFixes = false;
-    let hasDocumentation = false;
+    // Analyze changesets
+    const allPackages = trackPackageVersions(changesets);
+    const { hasBreaking, hasDocumentation, hasFeatures, hasFixes } =
+      analyzeChangeTypes(changesets);
 
-    for (const changeset of changesets) {
-      // Track packages and their version bump types
-      for (const pkg of changeset.packages) {
-        if (allPackages.has(pkg.name)) {
-          // Use the more significant version bump type
-          const current = allPackages.get(pkg.name) ?? "patch";
-          const higher = getHigherVersionBump(current, pkg.type);
-          allPackages.set(pkg.name, higher);
-        } else {
-          allPackages.set(pkg.name, pkg.type);
-        }
-      }
-
-      // Analyze summary for change types
-      const summary = changeset.summary.toLowerCase();
-
-      if (summary.includes("breaking") || summary.includes("!:")) {
-        hasBreaking = true;
-      }
-
-      if (
-        summary.startsWith("feat") ||
-        summary.includes("feature") ||
-        summary.includes("add")
-      ) {
-        hasFeatures = true;
-      }
-
-      if (
-        summary.startsWith("fix") ||
-        summary.includes("fix") ||
-        summary.includes("bug")
-      ) {
-        hasFixes = true;
-      }
-
-      if (summary.startsWith("docs") || summary.includes("documentation")) {
-        hasDocumentation = true;
-      }
-    }
-
-    // Generate title based on what we found
+    // Extract data for title generation
     const packageNames = Array.from(allPackages.keys());
     const hasMajor = Array.from(allPackages.values()).includes("major");
     const hasMinor = Array.from(allPackages.values()).includes("minor");
 
+    // Determine title prefix and description
     let titlePrefix = "chore";
     let description = "";
 
-    // Determine title prefix and description
     if (hasBreaking || hasMajor) {
       titlePrefix = "chore!";
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]} with breaking changes`;
-      } else if (packageNames.length <= 3) {
-        description = `release ${packageNames.join(", ")} (breaking changes)`;
-      } else {
-        description = `release ${packageNames.length} packages (breaking changes)`;
-      }
+      description =
+        packageNames.length === 1
+          ? `release ${packageNames[0]} with breaking changes`
+          : formatReleaseDescription(packageNames, " (breaking changes)");
     } else if (hasFeatures && hasFixes) {
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]} with features and fixes`;
-      } else if (packageNames.length <= 3) {
-        description = `release ${packageNames.join(", ")} with features and fixes`;
-      } else {
-        description = `release ${packageNames.length} packages with features and fixes`;
-      }
+      description = formatReleaseDescription(
+        packageNames,
+        " with features and fixes",
+      );
     } else if (hasFeatures || hasMinor) {
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]} with new features`;
-      } else if (packageNames.length <= 3) {
-        description = `release ${packageNames.join(", ")} with new features`;
-      } else {
-        description = `release ${packageNames.length} packages with new features`;
-      }
+      description = formatReleaseDescription(
+        packageNames,
+        " with new features",
+      );
     } else if (hasFixes) {
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]} with bug fixes`;
-      } else if (packageNames.length <= 3) {
-        description = `release ${packageNames.join(", ")} with bug fixes`;
-      } else {
-        description = `release ${packageNames.length} packages with bug fixes`;
-      }
+      description = formatReleaseDescription(packageNames, " with bug fixes");
     } else if (hasDocumentation) {
-      if (packageNames.length === 1) {
-        description = `release ${packageNames[0]} with documentation updates`;
-      } else {
-        description = `release ${packageNames.length} packages with documentation updates`;
-      }
-    } else if (packageNames.length === 1) {
-      description = `release ${packageNames[0]}`;
-    } else if (packageNames.length <= 3) {
-      description = `release ${packageNames.join(", ")}`;
+      description = formatReleaseDescription(
+        packageNames,
+        " with documentation updates",
+      );
     } else {
-      description = `release ${packageNames.length} packages`;
+      description = formatReleaseDescription(packageNames, "");
     }
 
     return `${titlePrefix}: ${description}`;
