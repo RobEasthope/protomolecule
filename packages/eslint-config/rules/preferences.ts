@@ -12,7 +12,7 @@ export const preferences = {
   rules: {
     "canonical/id-match": "off",
     "func-style": ["error", "declaration"],
-    "no-console": ["error", { allow: ["error", "debug", "warn"] }],
+    "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
     "perfectionist/sort-modules": "off",
     "prettier/prettier": [
       "error",
