@@ -1,5 +1,19 @@
 # @protomolecule/colours
 
+## 2.1.7
+
+### Patch Changes
+
+- [`e94ad2f`](https://github.com/RobEasthope/protomolecule/commit/e94ad2f00e049f13bc0aca64e443da3451958446) [#144](https://github.com/RobEasthope/protomolecule/pull/144) - feat(ci): add descriptive PR titles for version releases
+
+  Improved the release workflow to generate more descriptive PR titles based on the packages being released and the types of changes included. PR titles now indicate:
+
+  - Which packages are being released
+  - The nature of changes (features, fixes, breaking changes)
+  - The number of packages when releasing many at once
+
+  This makes it easier to understand at a glance what each release PR contains without having to open it.
+
 ## 2.1.6
 
 ### Patch Changes
