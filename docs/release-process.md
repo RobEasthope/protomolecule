@@ -471,6 +471,15 @@ Users can watch the repository for release notifications.
 4. **Monitor release pipeline**
 5. **Respond quickly to failed releases**
 
+## Troubleshooting
+
+### Common Issues
+
+- **GitHub Packages 403 errors**: See [Manual Publishing Guide](./github-packages-manual-publish.md)
+- **GitHub token issues**: See [RELEASE_PAT Setup](./release-pat-setup.md)
+- **NPM 403 errors**: See [NPM Token Setup](./npm-token-setup.md)
+- **First-time publishing**: Follow the [Manual Publishing Guide](./github-packages-manual-publish.md)
+
 ## Future Improvements
 
 Planned enhancements:
@@ -480,3 +489,11 @@ Planned enhancements:
 - Release previews in PRs
 - Slack/Discord notifications
 - Package download statistics dashboard
+
+## Related Documentation
+
+- [RELEASE_PAT Setup Guide](./release-pat-setup.md) - Configure GitHub Personal Access Token
+- [NPM Token Setup Guide](./npm-token-setup.md) - Configure NPM publishing token
+- [Manual GitHub Packages Publishing](./github-packages-manual-publish.md) - Manual publishing instructions
+- [Contributing Guide](./contributing.md) - How to contribute to the project
+- [Development Guide](./development.md) - Local development setup

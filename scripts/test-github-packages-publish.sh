@@ -9,8 +9,21 @@ set -euo pipefail
 if [ -f .env ]; then
   echo "📄 Loading environment variables from .env file..."
   set -a
-  source .env 2>/dev/null || echo "⚠️ Warning: Could not load .env file"
+  if source .env 2>/tmp/env-error.log; then
+    # Validate critical variables were loaded
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+      echo "✅ Environment variables loaded successfully"
+    else
+      echo "⚠️ Warning: .env file loaded but GITHUB_TOKEN not set"
+    fi
+  else
+    echo "⚠️ Warning: Error loading .env file"
+    if [ -s /tmp/env-error.log ]; then
+      echo "   Error details: $(cat /tmp/env-error.log)"
+    fi
+  fi
   set +a
+  rm -f /tmp/env-error.log
 fi
 
 echo "🧪 Testing GitHub Packages Publishing Logic"
@@ -40,14 +53,14 @@ echo "  Workspace: $WORKSPACE_ROOT"
 echo "  Test Package: @protomolecule/ui@$TEST_VERSION"
 echo ""
 
-# Function to setup GitHub Packages registry
+# Function to setup GitHub Packages registry (using personal namespace)
 setup_github_registry() {
-  echo "🔧 Setting up GitHub Packages registry..."
+  echo "🔧 Setting up GitHub Packages registry (personal namespace)..."
   cat > ~/.npmrc.github.test <<EOF
-@protomolecule:registry=https://npm.pkg.github.com
+@protomolecule:registry=https://npm.pkg.github.com/RobEasthope
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 EOF
-  echo "  ✅ Registry configuration created"
+  echo "  ✅ Registry configuration created (using RobEasthope namespace)"
 }
 
 # Function to check if package exists
