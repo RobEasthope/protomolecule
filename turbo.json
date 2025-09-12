@@ -16,10 +16,10 @@
       "dependsOn": ["^build"],
       "outputs": ["packages/ui/storybook-static/**", "storybook-static/**"]
     },
-    "test": {
+    "clean": {
       "outputs": []
     },
-    "test:ui": {
+    "dev": {
       "cache": false,
       "persistent": true
     },
@@ -42,24 +42,24 @@
     "lint:md:fix": {
       "outputs": []
     },
-    "clean": {
-      "outputs": []
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
     "preview": {
-      "dependsOn": ["build"],
       "cache": false,
+      "dependsOn": ["build"],
       "persistent": true
+    },
+    "sort-pkg-json": {
+      "outputs": []
     },
     "storybook": {
       "cache": false,
       "persistent": true
     },
-    "sort-pkg-json": {
+    "test": {
       "outputs": []
+    },
+    "test:ui": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

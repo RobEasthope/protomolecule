@@ -1,13 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": false,
     "declaration": true,
     "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
     "outDir": "./dist",
     "rootDir": "./",
-    "emitDeclarationOnly": true,
     "types": ["react", "react-dom"]
   },
   "exclude": [
@@ -25,6 +24,7 @@
     "vitest.config.ts",
     "test-setup.ts"
   ],
+  "extends": "./tsconfig.json",
   "include": [
     "index.ts",
     "components/**/*.ts",
