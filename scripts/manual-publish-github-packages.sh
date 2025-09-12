@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
 # Load .env file if it exists
 if [ -f .env ]; then

@@ -4,6 +4,15 @@ This guide provides instructions for manually publishing packages to GitHub Pack
 
 > **Note**: This repository uses a personal namespace (`RobEasthope`) for GitHub Packages while keeping the `@protomolecule` scope for package names. This is because the `protomolecule` organization name is already taken on GitHub.
 
+## Prerequisites Checklist
+
+Before starting, ensure you have:
+
+- [ ] **Node.js** (v20+) and **pnpm** (v8+) installed
+- [ ] **GITHUB_TOKEN** with `write:packages` and `repo` scopes (see [RELEASE_PAT Setup Guide](./release-pat-setup.md))
+- [ ] Repository cloned locally
+- [ ] Network access to GitHub and npm registries
+
 ## When to Use This Guide
 
 Use manual publishing when:
@@ -12,14 +21,6 @@ Use manual publishing when:
 - **Failed automation**: The release workflow fails with permission errors
 - **Testing**: Verifying GitHub Packages configuration before automation
 - **Recovery**: Fixing a broken release state
-
-## Prerequisites
-
-Before starting, ensure you have:
-
-1. **RELEASE_PAT token** with required scopes (see [RELEASE_PAT Setup Guide](./release-pat-setup.md))
-2. **Node.js and pnpm** installed locally
-3. **Built packages** ready for publishing
 
 ## Current Package Versions
 
@@ -139,7 +140,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   echo "Please run:"
   echo "  export GITHUB_TOKEN=your_release_pat_here"
   echo ""
-  echo "See docs/RELEASE_PAT_SETUP.md for token setup instructions"
+  echo "See docs/release-pat-setup.md for token setup instructions"
   exit 1
 fi
 
