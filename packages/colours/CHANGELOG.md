@@ -1,5 +1,13 @@
 # @protomolecule/colours
 
+## 2.1.8
+
+### Patch Changes
+
+- [`a6b4929`](https://github.com/RobEasthope/protomolecule/commit/a6b4929e83b64dab2c519dbeb73f83bd16659462) [#156](https://github.com/RobEasthope/protomolecule/pull/156) - chore: remove GitHub packages publishing functionality
+
+  Simplified the release process by removing dual-registry publishing to GitHub packages. Packages are now only published to NPM, reducing complexity and maintenance overhead.
+
 ## 2.1.7
 
 ### Patch Changes
