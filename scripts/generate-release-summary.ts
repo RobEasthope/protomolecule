@@ -6,10 +6,7 @@
  * a more informative title than "version packages"
  */
 
-import fs from "fs";
-import path from "path";
 // If running directly (for testing)
-import { fileURLToPath } from "url";
 
 type PublishedPackage = {
   description?: string;
@@ -31,33 +28,7 @@ function getPackageShortName(packageName: string): string {
   return packageName.replace("@protomolecule/", "");
 }
 
-/**
- * Determine version bump type by comparing version strings
- * @param oldVersion - Previous version (e.g., '1.2.3')
- * @param newVersion - New version (e.g., '1.3.0')
- * @returns Version bump type ('major', 'minor', or 'patch')
- */
-function getVersionBumpType(
-  oldVersion: string,
-  newVersion: string,
-): "major" | "minor" | "patch" {
-  if (!oldVersion || !newVersion) {
-    return "patch";
-  }
-
-  const oldParts = oldVersion.split(".");
-  const newParts = newVersion.split(".");
-
-  if (oldParts[0] !== newParts[0]) {
-    return "major";
-  }
-
-  if (oldParts[1] !== newParts[1]) {
-    return "minor";
-  }
-
-  return "patch";
-}
+// Removed unused getVersionBumpType function - can be added back if needed for comparing actual versions
 
 /**
  * Generate a descriptive PR title based on packages being released
@@ -127,10 +98,11 @@ function generateReleaseSummary(packages: PublishedPackage[]): string {
   return "chore: version packages";
 }
 
-const __filename = import.meta.filename;
+const currentFilename = import.meta.filename;
 
-if (process.argv[1] === __filename) {
+if (process.argv[1] === currentFilename) {
   const summary = generateReleaseSummary(publishedPackages);
+  // eslint-disable-next-line no-console
   console.log(summary);
 }
 
