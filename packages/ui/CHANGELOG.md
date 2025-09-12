@@ -1,5 +1,30 @@
 # @protomolecule/ui
 
+## 3.1.0
+
+### Minor Changes
+
+- [`c15304d`](https://github.com/RobEasthope/protomolecule/commit/c15304d10b5b23ddffa3e9e56bf251b01dc08446) [#148](https://github.com/RobEasthope/protomolecule/pull/148) - feat(ui): add Prose component from hecate repo
+
+  Added a new Prose component that provides typography styling for text content. The component includes:
+
+  - Support for polymorphic rendering with `as` prop
+  - Support for Radix UI Slot pattern with `asChild` prop
+  - Basic CSS styles for first/last child margin handling
+  - TypeScript support with proper prop types
+
+### Patch Changes
+
+- [`e94ad2f`](https://github.com/RobEasthope/protomolecule/commit/e94ad2f00e049f13bc0aca64e443da3451958446) [#144](https://github.com/RobEasthope/protomolecule/pull/144) - feat(ci): add descriptive PR titles for version releases
+
+  Improved the release workflow to generate more descriptive PR titles based on the packages being released and the types of changes included. PR titles now indicate:
+
+  - Which packages are being released
+  - The nature of changes (features, fixes, breaking changes)
+  - The number of packages when releasing many at once
+
+  This makes it easier to understand at a glance what each release PR contains without having to open it.
+
 ## 3.0.4
 
 ### Patch Changes
@@ -11,6 +36,7 @@
 ### Patch Changes
 
 - e6a328b: docs: add comprehensive GitHub Packages manual publishing documentation
+
   - Created detailed manual publishing guide with step-by-step instructions
   - Added automated script for manual GitHub Packages publishing
   - Created documentation index (docs/README.md) for easier navigation
@@ -67,6 +93,7 @@
 - a15c2ac: feat: add GitHub Packages publishing support
 
   Added dual publishing to both NPM and GitHub Packages registries. All public packages will now be automatically published to GitHub Packages alongside NPM during the release process.
+
   - Updated release workflow to publish to GitHub Packages after NPM publishing
   - Added repository field to all publishable packages for proper GitHub Packages metadata
   - Configured authentication for GitHub Packages using GITHUB_TOKEN
@@ -86,6 +113,7 @@
 ### Minor Changes
 
 - db40da8: feat: configure UI and colours packages for NPM publishing
+
   - Removed private flag from @protomolecule/ui package to enable NPM publishing
   - Removed private flag from @protomolecule/colours package to enable NPM publishing
   - Added publishConfig with public access for both packages
@@ -95,6 +123,7 @@
   - Updated documentation to reflect newly published packages
 
   Both packages are now available on NPM:
+
   - @protomolecule/ui - React component library with Storybook
   - @protomolecule/colours - Radix UI color system CSS imports
 
@@ -103,6 +132,7 @@
 ### Patch Changes
 
 - d9e3dac: feat: add markdown linting with turbo support
+
   - Added markdownlint-cli2 for markdown file linting
   - Configured markdown linting rules in .markdownlint.json
   - Added .markdownlintignore to exclude node_modules and build directories
@@ -132,6 +162,7 @@
 ### Patch Changes
 
 - dd05159: Add ESLint auto-fix to pre-commit hooks
+
   - Added lint:fix-staged scripts to packages that run ESLint with --fix
   - Configured lint-staged to run ESLint fix on JS/TS files before prettier
   - ESLint will auto-fix issues but won't block commits for unfixable problems
