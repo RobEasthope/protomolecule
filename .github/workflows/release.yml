@@ -170,6 +170,7 @@ jobs:
       - name: 📦 Publish to GitHub Packages
         if: steps.changesets.outputs.published == 'true'
         env:
+          # Use RELEASE_PAT (with packages:write) or fallback to GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
         run: |
           echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
