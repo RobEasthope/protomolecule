@@ -175,8 +175,8 @@ jobs:
           echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          # Store workspace directory
-          WORKSPACE_ROOT="$(pwd)"
+          # Store workspace directory with explicit fallback
+          WORKSPACE_ROOT="${GITHUB_WORKSPACE:-$(pwd)}"
           
           # Create a temporary file to track results
           RESULTS_FILE="/tmp/github-packages-results.txt"
@@ -232,11 +232,26 @@ jobs:
                 echo "  ✅ Published successfully on attempt $attempt"
                 return 0
               else
-                # Check error type
-                if echo "$output" | grep -qE "(cannot publish over|409|E409|403|E403|You cannot publish over)"; then
+                # Check error type - separate 403 from "already published" errors
+                if echo "$output" | grep -qE "(cannot publish over|409|E409|You cannot publish over)"; then
                   echo "SKIPPED:$pkg_name@$pkg_version" >> "$RESULTS_FILE"
                   echo "  ⏭️ Package already exists in registry"
                   return 0
+                fi
+                
+                # 403 could be permission issue or already published
+                if echo "$output" | grep -qE "(403|E403)"; then
+                  # Check if it's specifically about version conflict
+                  if echo "$output" | grep -qE "(version conflict|already published|cannot republish)"; then
+                    echo "SKIPPED:$pkg_name@$pkg_version" >> "$RESULTS_FILE"
+                    echo "  ⏭️ Package version already exists (403)"
+                    return 0
+                  else
+                    echo "  ❌ Permission denied (403)"
+                    echo "$output" | grep -E "(npm ERR|ERROR)" | head -5
+                    echo "FAILED:$pkg_name@$pkg_version:permission_denied" >> "$RESULTS_FILE"
+                    return 1
+                  fi
                 fi
                 
                 if echo "$output" | grep -qE "(401|E401|ENEEDAUTH|authentication|unauthorized)"; then

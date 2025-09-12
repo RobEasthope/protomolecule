@@ -23,12 +23,13 @@ WORKSPACE_ROOT="$(pwd)"
 RESULTS_FILE="/tmp/test-github-packages-results.txt"
 > "$RESULTS_FILE"
 
-# Mock published packages for testing
-PUBLISHED_PKGS='[{"name":"@protomolecule/ui","version":"999.999.999"}]'
+# Mock published packages for testing with timestamp-based version to avoid conflicts
+TEST_VERSION="999.999.$(date +%s)"
+PUBLISHED_PKGS="[{\"name\":\"@protomolecule/ui\",\"version\":\"$TEST_VERSION\"}]"
 
 echo "📋 Test Configuration:"
 echo "  Workspace: $WORKSPACE_ROOT"
-echo "  Test Package: @protomolecule/ui@999.999.999"
+echo "  Test Package: @protomolecule/ui@$TEST_VERSION"
 echo ""
 
 # Function to setup GitHub Packages registry
