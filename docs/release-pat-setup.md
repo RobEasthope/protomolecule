@@ -7,9 +7,8 @@ This guide explains how to set up the `RELEASE_PAT` (Personal Access Token) requ
 The `RELEASE_PAT` is required because:
 
 1. **Protected Branches**: Allows pushing version commits to protected main branch
-2. **GitHub Packages**: Enables publishing packages to GitHub Packages registry
-3. **Changeset Operations**: Permits creating release commits and tags
-4. **Cross-Repository Access**: If workflows modify other repos or trigger other workflows
+2. **Changeset Operations**: Permits creating release commits and tags
+3. **Cross-Repository Access**: If workflows modify other repos or trigger other workflows
 
 ## Required Permissions
 
@@ -17,24 +16,21 @@ The `RELEASE_PAT` is required because:
 
 Create a Classic PAT with these scopes:
 
-| Scope            | Required | Purpose                                       |
-| ---------------- | -------- | --------------------------------------------- |
-| `repo`           | ✅ Yes   | Full repository access for protected branches |
-| `write:packages` | ✅ Yes   | Publish packages to GitHub Packages           |
-| `read:packages`  | ✅ Yes   | Read packages from GitHub Packages            |
-| `workflow`       | ⚠️ Maybe | Only if workflows are modified during release |
+| Scope      | Required | Purpose                                       |
+| ---------- | -------- | --------------------------------------------- |
+| `repo`     | ✅ Yes   | Full repository access for protected branches |
+| `workflow` | ⚠️ Maybe | Only if workflows are modified during release |
 
 ### Option 2: Fine-grained Personal Access Token
 
 For fine-grained tokens, configure these permissions:
 
-| Permission        | Access Level | Purpose                    |
-| ----------------- | ------------ | -------------------------- |
-| **Contents**      | Write        | Push commits, create tags  |
-| **Pull requests** | Write        | Create release PRs         |
-| **Packages**      | Write        | Publish to GitHub Packages |
-| **Actions**       | Write        | If workflows are modified  |
-| **Metadata**      | Read         | Always required            |
+| Permission        | Access Level | Purpose                   |
+| ----------------- | ------------ | ------------------------- |
+| **Contents**      | Write        | Push commits, create tags |
+| **Pull requests** | Write        | Create release PRs        |
+| **Actions**       | Write        | If workflows are modified |
+| **Metadata**      | Read         | Always required           |
 
 ## Step-by-Step Setup
 
@@ -47,9 +43,6 @@ For fine-grained tokens, configure these permissions:
 3. Set expiration (recommend 90 days with calendar reminder)
 4. Select scopes:
    - ✅ `repo` (entire checkbox)
-   - ✅ `write:packages`
-   - ✅ `read:packages`
-   - ✅ `delete:packages` (for cleanup)
    - ✅ `workflow` (if needed)
 5. Click "Generate token"
 6. **Copy the token immediately** (starts with `ghp_`)
@@ -74,15 +67,7 @@ For fine-grained tokens, configure these permissions:
 
 ### 3. Verify Setup
 
-Run this command locally to test:
-
-```bash
-# Create .env file
-echo "GITHUB_TOKEN=your_pat_here" > .env
-
-# Run test script
-./scripts/test-github-packages-publish.sh
-```
+The token will be verified automatically when the release workflow runs.
 
 ## Token Maintenance
 
@@ -104,12 +89,11 @@ Update the token if:
 
 ### Troubleshooting
 
-| Error                 | Cause                    | Solution                       |
-| --------------------- | ------------------------ | ------------------------------ |
-| 403 on packages       | Missing `write:packages` | Regenerate with packages scope |
-| Can't push to main    | Missing `repo` scope     | Regenerate with repo scope     |
-| Workflow fails        | Missing `workflow` scope | Add workflow scope if needed   |
-| Authentication failed | Token expired            | Generate new token             |
+| Error                 | Cause                    | Solution                     |
+| --------------------- | ------------------------ | ---------------------------- |
+| Can't push to main    | Missing `repo` scope     | Regenerate with repo scope   |
+| Workflow fails        | Missing `workflow` scope | Add workflow scope if needed |
+| Authentication failed | Token expired            | Generate new token           |
 
 ## See Also
 
@@ -121,8 +105,6 @@ For complete release setup, you need both tokens:
 ## Related Documentation
 
 - [NPM Token Setup Guide](./npm-token-setup.md) - Configure NPM publishing token
-- [Manual GitHub Packages Publishing](./github-packages-manual-publish.md) - Step-by-step manual publishing guide
 - [Release Process](./release-process.md) - Overview of the automated release workflow
 - [GitHub PAT Documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-- [GitHub Packages Permissions](https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages)
 - [Changeset Action](https://github.com/changesets/action)
