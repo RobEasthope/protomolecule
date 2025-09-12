@@ -24,7 +24,7 @@ describe("Changelog Configuration", () => {
   });
 
   it("should be able to import changelog config without errors", async () => {
-    let changelogConfig: any;
+    let changelogConfig: undefined | { default: unknown };
     let error: Error | null = null;
 
     try {
@@ -35,7 +35,7 @@ describe("Changelog Configuration", () => {
 
     expect(error).toBeNull();
     expect(changelogConfig).toBeDefined();
-    expect(changelogConfig.default).toBeDefined();
+    expect(changelogConfig?.default).toBeDefined();
   });
 
   it("should export required changelog functions", async () => {
