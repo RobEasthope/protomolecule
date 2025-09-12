@@ -6,56 +6,46 @@
  * a more informative title than "version packages"
  */
 
-import fs from "fs";
-import path from "path";
+// If running directly (for testing)
+
+type PublishedPackage = {
+  description?: string;
+  name: string;
+  version: string;
+};
 
 // Parse published packages from environment variable
-const publishedPackages = process.env.PUBLISHED_PACKAGES
+const publishedPackages: PublishedPackage[] = process.env.PUBLISHED_PACKAGES
   ? JSON.parse(process.env.PUBLISHED_PACKAGES)
   : [];
 
 /**
  * Extract package names without scope
- * @param {string} packageName - Full package name with scope (e.g., '@protomolecule/ui')
- * @returns {string} Package name without scope (e.g., 'ui')
+ * @param packageName - Full package name with scope (e.g., '@protomolecule/ui')
+ * @returns Package name without scope (e.g., 'ui')
  */
-function getPackageShortName(packageName) {
+function getPackageShortName(packageName: string): string {
   return packageName.replace("@protomolecule/", "");
 }
 
-/**
- * Determine version bump type by comparing version strings
- * @param {string} oldVersion - Previous version (e.g., '1.2.3')
- * @param {string} newVersion - New version (e.g., '1.3.0')
- * @returns {string} Version bump type ('major', 'minor', or 'patch')
- */
-function getVersionBumpType(oldVersion, newVersion) {
-  if (!oldVersion || !newVersion) return "patch";
-
-  const oldParts = oldVersion.split(".");
-  const newParts = newVersion.split(".");
-
-  if (oldParts[0] !== newParts[0]) return "major";
-  if (oldParts[1] !== newParts[1]) return "minor";
-  return "patch";
-}
+// Removed unused getVersionBumpType function - can be added back if needed for comparing actual versions
 
 /**
  * Generate a descriptive PR title based on packages being released
- * @param {Array<{name: string, version: string, description?: string}>} packages - Array of package objects
- * @returns {string} Generated PR title
+ * @param packages - Array of package objects
+ * @returns Generated PR title
  */
-function generateReleaseSummary(packages) {
+function generateReleaseSummary(packages: PublishedPackage[]): string {
   if (!packages || packages.length === 0) {
     return "chore: version packages";
   }
 
   // Group packages by version bump type
-  const major = [];
-  const minor = [];
-  const patch = [];
+  const major: string[] = [];
+  const minor: string[] = [];
+  const patch: string[] = [];
 
-  packages.forEach((pkg) => {
+  for (const pkg of packages) {
     const shortName = getPackageShortName(pkg.name);
     // For simplicity, we'll determine bump type from description or default to patch
     // In a real implementation, we'd analyze the actual version change
@@ -72,17 +62,19 @@ function generateReleaseSummary(packages) {
     } else {
       patch.push(shortName);
     }
-  });
+  }
 
   // Build title parts
-  const parts = [];
+  const parts: string[] = [];
 
   if (major.length > 0) {
     parts.push(`major: ${major.join(", ")}`);
   }
+
   if (minor.length > 0) {
     parts.push(`feat: ${minor.join(", ")}`);
   }
+
   if (patch.length > 0) {
     parts.push(`fix: ${patch.join(", ")}`);
   }
@@ -106,12 +98,11 @@ function generateReleaseSummary(packages) {
   return "chore: version packages";
 }
 
-// If running directly (for testing)
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
+const currentFilename = import.meta.filename;
 
-if (process.argv[1] === __filename) {
+if (process.argv[1] === currentFilename) {
   const summary = generateReleaseSummary(publishedPackages);
+  // eslint-disable-next-line no-console
   console.log(summary);
 }
 

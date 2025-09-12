@@ -15,7 +15,6 @@
 - [`e94ad2f`](https://github.com/RobEasthope/protomolecule/commit/e94ad2f00e049f13bc0aca64e443da3451958446) [#144](https://github.com/RobEasthope/protomolecule/pull/144) - feat(ci): add descriptive PR titles for version releases
 
   Improved the release workflow to generate more descriptive PR titles based on the packages being released and the types of changes included. PR titles now indicate:
-
   - Which packages are being released
   - The nature of changes (features, fixes, breaking changes)
   - The number of packages when releasing many at once
@@ -33,7 +32,6 @@
 ### Patch Changes
 
 - e6a328b: docs: add comprehensive GitHub Packages manual publishing documentation
-
   - Created detailed manual publishing guide with step-by-step instructions
   - Added automated script for manual GitHub Packages publishing
   - Created documentation index (docs/README.md) for easier navigation
@@ -42,7 +40,6 @@
   - Linked all documentation for better discoverability
 
 - 8a3048f: Configure GitHub Packages with personal namespace and add individual publish scripts
-
   - Updated all GitHub Packages configuration to use personal namespace (RobEasthope) instead of organization
   - Fixed manual publish script hanging issue by redirecting stdin from /dev/null
   - Added individual publish scripts for each package for more granular control
@@ -56,7 +53,6 @@
 ### Patch Changes
 
 - 353c05f: fix(ci): use RELEASE_PAT for GitHub Packages publishing to fix 403 errors
-
   - Use RELEASE_PAT (which has package write permissions) instead of GITHUB_TOKEN
   - Falls back to GITHUB_TOKEN if RELEASE_PAT is not available
   - Should resolve 403 permission errors when publishing to GitHub Packages
@@ -66,7 +62,6 @@
 ### Patch Changes
 
 - 2a1d81d: fix(ci): comprehensive fix for GitHub Packages publishing failures
-
   - Fixed workspace directory reference issue that caused cd command failures
   - Added retry mechanism with exponential backoff for transient failures
   - Implemented package existence check before attempting to publish
@@ -84,7 +79,6 @@
 - a15c2ac: feat: add GitHub Packages publishing support
 
   Added dual publishing to both NPM and GitHub Packages registries. All public packages will now be automatically published to GitHub Packages alongside NPM during the release process.
-
   - Updated release workflow to publish to GitHub Packages after NPM publishing
   - Added repository field to all publishable packages for proper GitHub Packages metadata
   - Configured authentication for GitHub Packages using GITHUB_TOKEN
@@ -100,7 +94,6 @@
 ### Patch Changes
 
 - d9e3dac: feat: add markdown linting with turbo support
-
   - Added markdownlint-cli2 for markdown file linting
   - Configured markdown linting rules in .markdownlint.json
   - Added .markdownlintignore to exclude node_modules and build directories
@@ -114,20 +107,17 @@
 ### Patch Changes
 
 - dd05159: Add ESLint auto-fix to pre-commit hooks
-
   - Added lint:fix-staged scripts to packages that run ESLint with --fix
   - Configured lint-staged to run ESLint fix on JS/TS files before prettier
   - ESLint will auto-fix issues but won't block commits for unfixable problems
 
 - fda5cad: Fix release workflow for continuous deployment
-
   - Replace Version Packages PR approach with immediate publishing
   - Packages now publish to NPM immediately when changesets merge to main
   - Aligns with SPEC.md continuous deployment strategy
 
 - a14a0fc: Update @types/node to version 22 to match Node version used in CI
 - a6cbb14: Fix NPM authentication using changesets/action with enhanced reliability
-
   - Replace custom version/publish logic with official changesets/action@v1.4.8 (pinned version)
   - Action handles NPM authentication automatically via NPM_TOKEN
   - Enhanced build verification:
@@ -148,13 +138,11 @@
 
 - 5def063: Fix release workflow by disabling Husky hooks in CI to prevent prettier errors during changeset commits
 - a14a0fc: Fix critical GitHub Actions workflow syntax error that prevented workflow from running
-
   - Fixed invalid token fallback syntax that caused workflow parse errors
   - Now properly uses RELEASE_PAT secret for checkout (required for protected branches)
   - GITHUB_TOKEN is still used for GitHub release creation (doesn't need push permissions)
 
 - a232f46: Fix critical workflow YAML parsing errors and add workflow linting
-
   - Fixed info emoji character (ℹ️) that caused YAML parsing errors on line 220
   - Fixed multiline string with "---" that was interpreted as YAML document separator
   - Added yaml-lint package for workflow validation

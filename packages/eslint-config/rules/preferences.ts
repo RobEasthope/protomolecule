@@ -10,9 +10,10 @@ export const preferences = {
     },
   },
   rules: {
+    "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
     "func-style": ["error", "declaration"],
-    "no-console": ["error", { allow: ["error", "debug", "warn"] }],
+    "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
     "perfectionist/sort-modules": "off",
     "prettier/prettier": [
       "error",
@@ -23,7 +24,7 @@ export const preferences = {
       },
     ],
 
-    quotes: ["warn", "double"],
+    quotes: ["warn", "double", { avoidEscape: true }],
     "react/forbid-component-props": "off",
     "react/function-component-definition": "off",
     "regexp/no-unused-capturing-group": "off",

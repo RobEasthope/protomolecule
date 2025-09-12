@@ -54,7 +54,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           
           # Run validation script and capture output
-          if node scripts/validate-release-deps.js; then
+          if npx tsx scripts/validate-release-deps.ts; then
             echo "✅ All release dependencies are properly configured" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Release dependency validation failed" >> $GITHUB_STEP_SUMMARY
@@ -164,8 +164,8 @@ jobs:
         id: release_title
         run: |
           # Generate descriptive PR title based on changesets
-          if [ -f "scripts/get-release-title.js" ]; then
-            TITLE=$(node scripts/get-release-title.js)
+          if [ -f "scripts/get-release-title.ts" ]; then
+            TITLE=$(npx tsx scripts/get-release-title.ts)
             echo "Generated title: $TITLE"
             echo "title=$TITLE" >> $GITHUB_OUTPUT
           else

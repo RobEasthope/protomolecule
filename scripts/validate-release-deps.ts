@@ -6,8 +6,8 @@
  */
 
 import { existsSync, readFileSync } from "fs";
-import { join } from "path";
 import { createRequire } from "module";
+import { join } from "path";
 
 const require = createRequire(import.meta.url);
 
@@ -22,7 +22,7 @@ for (const pkg of requiredPackages) {
   try {
     require.resolve(pkg);
     console.log(`✅ ${pkg} is installed`);
-  } catch (e) {
+  } catch {
     console.error(`❌ ${pkg} is NOT installed - release will fail!`);
     hasErrors = true;
   }
@@ -34,7 +34,7 @@ if (existsSync(changesetConfigPath)) {
   console.log("✅ Changeset config exists");
 
   try {
-    const config = JSON.parse(readFileSync(changesetConfigPath, "utf-8"));
+    const config = JSON.parse(readFileSync(changesetConfigPath, "utf8"));
 
     // If using custom changelog, validate it exists
     if (Array.isArray(config.changelog)) {
@@ -52,8 +52,10 @@ if (existsSync(changesetConfigPath)) {
         try {
           await import(changelogPath);
           console.log("✅ Changelog config can be imported successfully");
-        } catch (e) {
-          console.error(`❌ Failed to import changelog config: ${e.message}`);
+        } catch (error) {
+          console.error(
+            `❌ Failed to import changelog config: ${(error as Error).message}`,
+          );
           hasErrors = true;
         }
       } else {
@@ -63,8 +65,10 @@ if (existsSync(changesetConfigPath)) {
         hasErrors = true;
       }
     }
-  } catch (e) {
-    console.error(`❌ Failed to parse changeset config: ${e.message}`);
+  } catch (error) {
+    console.error(
+      `❌ Failed to parse changeset config: ${(error as Error).message}`,
+    );
     hasErrors = true;
   }
 } else {
@@ -75,7 +79,7 @@ if (existsSync(changesetConfigPath)) {
 // Check package.json for proper setup
 const packageJsonPath = join(process.cwd(), "package.json");
 if (existsSync(packageJsonPath)) {
-  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
 
   if (
     packageJson.packageManager &&

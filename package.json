@@ -8,12 +8,17 @@
     "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
     "clean": "turbo run clean && rimraf node_modules",
     "dev": "turbo run dev --filter=@protomolecule/ui",
-    "format": "turbo run format",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "lint:fix-staged": "turbo run lint:fix-staged",
-    "lint:md": "turbo run lint:md",
-    "lint:md:fix": "turbo run lint:md:fix",
+    "format": "pnpm format:root && turbo run format",
+    "format:root": "prettier --write '**/*.{js,jsx,ts,tsx,mjs,json,md,yml,yaml}' --ignore-path .gitignore --ignore-pattern 'packages/**'",
+    "lint": "pnpm lint:root && turbo run lint",
+    "lint:fix": "pnpm lint:root:fix && turbo run lint:fix",
+    "lint:fix-staged": "pnpm lint:root:fix && turbo run lint:fix-staged",
+    "lint:md": "pnpm lint:md:root && turbo run lint:md",
+    "lint:md:fix": "pnpm lint:md:root:fix && turbo run lint:md:fix",
+    "lint:md:root": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' '!./packages/**'",
+    "lint:md:root:fix": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' '!./packages/**' --fix",
+    "lint:root": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --ignore-pattern 'packages/**' --cache --cache-location .turbo/.eslintcache-root",
+    "lint:root:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --ignore-pattern 'packages/**' --fix --cache --cache-location .turbo/.eslintcache-root",
     "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
     "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
     "prepare": "husky",
@@ -21,13 +26,17 @@
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
     "test:hooks": "vitest run test/hooks",
-    "test:ui": "turbo run test:ui --filter=@protomolecule/ui"
+    "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
+    "typecheck": "tsc --noEmit"
   },
   "lint-staged": {
     "package.json": [
       "prettier --write --ignore-unknown"
     ],
     "**/*": "prettier --write --ignore-unknown",
+    "**/*.{js,jsx,ts,tsx,mjs}": [
+      "eslint --fix --cache --cache-location .turbo/.eslintcache-root"
+    ],
     ".github/workflows/*.yml": [
       "npx yaml-lint"
     ],
@@ -38,12 +47,21 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
+    "@protomolecule/eslint-config": "workspace:*",
+    "@protomolecule/tsconfig": "workspace:*",
     "@types/node": "^22.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
+    "eslint": "^9.34.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
     "markdownlint-cli2": "^0.18.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "rimraf": "^6.0.1",
+    "tsx": "^4.20.5",
     "turbo": "^2.5.6",
+    "typescript": "^5.2.2",
     "vitest": "^3.2.4",
     "yaml-lint": "^1.7.0"
   },

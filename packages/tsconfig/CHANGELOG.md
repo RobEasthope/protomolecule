@@ -5,7 +5,6 @@
 ### Patch Changes
 
 - d9e3dac: feat: add markdown linting with turbo support
-
   - Added markdownlint-cli2 for markdown file linting
   - Configured markdown linting rules in .markdownlint.json
   - Added .markdownlintignore to exclude node_modules and build directories

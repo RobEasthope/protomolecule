@@ -1,27 +1,23 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
 import { readFileSync } from "fs";
+import { resolve } from "path";
+import { defineConfig } from "vite";
 
 // Read package.json to get dependencies
 const packageJson = JSON.parse(
-  readFileSync(resolve(__dirname, "package.json"), "utf-8"),
+  readFileSync(resolve(__dirname, "package.json"), "utf8"),
 );
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "./"),
-    },
-  },
   build: {
+    emptyOutDir: true,
     lib: {
       entry: resolve(__dirname, "index.ts"),
-      name: "ProtomoleculeUI",
-      formats: ["es", "cjs"],
       fileName: (format) => `index.${format === "es" ? "mjs" : "cjs"}`,
+      formats: ["es", "cjs"],
+      name: "ProtomoleculeUI",
     },
+    outDir: "dist",
     rollupOptions: {
       external: [
         "react",
@@ -39,7 +35,11 @@ export default defineConfig({
       },
     },
     sourcemap: true,
-    outDir: "dist",
-    emptyOutDir: true,
+  },
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./"),
+    },
   },
 });

@@ -1,16 +1,14 @@
 {
-  "id": 1224992,
-  "name": "Protect production",
-  "target": "branch",
-  "source_type": "Repository",
-  "source": "RobEasthope/protomolecule",
-  "enforcement": "active",
+  "bypass_actors": [],
   "conditions": {
     "ref_name": {
       "exclude": [],
       "include": ["~DEFAULT_BRANCH"]
     }
   },
+  "enforcement": "active",
+  "id": 1224992,
+  "name": "Protect production",
   "rules": [
     {
       "type": "deletion"
@@ -19,5 +17,7 @@
       "type": "non_fast_forward"
     }
   ],
-  "bypass_actors": []
+  "source": "RobEasthope/protomolecule",
+  "source_type": "Repository",
+  "target": "branch"
 }

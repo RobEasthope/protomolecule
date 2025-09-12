@@ -1,17 +1,29 @@
-import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { describe, expect, it } from "vitest";
+
+type PackageJson = {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  packageManager?: string;
+};
+
+type ChangesetConfig = {
+  changelog?: string | string[];
+};
 
 describe("Release Workflow Dependencies", () => {
   it("should have all required changeset dependencies", () => {
     const packageJsonPath = join(process.cwd(), "package.json");
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    const packageJson: PackageJson = JSON.parse(
+      readFileSync(packageJsonPath, "utf8"),
+    );
 
     const requiredDeps = ["@changesets/cli", "@changesets/get-github-info"];
 
     const allDeps = {
-      ...(packageJson.dependencies || {}),
-      ...(packageJson.devDependencies || {}),
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
     };
 
     for (const dep of requiredDeps) {
@@ -21,7 +33,9 @@ describe("Release Workflow Dependencies", () => {
 
   it("should have changeset config defined", () => {
     const packageJsonPath = join(process.cwd(), ".changeset/config.json");
-    const changesetConfig = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    const changesetConfig: ChangesetConfig = JSON.parse(
+      readFileSync(packageJsonPath, "utf8"),
+    );
 
     expect(changesetConfig).toBeDefined();
     expect(changesetConfig.changelog).toBeDefined();
@@ -29,7 +43,9 @@ describe("Release Workflow Dependencies", () => {
 
   it("should have valid changeset changelog config", () => {
     const packageJsonPath = join(process.cwd(), ".changeset/config.json");
-    const changesetConfig = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    const changesetConfig: ChangesetConfig = JSON.parse(
+      readFileSync(packageJsonPath, "utf8"),
+    );
 
     // If using custom changelog, validate it points to our config
     if (Array.isArray(changesetConfig.changelog)) {
@@ -39,17 +55,19 @@ describe("Release Workflow Dependencies", () => {
 
   it("should have GitHub Action dependencies installed", () => {
     const packageJsonPath = join(process.cwd(), "package.json");
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    const packageJson: PackageJson = JSON.parse(
+      readFileSync(packageJsonPath, "utf8"),
+    );
 
     // Check for pnpm in package manager field
     expect(packageJson.packageManager).toContain("pnpm");
 
     // Ensure turbo is available for build commands
     const allDeps = {
-      ...(packageJson.dependencies || {}),
-      ...(packageJson.devDependencies || {}),
+      ...packageJson.dependencies,
+      ...packageJson.devDependencies,
     };
 
-    expect(allDeps["turbo"]).toBeDefined();
+    expect(allDeps.turbo).toBeDefined();
   });
 });
