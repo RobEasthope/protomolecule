@@ -54,7 +54,7 @@ if (existsSync(changesetConfigPath)) {
           console.log("✅ Changelog config can be imported successfully");
         } catch (error) {
           console.error(
-            `❌ Failed to import changelog config: ${error.message}`,
+            `❌ Failed to import changelog config: ${(error as Error).message}`,
           );
           hasErrors = true;
         }
@@ -66,7 +66,9 @@ if (existsSync(changesetConfigPath)) {
       }
     }
   } catch (error) {
-    console.error(`❌ Failed to parse changeset config: ${error.message}`);
+    console.error(
+      `❌ Failed to parse changeset config: ${(error as Error).message}`,
+    );
     hasErrors = true;
   }
 } else {

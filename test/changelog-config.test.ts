@@ -24,13 +24,13 @@ describe("Changelog Configuration", () => {
   });
 
   it("should be able to import changelog config without errors", async () => {
-    let changelogConfig;
-    let error = null;
+    let changelogConfig: any;
+    let error: Error | null = null;
 
     try {
       changelogConfig = await import("../.changeset/changelog-config.js");
     } catch (error_) {
-      error = error_;
+      error = error_ as Error;
     }
 
     expect(error).toBeNull();

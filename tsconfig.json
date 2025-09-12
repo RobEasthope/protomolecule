@@ -13,10 +13,11 @@
     "*.ts",
     "*.js",
     "*.mjs",
+    "scripts/**/*.ts",
     "scripts/**/*.js",
     "scripts/**/*.mjs",
-    "test/**/*.js",
     "test/**/*.ts",
+    "test/**/*.js",
     ".changeset/**/*.js"
   ],
   "exclude": ["node_modules", "packages/**", "dist", ".turbo"]

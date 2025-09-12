@@ -11,27 +11,36 @@ import path from "path";
 // If running directly (for testing)
 import { fileURLToPath } from "url";
 
+type PublishedPackage = {
+  description?: string;
+  name: string;
+  version: string;
+};
+
 // Parse published packages from environment variable
-const publishedPackages = process.env.PUBLISHED_PACKAGES
+const publishedPackages: PublishedPackage[] = process.env.PUBLISHED_PACKAGES
   ? JSON.parse(process.env.PUBLISHED_PACKAGES)
   : [];
 
 /**
  * Extract package names without scope
- * @param {string} packageName - Full package name with scope (e.g., '@protomolecule/ui')
- * @returns {string} Package name without scope (e.g., 'ui')
+ * @param packageName - Full package name with scope (e.g., '@protomolecule/ui')
+ * @returns Package name without scope (e.g., 'ui')
  */
-function getPackageShortName(packageName) {
+function getPackageShortName(packageName: string): string {
   return packageName.replace("@protomolecule/", "");
 }
 
 /**
  * Determine version bump type by comparing version strings
- * @param {string} oldVersion - Previous version (e.g., '1.2.3')
- * @param {string} newVersion - New version (e.g., '1.3.0')
- * @returns {string} Version bump type ('major', 'minor', or 'patch')
+ * @param oldVersion - Previous version (e.g., '1.2.3')
+ * @param newVersion - New version (e.g., '1.3.0')
+ * @returns Version bump type ('major', 'minor', or 'patch')
  */
-function getVersionBumpType(oldVersion, newVersion) {
+function getVersionBumpType(
+  oldVersion: string,
+  newVersion: string,
+): "major" | "minor" | "patch" {
   if (!oldVersion || !newVersion) {
     return "patch";
   }
@@ -52,18 +61,18 @@ function getVersionBumpType(oldVersion, newVersion) {
 
 /**
  * Generate a descriptive PR title based on packages being released
- * @param {Array<{name: string, version: string, description?: string}>} packages - Array of package objects
- * @returns {string} Generated PR title
+ * @param packages - Array of package objects
+ * @returns Generated PR title
  */
-function generateReleaseSummary(packages) {
+function generateReleaseSummary(packages: PublishedPackage[]): string {
   if (!packages || packages.length === 0) {
     return "chore: version packages";
   }
 
   // Group packages by version bump type
-  const major = [];
-  const minor = [];
-  const patch = [];
+  const major: string[] = [];
+  const minor: string[] = [];
+  const patch: string[] = [];
 
   for (const pkg of packages) {
     const shortName = getPackageShortName(pkg.name);
@@ -85,7 +94,7 @@ function generateReleaseSummary(packages) {
   }
 
   // Build title parts
-  const parts = [];
+  const parts: string[] = [];
 
   if (major.length > 0) {
     parts.push(`major: ${major.join(", ")}`);

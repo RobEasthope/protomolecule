@@ -12,15 +12,26 @@ import { fileURLToPath } from "url";
 const __filename = import.meta.filename;
 const __dirname = import.meta.dirname;
 
+type PackageChange = {
+  name: string;
+  type: "major" | "minor" | "patch";
+};
+
+type Changeset = {
+  file: string;
+  packages: PackageChange[];
+  summary: string;
+};
+
 /**
  * Read and parse all changeset files from the .changeset directory
- * @returns {Array<{file: string, packages: Array<{name: string, type: string}>, summary: string}>} Array of parsed changesets
+ * @returns Array of parsed changesets
  */
-function getChangesets() {
+function getChangesets(): Changeset[] {
   const changesetDir = path.join(process.cwd(), ".changeset");
   const files = fs.readdirSync(changesetDir);
 
-  const changesets = [];
+  const changesets: Changeset[] = [];
 
   for (const file of files) {
     if (file.endsWith(".md") && file !== "README.md") {
@@ -53,14 +64,14 @@ function getChangesets() {
 
       if (frontmatter && summary) {
         // Parse packages from frontmatter
-        const packages = [];
+        const packages: PackageChange[] = [];
         const packageRegex =
           /"@protomolecule\/([^"]+)":\s*(patch|minor|major)/g;
         let match;
         while ((match = packageRegex.exec(frontmatter)) !== null) {
           packages.push({
             name: match[1],
-            type: match[2],
+            type: match[2] as "major" | "minor" | "patch",
           });
         }
 
@@ -78,11 +89,11 @@ function getChangesets() {
 
 /**
  * Determine the priority of a version bump type
- * @param {string} type - Version bump type (major, minor, patch)
- * @returns {number} Priority value (higher is more significant)
+ * @param type - Version bump type (major, minor, patch)
+ * @returns Priority value (higher is more significant)
  */
-function getVersionBumpPriority(type) {
-  const priorities = {
+function getVersionBumpPriority(type: string): number {
+  const priorities: Record<string, number> = {
     major: 3,
     minor: 2,
     patch: 1,
@@ -92,11 +103,11 @@ function getVersionBumpPriority(type) {
 
 /**
  * Compare two version bump types and return the more significant one
- * @param {string} current - Current version bump type
- * @param {string} candidate - Candidate version bump type
- * @returns {string} The more significant version bump type
+ * @param current - Current version bump type
+ * @param candidate - Candidate version bump type
+ * @returns The more significant version bump type
  */
-function getHigherVersionBump(current, candidate) {
+function getHigherVersionBump(current: string, candidate: string): string {
   return getVersionBumpPriority(candidate) > getVersionBumpPriority(current)
     ? candidate
     : current;
@@ -104,9 +115,9 @@ function getHigherVersionBump(current, candidate) {
 
 /**
  * Generate a descriptive PR title based on pending changesets
- * @returns {string} Generated PR title
+ * @returns Generated PR title
  */
-function generateTitle() {
+function generateTitle(): string {
   try {
     const changesets = getChangesets();
 
@@ -115,8 +126,8 @@ function generateTitle() {
     }
 
     // Analyze all changesets
-    const allPackages = new Map();
-    const changeTypes = new Set();
+    const allPackages = new Map<string, string>();
+    const changeTypes = new Set<string>();
     let hasBreaking = false;
     let hasFeatures = false;
     let hasFixes = false;
@@ -129,7 +140,7 @@ function generateTitle() {
           allPackages.set(pkg.name, pkg.type);
         } else {
           // Use the more significant version bump type
-          const current = allPackages.get(pkg.name);
+          const current = allPackages.get(pkg.name)!;
           const higher = getHigherVersionBump(current, pkg.type);
           allPackages.set(pkg.name, higher);
         }
