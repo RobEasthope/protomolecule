@@ -147,6 +147,18 @@ jobs:
           
           echo "" >> $GITHUB_STEP_SUMMARY
 
+      - name: 🏷️ Generate Release Title
+        id: release_title
+        run: |
+          # Generate descriptive PR title based on changesets
+          if [ -f "scripts/get-release-title.js" ]; then
+            TITLE=$(node scripts/get-release-title.js)
+            echo "Generated title: $TITLE"
+            echo "title=$TITLE" >> $GITHUB_OUTPUT
+          else
+            echo "title=chore: version packages" >> $GITHUB_OUTPUT
+          fi
+
       - name: 🚀 Create Release or Publish
         id: changesets
         uses: changesets/action@v1.4.8
@@ -155,8 +167,8 @@ jobs:
           publish: pnpm changeset publish
           # Commit message for version updates
           commit: "chore: version packages [skip ci]"
-          # Title for version update PRs (if used in PR mode)
-          title: "chore: version packages"
+          # Title for version update PRs - now uses dynamic title
+          title: "${{ steps.release_title.outputs.title || 'chore: version packages' }}"
           # Create GitHub releases automatically
           createGithubReleases: true
         env:
