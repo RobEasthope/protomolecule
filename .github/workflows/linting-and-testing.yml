@@ -26,6 +26,7 @@ jobs:
           path: |
             .turbo/.eslintcache-ui
             .turbo/.eslintcache-eslint-config
+            .turbo/.eslintcache-root
           key: ${{ runner.os }}-eslint-${{ hashFiles('**/package.json', '**/.eslintrc*', '**/eslint.config.*') }}
           restore-keys: |
             ${{ runner.os }}-eslint-
@@ -37,8 +38,19 @@ jobs:
         id: lint
         run: |
           echo "## 🔬 ESLint Results" >> $GITHUB_STEP_SUMMARY
-          if pnpm run lint; then
-            echo "✅ **Linting passed successfully**" >> $GITHUB_STEP_SUMMARY
+          # Run linting for packages and root
+          LINT_FAILED=false
+          if ! pnpm run lint; then
+            echo "❌ **Package linting failed**" >> $GITHUB_STEP_SUMMARY
+            LINT_FAILED=true
+          fi
+          if ! pnpm run lint:root; then
+            echo "❌ **Root linting failed**" >> $GITHUB_STEP_SUMMARY
+            LINT_FAILED=true
+          fi
+          
+          if [ "$LINT_FAILED" = "false" ]; then
+            echo "✅ **All linting passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
           else
             echo "❌ **Linting failed** - Check the logs for details" >> $GITHUB_STEP_SUMMARY
@@ -79,9 +91,19 @@ jobs:
         id: typecheck
         run: |
           echo "## 🔎 TypeScript Results" >> $GITHUB_STEP_SUMMARY
-          # Run the build command which includes type checking
-          if pnpm run build; then
-            echo "✅ **Type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
+          # Run type checking for packages and root
+          TYPECHECK_FAILED=false
+          if ! pnpm run build; then
+            echo "❌ **Package type checking failed**" >> $GITHUB_STEP_SUMMARY
+            TYPECHECK_FAILED=true
+          fi
+          if ! pnpm run typecheck; then
+            echo "❌ **Root type checking failed**" >> $GITHUB_STEP_SUMMARY
+            TYPECHECK_FAILED=true
+          fi
+          
+          if [ "$TYPECHECK_FAILED" = "false" ]; then
+            echo "✅ **All type checking passed successfully**" >> $GITHUB_STEP_SUMMARY
             echo "status=success" >> $GITHUB_OUTPUT
           else
             echo "❌ **Type checking failed** - Check the logs for errors" >> $GITHUB_STEP_SUMMARY
