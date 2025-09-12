@@ -21,10 +21,10 @@ describe("pre-commit hook", () => {
 
     // Initialize git repo in test directory
     await execAsync("git init", { cwd: testDirectory });
-    await execAsync('git config user.email "test@example.com"', {
+    await execAsync("git config user.email 'test@example.com'", {
       cwd: testDirectory,
     });
-    await execAsync('git config user.name "Test User"', { cwd: testDirectory });
+    await execAsync("git config user.name 'Test User'", { cwd: testDirectory });
 
     // Copy the pre-commit hook to test directory
     await fs.mkdir(path.join(testDirectory, ".husky"), { recursive: true });
@@ -117,8 +117,8 @@ fi
     await fs.writeFile(file2, "console.log('another')");
 
     // Stage the files - need to escape for shell
-    await execAsync('git add "test file.js"', { cwd: testDirectory });
-    await execAsync('git add "another file.js"', { cwd: testDirectory });
+    await execAsync("git add 'test file.js'", { cwd: testDirectory });
+    await execAsync("git add 'another file.js'", { cwd: testDirectory });
 
     // Run the pre-commit hook
     const { stdout } = await execAsync(".husky/pre-commit", {
@@ -141,7 +141,7 @@ fi
     await fs.writeFile(keepFile, "console.log('keep')");
     await fs.writeFile(deleteFile, "console.log('delete')");
     await execAsync("git add .", { cwd: testDirectory });
-    await execAsync('git commit -m "Initial commit"', { cwd: testDirectory });
+    await execAsync("git commit -m 'Initial commit'", { cwd: testDirectory });
 
     // Stage deletion of one file and modification of another
     await execAsync("git rm delete.js", { cwd: testDirectory });
@@ -235,7 +235,7 @@ fi
     await fs.writeFile(file2, "console.log('test')");
 
     // Stage the files separately to avoid shell escaping issues
-    await execAsync('git add "test\\$file.js"', { cwd: testDirectory });
+    await execAsync('git add "test$file.js"', { cwd: testDirectory });
     await execAsync('git add "test\'file.js"', { cwd: testDirectory });
 
     // Run the pre-commit hook

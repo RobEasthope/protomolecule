@@ -24,7 +24,7 @@ export const preferences = {
       },
     ],
 
-    quotes: ["warn", "double"],
+    quotes: ["warn", "double", { avoidEscape: true }],
     "react/forbid-component-props": "off",
     "react/function-component-definition": "off",
     "regexp/no-unused-capturing-group": "off",
