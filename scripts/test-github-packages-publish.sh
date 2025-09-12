@@ -5,6 +5,14 @@
 
 set -euo pipefail
 
+# Load .env file if it exists (safer pattern)
+if [ -f .env ]; then
+  echo "📄 Loading environment variables from .env file..."
+  set -a
+  source .env 2>/dev/null || echo "⚠️ Warning: Could not load .env file"
+  set +a
+fi
+
 echo "🧪 Testing GitHub Packages Publishing Logic"
 echo "==========================================="
 echo ""
@@ -89,6 +97,16 @@ if ! test_authentication; then
   echo "  1. The GITHUB_TOKEN doesn't have 'packages:read' permission"
   echo "  2. No packages exist in the @protomolecule scope yet"
   echo ""
+fi
+
+# Check if jq is available
+if ! command -v jq &> /dev/null; then
+  echo "❌ Error: jq is not installed"
+  echo "Please install jq to parse JSON data:"
+  echo "  macOS: brew install jq"
+  echo "  Ubuntu/Debian: apt-get install jq"
+  echo "  RHEL/CentOS: yum install jq"
+  exit 1
 fi
 
 # Process test packages
