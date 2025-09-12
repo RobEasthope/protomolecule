@@ -17,6 +17,7 @@ export { NextInternalLink } from "./components/InternalLink/NextInternalLink";
 
 export { ReactRouterLink } from "./components/InternalLink/ReactRouterLink";
 export { OmniLink } from "./components/OmniLink/OmniLink";
+export { Prose, type ProseProps } from "./components/Prose/Prose";
 export { BasicProseComponents } from "./components/SanityProse/components/BasicProse/BasicProse";
 export { default as BasicProseSchema } from "./components/SanityProse/components/BasicProse/BasicProse.schema";
 export { FullProseComponents } from "./components/SanityProse/components/FullProse/FullProse";

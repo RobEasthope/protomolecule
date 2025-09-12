@@ -11,7 +11,6 @@
 ### Patch Changes
 
 - e6a328b: docs: add comprehensive GitHub Packages manual publishing documentation
-
   - Created detailed manual publishing guide with step-by-step instructions
   - Added automated script for manual GitHub Packages publishing
   - Created documentation index (docs/README.md) for easier navigation
@@ -20,7 +19,6 @@
   - Linked all documentation for better discoverability
 
 - 8a3048f: Configure GitHub Packages with personal namespace and add individual publish scripts
-
   - Updated all GitHub Packages configuration to use personal namespace (RobEasthope) instead of organization
   - Fixed manual publish script hanging issue by redirecting stdin from /dev/null
   - Added individual publish scripts for each package for more granular control
@@ -34,7 +32,6 @@
 ### Patch Changes
 
 - 353c05f: fix(ci): use RELEASE_PAT for GitHub Packages publishing to fix 403 errors
-
   - Use RELEASE_PAT (which has package write permissions) instead of GITHUB_TOKEN
   - Falls back to GITHUB_TOKEN if RELEASE_PAT is not available
   - Should resolve 403 permission errors when publishing to GitHub Packages
@@ -44,7 +41,6 @@
 ### Patch Changes
 
 - 2a1d81d: fix(ci): comprehensive fix for GitHub Packages publishing failures
-
   - Fixed workspace directory reference issue that caused cd command failures
   - Added retry mechanism with exponential backoff for transient failures
   - Implemented package existence check before attempting to publish
@@ -60,7 +56,6 @@
 ### Major Changes
 
 - 6e5085d: BREAKING CHANGE: Rename Prose component to SanityProse to avoid conflicts with future work
-
   - `Prose` component is now `SanityProse`
   - `ProseProps` type is now `SanityProseProps`
   - All imports need to be updated from `Prose` to `SanityProse`
@@ -72,7 +67,6 @@
 - a15c2ac: feat: add GitHub Packages publishing support
 
   Added dual publishing to both NPM and GitHub Packages registries. All public packages will now be automatically published to GitHub Packages alongside NPM during the release process.
-
   - Updated release workflow to publish to GitHub Packages after NPM publishing
   - Added repository field to all publishable packages for proper GitHub Packages metadata
   - Configured authentication for GitHub Packages using GITHUB_TOKEN
@@ -82,7 +76,6 @@
 ### Patch Changes
 
 - 46a58a6: docs: reorganise documentation structure and fix package installation instructions
-
   - Created comprehensive documentation in new docs/ folder
   - Simplified main README with clear table of contents
   - Fixed installation instructions for published packages
@@ -93,7 +86,6 @@
 ### Minor Changes
 
 - db40da8: feat: configure UI and colours packages for NPM publishing
-
   - Removed private flag from @protomolecule/ui package to enable NPM publishing
   - Removed private flag from @protomolecule/colours package to enable NPM publishing
   - Added publishConfig with public access for both packages
@@ -103,7 +95,6 @@
   - Updated documentation to reflect newly published packages
 
   Both packages are now available on NPM:
-
   - @protomolecule/ui - React component library with Storybook
   - @protomolecule/colours - Radix UI color system CSS imports
 
@@ -112,7 +103,6 @@
 ### Patch Changes
 
 - d9e3dac: feat: add markdown linting with turbo support
-
   - Added markdownlint-cli2 for markdown file linting
   - Configured markdown linting rules in .markdownlint.json
   - Added .markdownlintignore to exclude node_modules and build directories
@@ -142,7 +132,6 @@
 ### Patch Changes
 
 - dd05159: Add ESLint auto-fix to pre-commit hooks
-
   - Added lint:fix-staged scripts to packages that run ESLint with --fix
   - Configured lint-staged to run ESLint fix on JS/TS files before prettier
   - ESLint will auto-fix issues but won't block commits for unfixable problems
