@@ -1,6 +1,6 @@
 {
   "name": "@protomolecule/eslint-config",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "repository": {
     "type": "git",

@@ -1,5 +1,11 @@
 # @protomolecule/ui
 
+## 3.0.4
+
+### Patch Changes
+
+- 31f216f: Improve shell script error handling by adding pipefail option
+
 ## 3.0.3
 
 ### Patch Changes
