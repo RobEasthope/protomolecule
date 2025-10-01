@@ -66,7 +66,7 @@ changelogFunctions.generatePRTitle = async (pendingChangesets) => {
   for (const changeset of pendingChangesets) {
     // Track all packages being updated
     for (const release of changeset.releases) {
-      const pkgName = release.name.replace("@protomolecule/", "");
+      const pkgName = release.name.replace("@robeasthope/", "");
       if (!packages.has(pkgName)) {
         packages.set(pkgName, new Set());
       }
