@@ -45,4 +45,13 @@
       ".react-router/": true,
     },
   },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "davidanson.vscode-markdownlint",
+      "redhat.vscode-yaml",
+    ],
+  },
 }
