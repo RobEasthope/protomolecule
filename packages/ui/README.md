@@ -1,6 +1,6 @@
 # @robeasthope/ui
 
-React component library for Protomolecule projects with Storybook, Tailwind CSS v4, and Sanity CMS integration.
+React component library with Storybook, Tailwind CSS v4, and Sanity CMS integration.
 
 ## 📦 Installation
 

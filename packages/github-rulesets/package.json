@@ -2,7 +2,7 @@
   "name": "@robeasthope/github-rulesets",
   "version": "1.0.2",
   "private": true,
-  "description": "GitHub configuration rulesets for Protomolecule projects",
+  "description": "GitHub repository configuration and rulesets for consistent branch protection",
   "license": "MIT",
   "files": [
     "rulesets"

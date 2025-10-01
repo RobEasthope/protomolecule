@@ -1,6 +1,6 @@
 # @robeasthope/tsconfig
 
-Shared TypeScript configurations for Protomolecule projects.
+Shared TypeScript configurations for React and Node.js projects.
 
 ## 📦 Installation
 

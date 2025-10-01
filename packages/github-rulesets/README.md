@@ -1,6 +1,6 @@
 # @robeasthope/github-rulesets
 
-GitHub repository configuration and rulesets for Protomolecule projects, ensuring consistent branch protection and workflow standards.
+GitHub repository configuration and rulesets ensuring consistent branch protection and workflow standards.
 
 ## 📦 Package Details
 

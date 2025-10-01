@@ -1,6 +1,6 @@
 # @robeasthope/colours
 
-Radix UI color system integration for Protomolecule projects, providing a comprehensive palette with dark mode support.
+Radix UI color system integration providing a comprehensive palette with dark mode support.
 
 ## 📦 Installation
 
