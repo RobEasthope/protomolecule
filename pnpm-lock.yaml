@@ -16,6 +16,9 @@ importers:
       "@robeasthope/eslint-config":
         specifier: workspace:*
         version: link:packages/eslint-config
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:packages/markdownlint-config
       "@robeasthope/tsconfig":
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -71,6 +74,9 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
     devDependencies:
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:../markdownlint-config
       "@robeasthope/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -96,6 +102,9 @@ importers:
         specifier: ^8.42.0
         version: 8.42.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.4.5)
     devDependencies:
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:../markdownlint-config
       "@robeasthope/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -117,6 +126,9 @@ importers:
 
   packages/github-rulesets:
     devDependencies:
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:../markdownlint-config
       "@robeasthope/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -124,8 +136,20 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
 
+  packages/markdownlint-config:
+    devDependencies:
+      markdownlint-cli2:
+        specifier: ^0.18.1
+        version: 0.18.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+
   packages/tsconfig:
     devDependencies:
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:../markdownlint-config
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -184,6 +208,9 @@ importers:
       "@robeasthope/eslint-config":
         specifier: workspace:*
         version: link:../eslint-config
+      "@robeasthope/markdownlint-config":
+        specifier: workspace:*
+        version: link:../markdownlint-config
       "@robeasthope/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
