@@ -78,15 +78,37 @@ for consistency with design system naming conventions
 
 ## Changeset Requirements
 
-When creating PRs that modify any package:
+### When Changesets ARE Required
 
-1. **Always create a changeset file** before pushing the PR
-2. **Determine version bump** based on your changes:
+Create a changeset **ONLY** when you modify source code in `packages/*/src/` or package-specific files that affect published packages:
+
+- Adding/modifying components in `packages/ui/src/`
+- Changing ESLint rules in `packages/eslint-config/`
+- Updating color exports in `packages/colours/`
+- Modifying package-specific configuration that affects consumers
+- Updating package dependencies that affect functionality
+
+### When Changesets ARE NOT Required
+
+**DO NOT** create changesets for:
+
+- ❌ Root `package.json` script changes
+- ❌ `.github/` directory changes (workflows, scripts, actions)
+- ❌ Root configuration files (`.prettierrc`, `.eslintrc`, etc.)
+- ❌ Documentation updates (`*.md` files)
+- ❌ Build/test tooling configuration at root level
+- ❌ CI/CD configuration changes
+- ❌ Git hooks or linting configuration
+- ❌ Any changes that only affect development workflow, not published packages
+
+### Creating Changesets
+
+1. **Determine version bump** based on your changes:
    - `patch`: Bug fixes, dependency updates, small improvements
    - `minor`: New features, new components, new exports
    - `major`: Breaking changes, API changes, major refactors
 
-3. **Create changeset programmatically:**
+2. **Create changeset programmatically:**
 
    ```bash
    # Option 1: Use interactive CLI (if available)
@@ -102,16 +124,16 @@ When creating PRs that modify any package:
    EOF
    ```
 
-4. **Include changeset in your commits:**
+3. **Include changeset in your commits:**
 
    ```bash
    git add .changeset/*.md
    git commit -m "chore: add changeset"
    ```
 
-5. **CI will block PRs without changesets** - this is mandatory
+### Important Rules
 
-**IMPORTANT:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
+**CRITICAL:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
 
 **Published to NPM:**
 
@@ -120,6 +142,8 @@ When creating PRs that modify any package:
 - `@protomolecule/colours` - Radix UI color system
 
 **Private packages** (`tsconfig`, `github-rulesets`) still require changesets for version tracking but are not published to NPM.
+
+**When in doubt:** If you're only modifying files at the repository root level or in `.github/`, you almost certainly don't need a changeset.
 
 ## Monorepo Structure
 
