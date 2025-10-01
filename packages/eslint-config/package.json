@@ -45,8 +45,8 @@
     "lint": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "lint:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --cache --cache-location ../../.turbo/.eslintcache-eslint-config",
     "lint:fix-staged": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --fix --max-warnings=Infinity --cache --cache-location ../../.turbo/.eslintcache-eslint-config || true",
-    "lint:md": "markdownlint-cli2 '**/*.md' '!**/node_modules/**'",
-    "lint:md:fix": "markdownlint-cli2 '**/*.md' '!**/node_modules/**' --fix",
+    "lint:md": "markdownlint-cli2",
+    "lint:md:fix": "markdownlint-cli2 --fix",
     "prepublishOnly": "pnpm run build",
     "sort-pkg-json": "npx sort-package-json",
     "tsc": "tsc --noEmit"
