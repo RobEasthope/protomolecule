@@ -4,7 +4,7 @@
   "baseBranch": "main",
   "changelog": [
     "./changelogFunctions.js",
-    {"repo": "RobEasthope/protomolecule"}
+    { "repo": "RobEasthope/protomolecule" }
   ],
   "commit": false,
   "fixed": [],

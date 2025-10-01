@@ -14,6 +14,6 @@ All packages have been renamed to use the @robeasthope namespace for GitHub Pack
 
 Migration guide:
 
-1. Update package.json dependencies from @protomolecule/*to @robeasthope/*
-2. Update any imports from @protomolecule/*to @robeasthope/*
+1. Update package.json dependencies from @protomolecule/_to @robeasthope/_
+2. Update any imports from @protomolecule/_to @robeasthope/_
 3. Clear node_modules and reinstall dependencies
