@@ -1,5 +1,11 @@
 # @protomolecule/github-rulesets
 
+## 1.0.2
+
+### Patch Changes
+
+- [`31aa4c4`](https://github.com/RobEasthope/protomolecule/commit/31aa4c4ce03f28b9c85c02abaa0c5324e2368c0d) [#160](https://github.com/RobEasthope/protomolecule/pull/160) - Update markdown linting to use markdownlint-cli2 configuration format. Migrated from separate .markdownlint.json and .markdownlintignore files to unified .markdownlint-cli2.jsonc files. Simplified lint:md scripts to use config file exclusively, adding MDX file support.
+
 ## 1.0.1
 
 ### Patch Changes
