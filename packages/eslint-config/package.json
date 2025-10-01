@@ -2,12 +2,28 @@
   "name": "@protomolecule/eslint-config",
   "version": "2.1.7",
   "description": "Shared ESLint configuration for Protomolecule projects",
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "linting",
+    "typescript",
+    "astro",
+    "code-quality"
+  ],
+  "homepage": "https://github.com/RobEasthope/protomolecule#readme",
+  "bugs": {
+    "url": "https://github.com/RobEasthope/protomolecule/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/RobEasthope/protomolecule.git",
     "directory": "packages/eslint-config"
   },
   "license": "MIT",
+  "author": {
+    "name": "Rob Easthope",
+    "url": "https://github.com/RobEasthope"
+  },
   "type": "module",
   "exports": {
     ".": {
