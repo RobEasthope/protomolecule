@@ -21,11 +21,12 @@ const publishedPackages: PublishedPackage[] = process.env.PUBLISHED_PACKAGES
 
 /**
  * Extract package names without scope
+ * This works dynamically with any npm scope
  * @param packageName - Full package name with scope (e.g., '@robeasthope/ui')
  * @returns Package name without scope (e.g., 'ui')
  */
 function getPackageShortName(packageName: string): string {
-  return packageName.replace("@robeasthope/", "");
+  return packageName.replace(/^@[^/]+\//, "");
 }
 
 // Removed unused getVersionBumpType function - can be added back if needed for comparing actual versions

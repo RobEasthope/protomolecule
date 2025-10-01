@@ -61,12 +61,15 @@ function getChangesets(): Changeset[] {
       if (frontmatter && summary) {
         // Parse packages from frontmatter
         const packages: PackageChange[] = [];
-        const packageRegex = /"@robeasthope\/([^"]+)":\s*(patch|minor|major)/g;
+        // Match any scoped package (e.g., @scope/name or unscoped names)
+        const packageRegex = /"(@[^/]+\/)?([^"]+)":\s*(patch|minor|major)/g;
         let match;
         while ((match = packageRegex.exec(frontmatter)) !== null) {
+          // Use the package name without scope for display
+          const packageName = match[2];
           packages.push({
-            name: match[1],
-            type: match[2] as "major" | "minor" | "patch",
+            name: packageName,
+            type: match[3] as "major" | "minor" | "patch",
           });
         }
 
