@@ -25,7 +25,7 @@
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@protomolecule/ui",
     "test": "turbo run test",
-    "test:hooks": "vitest run test/hooks",
+    "test:hooks": "vitest run .github/scripts",
     "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
     "typecheck": "tsc --noEmit"
   },
