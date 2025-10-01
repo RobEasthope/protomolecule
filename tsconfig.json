@@ -20,5 +20,11 @@
     "test/**/*.js",
     ".changeset/**/*.js"
   ],
-  "exclude": ["node_modules", "packages/**", "dist", ".turbo"]
+  "exclude": [
+    "node_modules",
+    "packages/**",
+    "dist",
+    ".turbo",
+    "eslint.config.ts"
+  ]
 }

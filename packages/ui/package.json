@@ -2,12 +2,32 @@
   "name": "@protomolecule/ui",
   "version": "3.1.1",
   "description": "React component library for Protomolecule projects",
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "tailwind",
+    "tailwindcss",
+    "storybook",
+    "component-library",
+    "typescript",
+    "sanity",
+    "portable-text"
+  ],
+  "homepage": "https://github.com/RobEasthope/protomolecule#readme",
+  "bugs": {
+    "url": "https://github.com/RobEasthope/protomolecule/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/RobEasthope/protomolecule.git",
     "directory": "packages/ui"
   },
   "license": "MIT",
+  "author": {
+    "name": "Rob Easthope",
+    "url": "https://github.com/RobEasthope"
+  },
   "type": "module",
   "exports": {
     ".": {

@@ -9,7 +9,7 @@
     "clean": "turbo run clean && rimraf node_modules",
     "dev": "turbo run dev --filter=@protomolecule/ui",
     "format": "pnpm format:root && turbo run format",
-    "format:root": "prettier --write '**/*.{js,jsx,ts,tsx,mjs,json,md,yml,yaml}' --ignore-path .gitignore --ignore-pattern 'packages/**'",
+    "format:root": "prettier --write '**/*.{js,jsx,ts,tsx,mjs,json,jsonc,md,yml,yaml}' --ignore-path .gitignore --ignore-pattern 'packages/**'",
     "lint": "pnpm lint:root && turbo run lint",
     "lint:fix": "pnpm lint:root:fix && turbo run lint:fix",
     "lint:fix-staged": "pnpm lint:root:fix && turbo run lint:fix-staged",
