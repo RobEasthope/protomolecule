@@ -9,6 +9,10 @@
       "path": "../packages/eslint-config",
     },
     {
+      "name": "📝 Markdownlint",
+      "path": "../packages/markdownlint-config",
+    },
+    {
       "name": "🚨 GitHub Rulesets",
       "path": "../packages/github-rulesets",
     },
