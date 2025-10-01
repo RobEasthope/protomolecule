@@ -490,7 +490,7 @@ pnpm install
    ```
 3. **Selective builds**: Build specific packages
    ```bash
-   pnpm build --filter=@protomolecule/ui
+   pnpm build --filter=@robeasthope/ui
    ```
 
 ### Bundle Size
