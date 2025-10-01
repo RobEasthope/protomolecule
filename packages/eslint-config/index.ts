@@ -12,7 +12,7 @@ const config: any[] = [
   ignoredFileAndFolders,
   ...eslintConfigCanonicalAuto,
   packageJson,
-  storybook,
+  ...storybook,
   typescriptOverrides,
   ...astro,
   preferences,
