@@ -80,6 +80,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",
     "@robeasthope/eslint-config": "workspace:*",
+    "@robeasthope/markdownlint-config": "workspace:*",
     "@robeasthope/tsconfig": "workspace:*",
     "@storybook/addon-docs": "^9.1.3",
     "@storybook/addon-links": "^9.1.3",

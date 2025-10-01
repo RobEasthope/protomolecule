@@ -49,6 +49,7 @@
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
     "@robeasthope/eslint-config": "workspace:*",
+    "@robeasthope/markdownlint-config": "workspace:*",
     "@robeasthope/tsconfig": "workspace:*",
     "@types/node": "^22.18.1",
     "@typescript-eslint/eslint-plugin": "^8.43.0",

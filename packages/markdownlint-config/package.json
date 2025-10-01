@@ -1,14 +1,14 @@
 {
-  "name": "@robeasthope/colours",
-  "version": "3.0.0",
-  "description": "Radix colors CSS imports for Protomolecule projects",
+  "name": "@robeasthope/markdownlint-config",
+  "version": "1.0.0",
+  "description": "Shared markdownlint configuration for consistent Markdown formatting",
   "keywords": [
-    "colors",
-    "colours",
-    "radix-ui",
-    "design-tokens",
-    "css",
-    "theme"
+    "markdownlint",
+    "markdown",
+    "linting",
+    "formatting",
+    "code-quality",
+    "style-guide"
   ],
   "homepage": "https://github.com/RobEasthope/protomolecule#readme",
   "bugs": {
@@ -17,16 +17,17 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/RobEasthope/protomolecule.git",
-    "directory": "packages/colours"
+    "directory": "packages/markdownlint-config"
   },
   "license": "MIT",
   "author": {
     "name": "Rob Easthope",
     "url": "https://github.com/RobEasthope"
   },
-  "main": "index.css",
+  "main": ".markdownlint.json",
   "files": [
-    "index.css"
+    ".markdownlint.json",
+    "README.md"
   ],
   "scripts": {
     "clean": "rimraf node_modules",
@@ -35,12 +36,8 @@
     "lint:md:fix": "markdownlint-cli2 --fix",
     "sort-pkg-json": "npx sort-package-json"
   },
-  "dependencies": {
-    "@radix-ui/colors": "^3.0.0"
-  },
   "devDependencies": {
-    "@robeasthope/markdownlint-config": "workspace:*",
-    "@robeasthope/tsconfig": "workspace:*",
+    "markdownlint-cli2": "^0.18.1",
     "rimraf": "^6.0.1"
   },
   "publishConfig": {

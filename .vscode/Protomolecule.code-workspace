@@ -5,16 +5,20 @@
       "path": "../",
     },
     {
+      "name": "🎨 Colours",
+      "path": "../packages/colours",
+    },
+    {
       "name": "⚖️ ESLint",
       "path": "../packages/eslint-config",
     },
     {
-      "name": "🚨 GitHub Rulesets",
-      "path": "../packages/github-rulesets",
+      "name": "📝 Markdownlint",
+      "path": "../packages/markdownlint-config",
     },
     {
-      "name": "🎨 Colours",
-      "path": "../packages/colours",
+      "name": "🚨 GitHub Rulesets",
+      "path": "../packages/github-rulesets",
     },
     {
       "name": "📖 TS Config",
