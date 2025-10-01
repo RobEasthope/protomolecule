@@ -1,5 +1,13 @@
 # @protomolecule/eslint-config
 
+## 3.0.1
+
+### Patch Changes
+
+- [`1f51ac7`](https://github.com/RobEasthope/protomolecule/commit/1f51ac7e248214935ddd7b34efdd75a9486d4200) [#182](https://github.com/RobEasthope/protomolecule/pull/182) - Improve Astro support by ignoring virtual imports (astro:\*) instead of disabling import resolution entirely. The import/no-unresolved rule now uses a targeted regex pattern to allow Astro's virtual modules (astro:content, astro:assets, etc.) while still validating other imports in .astro files.
+
+- [`5144c13`](https://github.com/RobEasthope/protomolecule/commit/5144c13be191b1f43ae7943697e28db48ff6ab65) [#184](https://github.com/RobEasthope/protomolecule/pull/184) - Use typescript-eslint's disableTypeChecked config for Storybook files instead of disabling TypeScript parser entirely. This disables only type-aware linting rules (that require tsconfig project references) while keeping all syntax-based TypeScript rules active, providing better linting coverage for Storybook files that are excluded from tsconfig.json.
+
 ## 3.0.0
 
 ### Major Changes
