@@ -2,12 +2,28 @@
   "name": "@protomolecule/colours",
   "version": "2.1.8",
   "description": "Radix colors CSS imports for Protomolecule projects",
+  "keywords": [
+    "colors",
+    "colours",
+    "radix-ui",
+    "design-tokens",
+    "css",
+    "theme"
+  ],
+  "homepage": "https://github.com/RobEasthope/protomolecule#readme",
+  "bugs": {
+    "url": "https://github.com/RobEasthope/protomolecule/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/RobEasthope/protomolecule.git",
     "directory": "packages/colours"
   },
   "license": "MIT",
+  "author": {
+    "name": "Rob Easthope",
+    "url": "https://github.com/RobEasthope"
+  },
   "main": "index.css",
   "files": [
     "index.css"
