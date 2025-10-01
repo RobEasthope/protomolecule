@@ -87,6 +87,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-tsbuildinfo-
 
+      - name: 🏗️ Build eslint-config package
+        run: pnpm --filter @protomolecule/eslint-config build
+
       - name: 🔎 Run TypeScript Check
         id: typecheck
         run: |
