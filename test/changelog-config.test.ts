@@ -62,7 +62,7 @@ describe("Changelog Configuration", () => {
     // Test with feature changeset
     const featureTitle = await config.generatePRTitle?.([
       {
-        releases: [{ name: "@protomolecule/ui", type: "minor" }],
+        releases: [{ name: "@robeasthope/ui", type: "minor" }],
         summary: "feat: add new component",
       },
     ]);

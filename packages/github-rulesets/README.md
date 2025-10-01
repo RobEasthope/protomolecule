@@ -1,4 +1,4 @@
-# @protomolecule/github-rulesets
+# @robeasthope/github-rulesets
 
 GitHub repository configuration and rulesets for Protomolecule projects, ensuring consistent branch protection and workflow standards.
 
@@ -55,7 +55,7 @@ gh api repos/OWNER/REPO/rulesets \
 ### Via GitHub API
 
 ```javascript
-const ruleset = require("@protomolecule/github-rulesets/Protect production ruleset.json");
+const ruleset = require("@robeasthope/github-rulesets/Protect production ruleset.json");
 
 await octokit.repos.createRepoRuleset({
   owner: "your-org",

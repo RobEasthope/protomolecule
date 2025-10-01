@@ -1,4 +1,4 @@
-# @protomolecule/eslint-config
+# @robeasthope/eslint-config
 
 Shared ESLint v9 configuration for Protomolecule projects with TypeScript and React support.
 
@@ -7,9 +7,9 @@ Shared ESLint v9 configuration for Protomolecule projects with TypeScript and Re
 This package is designed to be publishable to npm:
 
 ```bash
-npm install --save-dev @protomolecule/eslint-config
+npm install --save-dev @robeasthope/eslint-config
 # or
-pnpm add -D @protomolecule/eslint-config
+pnpm add -D @robeasthope/eslint-config
 ```
 
 ## 🚀 Usage
@@ -19,7 +19,7 @@ pnpm add -D @protomolecule/eslint-config
 In your `eslint.config.js`:
 
 ```javascript
-import eslintConfig from "@protomolecule/eslint-config";
+import eslintConfig from "@robeasthope/eslint-config";
 
 export default [
   ...eslintConfig,
@@ -38,7 +38,7 @@ In your `.eslintrc.js`:
 
 ```javascript
 module.exports = {
-  extends: ["@protomolecule/eslint-config"],
+  extends: ["@robeasthope/eslint-config"],
   // your custom rules
 };
 ```

@@ -1,5 +1,5 @@
 {
-  "name": "@protomolecule/eslint-config",
+  "name": "@robeasthope/eslint-config",
   "version": "2.1.7",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "keywords": [
@@ -58,7 +58,7 @@
     "typescript-eslint": "^8.42.0"
   },
   "devDependencies": {
-    "@protomolecule/tsconfig": "workspace:*",
+    "@robeasthope/tsconfig": "workspace:*",
     "@types/eslint": "^9.6.1",
     "@types/node": "^20.12.12",
     "prettier-plugin-tailwindcss": "^0.6.14",

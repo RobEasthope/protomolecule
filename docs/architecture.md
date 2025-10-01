@@ -58,13 +58,13 @@ protomolecule/
 ### Package Types
 
 1. **Published Packages** (NPM)
-   - `@protomolecule/ui` - React component library
-   - `@protomolecule/eslint-config` - ESLint configuration
-   - `@protomolecule/colours` - Radix UI colour system
+   - `@robeasthope/ui` - React component library
+   - `@robeasthope/eslint-config` - ESLint configuration
+   - `@robeasthope/colours` - Radix UI colour system
 
 2. **Private Packages** (Internal)
-   - `@protomolecule/tsconfig` - TypeScript configurations
-   - `@protomolecule/github-rulesets` - GitHub configuration
+   - `@robeasthope/tsconfig` - TypeScript configurations
+   - `@robeasthope/github-rulesets` - GitHub configuration
 
 ### Package Dependencies
 
@@ -170,7 +170,7 @@ pnpm test
 The project uses Tailwind CSS v4 with CSS-based configuration:
 
 - Configuration in `packages/ui/tailwind.config.ts`
-- Custom colour system from `@protomolecule/colours`
+- Custom colour system from `@robeasthope/colours`
 - Utility-first approach with component composition
 - Dark mode support via CSS custom properties
 
@@ -197,10 +197,10 @@ import { something } from "@/utils";
 ### Configuration Hierarchy
 
 ```text
-@protomolecule/tsconfig/base.json
-├── @protomolecule/tsconfig/react.json    (for UI package)
-├── @protomolecule/tsconfig/node.json     (for Node packages)
-└── @protomolecule/tsconfig/library.json  (for published libraries)
+@robeasthope/tsconfig/base.json
+├── @robeasthope/tsconfig/react.json    (for UI package)
+├── @robeasthope/tsconfig/node.json     (for Node packages)
+└── @robeasthope/tsconfig/library.json  (for published libraries)
 ```
 
 ## Testing Strategy

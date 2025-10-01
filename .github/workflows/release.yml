@@ -231,7 +231,7 @@ jobs:
               PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
               
               # Skip private packages
-              if [[ "$PKG_NAME" == *"@protomolecule/"* ]]; then
+              if [[ "$PKG_NAME" == *"@robeasthope/"* ]]; then
                 # Wait a moment for NPM to propagate
                 sleep 5
                 

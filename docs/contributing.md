@@ -153,8 +153,8 @@ Example changeset file (`.changeset/fluffy-pandas-dance.md`):
 
 ```markdown
 ---
-"@protomolecule/ui": minor
-"@protomolecule/eslint-config": patch
+"@robeasthope/ui": minor
+"@robeasthope/eslint-config": patch
 ---
 
 feat(ui): add new Card component with animations
@@ -162,7 +162,7 @@ feat(ui): add new Card component with animations
 fix(eslint-config): update TypeScript parser configuration
 ```
 
-**Important:** Never include the root package `"protomolecule"` in changesets. Only scoped packages (`@protomolecule/*`) should be versioned.
+**Important:** Never include the root package `"protomolecule"` in changesets. Only scoped packages (`@robeasthope/*`) should be versioned.
 
 ### 5. Run Quality Checks
 

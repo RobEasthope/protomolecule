@@ -7,7 +7,7 @@ This guide explains how to set up the `NPM_TOKEN` required for publishing packag
 The `NPM_TOKEN` is required for:
 
 1. **Automated publishing**: Allows GitHub Actions to publish packages
-2. **Authentication**: Proves you have permission to publish to @protomolecule scope
+2. **Authentication**: Proves you have permission to publish to @robeasthope scope
 3. **Security**: Avoids using personal login credentials in CI/CD
 
 ## Token Types
@@ -70,9 +70,9 @@ NPM offers two types of tokens:
    Then choose one of:
    - **"All packages"** (simpler)
    - **"Select packages"** and add:
-     - `@protomolecule/ui`
-     - `@protomolecule/eslint-config`
-     - `@protomolecule/colours`
+     - `@robeasthope/ui`
+     - `@robeasthope/eslint-config`
+     - `@robeasthope/colours`
 
 4. **Organizations Permissions**
 
