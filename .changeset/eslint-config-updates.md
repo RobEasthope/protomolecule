@@ -1,5 +1,5 @@
 ---
-"@protomolecule/eslint-config": patch
+"@robeasthope/eslint-config": patch
 ---
 
 fix: update ESLint rules for better compatibility
