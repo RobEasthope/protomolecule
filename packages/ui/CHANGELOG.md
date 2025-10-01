@@ -1,5 +1,29 @@
 # @protomolecule/ui
 
+## 4.0.0
+
+### Major Changes
+
+- [`0ff0bdc`](https://github.com/RobEasthope/protomolecule/commit/0ff0bdc8db20c1b34459d0e0ed7ffca37915f3ff) [#171](https://github.com/RobEasthope/protomolecule/pull/171) - BREAKING CHANGE: Migrate package namespace from @protomolecule to @robeasthope
+
+  All packages have been renamed to use the @robeasthope namespace for GitHub Packages compatibility:
+  - @protomolecule/ui → @robeasthope/ui
+  - @protomolecule/eslint-config → @robeasthope/eslint-config
+  - @protomolecule/colours → @robeasthope/colours
+
+  Migration guide:
+  1. Update package.json dependencies from @protomolecule/_to @robeasthope/_
+  2. Update any imports from @protomolecule/_to @robeasthope/_
+  3. Clear node_modules and reinstall dependencies
+
+### Patch Changes
+
+- [`f57cad4`](https://github.com/RobEasthope/protomolecule/commit/f57cad4a06614d53b514748d3e3cbb4fb642ccc1) [#165](https://github.com/RobEasthope/protomolecule/pull/165) - Add package metadata fields for improved npm discoverability. Added keywords, author, homepage, and bugs fields to all published packages to improve search ranking and provide clear support channels.
+
+- [`799150b`](https://github.com/RobEasthope/protomolecule/commit/799150b9d60c2f7633ca732ebe6069620326e018) [#166](https://github.com/RobEasthope/protomolecule/pull/166) - Move test scripts to .github/scripts/ for better organization and convention alignment
+
+- [`31aa4c4`](https://github.com/RobEasthope/protomolecule/commit/31aa4c4ce03f28b9c85c02abaa0c5324e2368c0d) [#160](https://github.com/RobEasthope/protomolecule/pull/160) - Update markdown linting to use markdownlint-cli2 configuration format. Migrated from separate .markdownlint.json and .markdownlintignore files to unified .markdownlint-cli2.jsonc files. Simplified lint:md scripts to use config file exclusively, adding MDX file support.
+
 ## 3.1.1
 
 ### Patch Changes

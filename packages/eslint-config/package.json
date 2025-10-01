@@ -1,6 +1,6 @@
 {
   "name": "@robeasthope/eslint-config",
-  "version": "2.1.7",
+  "version": "3.0.0",
   "description": "Shared ESLint configuration for Protomolecule projects",
   "keywords": [
     "eslint",
