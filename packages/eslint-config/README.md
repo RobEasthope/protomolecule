@@ -1,6 +1,6 @@
 # @robeasthope/eslint-config
 
-Shared ESLint v9 configuration for Protomolecule projects with TypeScript and React support.
+Shared ESLint v9 configuration with TypeScript and React support.
 
 ## 📦 Installation
 

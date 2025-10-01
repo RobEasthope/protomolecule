@@ -1,7 +1,7 @@
 {
   "name": "@robeasthope/colours",
   "version": "3.0.0",
-  "description": "Radix colors CSS imports for Protomolecule projects",
+  "description": "Radix UI color system with comprehensive palette and dark mode support",
   "keywords": [
     "colors",
     "colours",
