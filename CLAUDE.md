@@ -85,6 +85,7 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
 - Adding/modifying components in `packages/ui/src/`
 - Changing ESLint rules in `packages/eslint-config/`
 - Updating color exports in `packages/colours/`
+- **Modifying `packages/*/package.json`** (dependencies, exports, scripts)
 - Modifying package-specific configuration that affects consumers
 - Updating package dependencies that affect functionality
 
@@ -134,6 +135,8 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
 ### Important Rules
 
 **CRITICAL:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
+
+**CI Enforcement:** The changeset check runs automatically on all PRs. PRs modifying `packages/` without a changeset will fail CI.
 
 **Published to NPM:**
 
