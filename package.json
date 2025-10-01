@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
-    "build-storybook": "turbo run build-storybook --filter=@protomolecule/ui",
+    "build-storybook": "turbo run build-storybook --filter=@robeasthope/ui",
     "clean": "turbo run clean && rimraf node_modules",
-    "dev": "turbo run dev --filter=@protomolecule/ui",
+    "dev": "turbo run dev --filter=@robeasthope/ui",
     "format": "pnpm format:root && turbo run format",
     "format:root": "prettier --write '**/*.{js,jsx,ts,tsx,mjs,json,jsonc,md,yml,yaml}' --ignore-path .gitignore --ignore-pattern 'packages/**'",
     "lint": "pnpm lint:root && turbo run lint",
@@ -23,10 +23,10 @@
     "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
     "prepare": "husky",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
-    "storybook": "turbo run storybook --filter=@protomolecule/ui",
+    "storybook": "turbo run storybook --filter=@robeasthope/ui",
     "test": "turbo run test",
     "test:hooks": "vitest run .github/scripts",
-    "test:ui": "turbo run test:ui --filter=@protomolecule/ui",
+    "test:ui": "turbo run test:ui --filter=@robeasthope/ui",
     "typecheck": "tsc --noEmit"
   },
   "lint-staged": {
@@ -48,8 +48,8 @@
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
-    "@protomolecule/eslint-config": "workspace:*",
-    "@protomolecule/tsconfig": "workspace:*",
+    "@robeasthope/eslint-config": "workspace:*",
+    "@robeasthope/tsconfig": "workspace:*",
     "@types/node": "^22.18.1",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",

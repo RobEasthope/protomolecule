@@ -1,5 +1,5 @@
 {
-  "extends": "@protomolecule/tsconfig/base.json",
+  "extends": "@robeasthope/tsconfig/base.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",

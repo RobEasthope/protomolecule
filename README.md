@@ -3,12 +3,14 @@
 [![CI](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/linting-and-testing.yml)
 [![Release](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml/badge.svg)](https://github.com/RobEasthope/protomolecule/actions/workflows/release.yml)
 
-[![UI Components](https://img.shields.io/npm/v/@protomolecule/ui.svg?label=ui)](https://www.npmjs.com/package/@protomolecule/ui)
-[![ESLint Config](https://img.shields.io/npm/v/@protomolecule/eslint-config.svg?label=eslint-config)](https://www.npmjs.com/package/@protomolecule/eslint-config)
-[![Colours](https://img.shields.io/npm/v/@protomolecule/colours.svg?label=colours)](https://www.npmjs.com/package/@protomolecule/colours)
+[![UI Components](https://img.shields.io/npm/v/@robeasthope/ui.svg?label=ui)](https://www.npmjs.com/package/@robeasthope/ui)
+[![ESLint Config](https://img.shields.io/npm/v/@robeasthope/eslint-config.svg?label=eslint-config)](https://www.npmjs.com/package/@robeasthope/eslint-config)
+[![Colours](https://img.shields.io/npm/v/@robeasthope/colours.svg?label=colours)](https://www.npmjs.com/package/@robeasthope/colours)
 
 A modern, open-source React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
 
+> **Package Namespace**: All packages are published under the `@robeasthope/*` namespace for npm and GitHub Packages compatibility.
+>
 > **Open Source**: This project is open source and free to use. Feel free to fork, modify, and use in your own projects at your own risk.
 
 ## 📚 Documentation
@@ -62,25 +64,25 @@ Visit [http://localhost:6006](http://localhost:6006) to see the component librar
 
 This monorepo contains the following packages:
 
-| Package                                                        | Description                            | Version | Status  |
-| -------------------------------------------------------------- | -------------------------------------- | ------- | ------- |
-| [`@protomolecule/ui`](./packages/ui)                           | React component library with Storybook | 3.0.2   | **NPM** |
-| [`@protomolecule/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 2.1.3   | **NPM** |
-| [`@protomolecule/colours`](./packages/colours)                 | Radix UI colour system                 | 2.1.4   | **NPM** |
-| [`@protomolecule/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 2.0.0   | Private |
-| [`@protomolecule/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 2.0.0   | Private |
+| Package                                                      | Description                            | Version | Status  |
+| ------------------------------------------------------------ | -------------------------------------- | ------- | ------- |
+| [`@robeasthope/ui`](./packages/ui)                           | React component library with Storybook | 3.0.2   | **NPM** |
+| [`@robeasthope/eslint-config`](./packages/eslint-config)     | Shared ESLint configuration            | 2.1.3   | **NPM** |
+| [`@robeasthope/colours`](./packages/colours)                 | Radix UI colour system                 | 2.1.4   | **NPM** |
+| [`@robeasthope/tsconfig`](./packages/tsconfig)               | Shared TypeScript configurations       | 2.0.0   | Private |
+| [`@robeasthope/github-rulesets`](./packages/github-rulesets) | GitHub repository configuration        | 2.0.0   | Private |
 
 ### Installing Published Packages
 
 ```bash
 # React component library
-npm install @protomolecule/ui
+npm install @robeasthope/ui
 
 # ESLint configuration
-npm install --save-dev @protomolecule/eslint-config
+npm install --save-dev @robeasthope/eslint-config
 
 # Colour system
-npm install @protomolecule/colours
+npm install @robeasthope/colours
 ```
 
 ## 🛠️ Available Scripts
@@ -128,7 +130,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/RobEasthope/protomolecule)
-- [NPM Organisation](https://www.npmjs.com/org/protomolecule)
+- [NPM Packages](https://www.npmjs.com/~robeasthope) - Published under `@robeasthope/*` namespace
 - [Storybook](http://localhost:6006) (when running locally)
 
 ---

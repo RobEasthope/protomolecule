@@ -1,15 +1,15 @@
-# @protomolecule/ui
+# @robeasthope/ui
 
 React component library for Protomolecule projects with Storybook, Tailwind CSS v4, and Sanity CMS integration.
 
 ## 📦 Installation
 
 ```bash
-npm install @protomolecule/ui
+npm install @robeasthope/ui
 # or
-pnpm add @protomolecule/ui
+pnpm add @robeasthope/ui
 # or
-yarn add @protomolecule/ui
+yarn add @robeasthope/ui
 ```
 
 ### Using in Your Project
@@ -17,8 +17,8 @@ yarn add @protomolecule/ui
 Import components and utilities from the package:
 
 ```typescript
-import { Box, Container, Type } from "@protomolecule/ui/components";
-import { cn } from "@protomolecule/ui/utils";
+import { Box, Container, Type } from "@robeasthope/ui/components";
+import { cn } from "@robeasthope/ui/utils";
 ```
 
 ## 🚀 Development
@@ -95,7 +95,7 @@ const className = cn(
 
 This package uses Tailwind CSS v4 with CSS-based configuration. The configuration is located in the package root and includes:
 
-- Custom color system via `@protomolecule/colours`
+- Custom color system via `@robeasthope/colours`
 - Responsive design utilities
 - Component-specific styles
 
@@ -136,7 +136,7 @@ component/
 ### Using Sanity Schemas
 
 ```typescript
-import { emailLinkSchema } from "@protomolecule/ui/components/EmailLink/EmailLink.schema";
+import { emailLinkSchema } from "@robeasthope/ui/components/EmailLink/EmailLink.schema";
 
 // Use in your Sanity configuration
 export default {
@@ -186,7 +186,7 @@ export const Default: Story = {
 
 ### TypeScript
 
-Uses shared configuration from `@protomolecule/tsconfig`:
+Uses shared configuration from `@robeasthope/tsconfig`:
 
 - Strict mode enabled
 - Path aliasing: `@/` → `./src/`
@@ -194,7 +194,7 @@ Uses shared configuration from `@protomolecule/tsconfig`:
 
 ### ESLint
 
-Uses shared configuration from `@protomolecule/eslint-config`:
+Uses shared configuration from `@robeasthope/eslint-config`:
 
 - TypeScript rules
 - React best practices

@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Package Namespace
+
+**All packages use the `@robeasthope/*` namespace** for npm and GitHub Packages publishing. This namespace aligns with the GitHub username for seamless GitHub Packages integration.
+
 ## Git Commit and PR Conventions
 
 ### Conventional Commits Format
@@ -118,7 +122,7 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
    # Option 2: Create file directly (recommended for AI)
    cat > .changeset/descriptive-name.md << 'EOF'
    ---
-   "@protomolecule/package-name": minor
+   "@robeasthope/package-name": minor
    ---
 
    Brief description of the change for the changelog
@@ -134,15 +138,15 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
 
 ### Important Rules
 
-**CRITICAL:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@protomolecule/`. The root package in a monorepo is not versioned or published.
+**CRITICAL:** Never include the root package name (e.g., `"protomolecule"`) in changesets. Only include scoped package names that start with `@robeasthope/`. The root package in a monorepo is not versioned or published.
 
 **CI Enforcement:** The changeset check runs automatically on all PRs. PRs modifying `packages/` without a changeset will fail CI.
 
 **Published to NPM:**
 
-- `@protomolecule/ui` - React component library
-- `@protomolecule/eslint-config` - ESLint configuration
-- `@protomolecule/colours` - Radix UI color system
+- `@robeasthope/ui` - React component library
+- `@robeasthope/eslint-config` - ESLint configuration
+- `@robeasthope/colours` - Radix UI color system
 
 **Private packages** (`tsconfig`, `github-rulesets`) still require changesets for version tracking but are not published to NPM.
 
@@ -204,19 +208,19 @@ This is a React component library monorepo built with:
 
 ### Package Details
 
-1. **@protomolecule/ui**: React components with Storybook (published to NPM)
+1. **@robeasthope/ui**: React components with Storybook (published to NPM)
    - Components with co-located tests, stories, and Sanity schemas
    - Multi-framework support (Next.js and React Router)
    - Utilities for Tailwind class management
    - Includes Tailwind CSS v4 configuration
 
-2. **@protomolecule/eslint-config**: Shared ESLint rules (published to NPM)
+2. **@robeasthope/eslint-config**: Shared ESLint rules (published to NPM)
 
-3. **@protomolecule/github-rulesets**: GitHub repository configuration (private)
+3. **@robeasthope/github-rulesets**: GitHub repository configuration (private)
 
-4. **@protomolecule/colours**: Radix UI color imports (published to NPM)
+4. **@robeasthope/colours**: Radix UI color imports (published to NPM)
 
-5. **@protomolecule/tsconfig**: Shared TypeScript configurations (private)
+5. **@robeasthope/tsconfig**: Shared TypeScript configurations (private)
 
 ### Key Architectural Patterns
 

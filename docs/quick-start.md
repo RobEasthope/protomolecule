@@ -40,27 +40,27 @@ If you want to use the published packages in your own project:
 ### React Component Library
 
 ```bash
-npm install @protomolecule/ui
+npm install @robeasthope/ui
 # or
-pnpm add @protomolecule/ui
+pnpm add @robeasthope/ui
 ```
 
 ```typescript
-import { Box, Container, Type } from "@protomolecule/ui/components";
-import { cn } from "@protomolecule/ui/utils";
+import { Box, Container, Type } from "@robeasthope/ui/components";
+import { cn } from "@robeasthope/ui/utils";
 ```
 
 ### ESLint Configuration
 
 ```bash
-npm install --save-dev @protomolecule/eslint-config
+npm install --save-dev @robeasthope/eslint-config
 # or
-pnpm add -D @protomolecule/eslint-config
+pnpm add -D @robeasthope/eslint-config
 ```
 
 ```javascript
 // eslint.config.js
-import eslintConfig from "@protomolecule/eslint-config";
+import eslintConfig from "@robeasthope/eslint-config";
 
 export default [
   ...eslintConfig,
@@ -71,13 +71,13 @@ export default [
 ### Colour System
 
 ```bash
-npm install @protomolecule/colours
+npm install @robeasthope/colours
 # or
-pnpm add @protomolecule/colours
+pnpm add @robeasthope/colours
 ```
 
 ```css
-@import "@protomolecule/colours";
+@import "@robeasthope/colours";
 ```
 
 ## Next Steps

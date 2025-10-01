@@ -1,4 +1,4 @@
-# @protomolecule/tsconfig
+# @robeasthope/tsconfig
 
 Shared TypeScript configurations for Protomolecule projects.
 
@@ -7,9 +7,9 @@ Shared TypeScript configurations for Protomolecule projects.
 This package is designed to be publishable to npm:
 
 ```bash
-npm install --save-dev @protomolecule/tsconfig
+npm install --save-dev @robeasthope/tsconfig
 # or
-pnpm add -D @protomolecule/tsconfig
+pnpm add -D @robeasthope/tsconfig
 ```
 
 ## 🚀 Usage
@@ -20,7 +20,7 @@ Extend from the appropriate configuration in your `tsconfig.json`:
 
 ```json
 {
-  "extends": "@protomolecule/tsconfig/react.json",
+  "extends": "@robeasthope/tsconfig/react.json",
   "compilerOptions": {
     "outDir": "./dist"
   },
@@ -33,7 +33,7 @@ Extend from the appropriate configuration in your `tsconfig.json`:
 
 ```json
 {
-  "extends": "@protomolecule/tsconfig/node.json",
+  "extends": "@robeasthope/tsconfig/node.json",
   "compilerOptions": {
     "outDir": "./dist"
   },
@@ -46,7 +46,7 @@ Extend from the appropriate configuration in your `tsconfig.json`:
 
 ```json
 {
-  "extends": "@protomolecule/tsconfig/library.json",
+  "extends": "@robeasthope/tsconfig/library.json",
   "compilerOptions": {
     "outDir": "./dist"
   },
@@ -106,7 +106,7 @@ You can override any compiler options:
 
 ```json
 {
-  "extends": "@protomolecule/tsconfig/react.json",
+  "extends": "@robeasthope/tsconfig/react.json",
   "compilerOptions": {
     "target": "ES2023", // Override target
     "strict": false, // Disable strict mode (not recommended)

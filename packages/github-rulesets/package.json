@@ -1,5 +1,5 @@
 {
-  "name": "@protomolecule/github-rulesets",
+  "name": "@robeasthope/github-rulesets",
   "version": "1.0.1",
   "private": true,
   "description": "GitHub configuration rulesets for Protomolecule projects",
@@ -15,7 +15,7 @@
     "sort-pkg-json": "npx sort-package-json"
   },
   "devDependencies": {
-    "@protomolecule/tsconfig": "workspace:*",
+    "@robeasthope/tsconfig": "workspace:*",
     "rimraf": "^6.0.1"
   }
 }

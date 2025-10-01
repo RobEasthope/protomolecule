@@ -51,8 +51,8 @@ The CLI will guide you through:
 
 ```markdown
 ---
-"@protomolecule/ui": minor
-"@protomolecule/colours": patch
+"@robeasthope/ui": minor
+"@robeasthope/colours": patch
 ---
 
 feat(ui): add new Alert component with customisable variants
@@ -72,7 +72,7 @@ fix(colours): correct amber colour scale in dark mode
 ```bash
 # Example changeset for patch
 ---
-"@protomolecule/eslint-config": patch
+"@robeasthope/eslint-config": patch
 ---
 
 fix: resolve incorrect TypeScript rule configuration
@@ -88,7 +88,7 @@ fix: resolve incorrect TypeScript rule configuration
 ```bash
 # Example changeset for minor
 ---
-"@protomolecule/ui": minor
+"@robeasthope/ui": minor
 ---
 
 feat: add new DataTable component with sorting and filtering
@@ -104,7 +104,7 @@ feat: add new DataTable component with sorting and filtering
 ```bash
 # Example changeset for major
 ---
-"@protomolecule/ui": major
+"@robeasthope/ui": major
 ---
 
 feat!: redesign Button component API for better composability
@@ -118,9 +118,9 @@ When changing multiple packages:
 
 ```markdown
 ---
-"@protomolecule/ui": minor
-"@protomolecule/eslint-config": patch
-"@protomolecule/tsconfig": patch
+"@robeasthope/ui": minor
+"@robeasthope/eslint-config": patch
+"@robeasthope/tsconfig": patch
 ---
 
 feat(ui): add TypeScript 5.3 features support
@@ -209,23 +209,23 @@ Pre-release versions look like: `2.0.0-beta.0`
 
 The following packages are published to NPM:
 
-| Package                        | NPM                                                                                                                                 | Description             |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `@protomolecule/ui`            | [![npm](https://img.shields.io/npm/v/@protomolecule/ui.svg)](https://www.npmjs.com/package/@protomolecule/ui)                       | React component library |
-| `@protomolecule/eslint-config` | [![npm](https://img.shields.io/npm/v/@protomolecule/eslint-config.svg)](https://www.npmjs.com/package/@protomolecule/eslint-config) | ESLint configuration    |
-| `@protomolecule/colours`       | [![npm](https://img.shields.io/npm/v/@protomolecule/colours.svg)](https://www.npmjs.com/package/@protomolecule/colours)             | Radix UI colour system  |
+| Package                      | NPM                                                                                                                             | Description             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `@robeasthope/ui`            | [![npm](https://img.shields.io/npm/v/@robeasthope/ui.svg)](https://www.npmjs.com/package/@robeasthope/ui)                       | React component library |
+| `@robeasthope/eslint-config` | [![npm](https://img.shields.io/npm/v/@robeasthope/eslint-config.svg)](https://www.npmjs.com/package/@robeasthope/eslint-config) | ESLint configuration    |
+| `@robeasthope/colours`       | [![npm](https://img.shields.io/npm/v/@robeasthope/colours.svg)](https://www.npmjs.com/package/@robeasthope/colours)             | Radix UI colour system  |
 
 ### Installing Packages
 
 ```bash
-npm install @protomolecule/ui
+npm install @robeasthope/ui
 # or
-pnpm add @protomolecule/ui
+pnpm add @robeasthope/ui
 # or
-yarn add @protomolecule/ui
+yarn add @robeasthope/ui
 ```
 
-Private packages (`@protomolecule/tsconfig`, `@protomolecule/github-rulesets`) are versioned but not published.
+Private packages (`@robeasthope/tsconfig`, `@robeasthope/github-rulesets`) are versioned but not published.
 
 ## GitHub Actions Workflows
 
@@ -258,7 +258,7 @@ Runs on push to `main`:
 Changesets automatically update `CHANGELOG.md` files:
 
 ```markdown
-# @protomolecule/ui
+# @robeasthope/ui
 
 ## 2.1.0
 
@@ -270,7 +270,7 @@ Changesets automatically update `CHANGELOG.md` files:
 
 - def5678: Fix Button hover state in dark mode
 - Updated dependencies
-  - @protomolecule/colours@2.0.1
+  - @robeasthope/colours@2.0.1
 ```
 
 ### Changelog Best Practices
@@ -308,7 +308,7 @@ When updating dependencies between packages:
 ```json
 {
   "dependencies": {
-    "@protomolecule/colours": "workspace:^"
+    "@robeasthope/colours": "workspace:^"
   }
 }
 ```
@@ -344,7 +344,7 @@ The `workspace:^` protocol ensures:
 
    ```markdown
    ---
-   "@protomolecule/ui": major
+   "@robeasthope/ui": major
    ---
 
    BREAKING CHANGE: Button 'type' prop renamed to 'variant'
@@ -388,7 +388,7 @@ If some packages published but others failed:
 1. Check which packages published:
 
    ```bash
-   npm view @protomolecule/ui version
+   npm view @robeasthope/ui version
    ```
 
 2. Manually publish failed packages:
@@ -405,7 +405,7 @@ If some packages published but others failed:
 1. **Deprecate bad version**:
 
    ```bash
-   npm deprecate @protomolecule/ui@2.0.0 "Contains critical bug"
+   npm deprecate @robeasthope/ui@2.0.0 "Contains critical bug"
    ```
 
 2. **Publish patch fix**:

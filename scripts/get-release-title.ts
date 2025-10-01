@@ -61,8 +61,7 @@ function getChangesets(): Changeset[] {
       if (frontmatter && summary) {
         // Parse packages from frontmatter
         const packages: PackageChange[] = [];
-        const packageRegex =
-          /"@protomolecule\/([^"]+)":\s*(patch|minor|major)/g;
+        const packageRegex = /"@robeasthope\/([^"]+)":\s*(patch|minor|major)/g;
         let match;
         while ((match = packageRegex.exec(frontmatter)) !== null) {
           packages.push({

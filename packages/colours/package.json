@@ -1,5 +1,5 @@
 {
-  "name": "@protomolecule/colours",
+  "name": "@robeasthope/colours",
   "version": "2.1.8",
   "description": "Radix colors CSS imports for Protomolecule projects",
   "keywords": [
@@ -39,7 +39,7 @@
     "@radix-ui/colors": "^3.0.0"
   },
   "devDependencies": {
-    "@protomolecule/tsconfig": "workspace:*",
+    "@robeasthope/tsconfig": "workspace:*",
     "rimraf": "^6.0.1"
   },
   "publishConfig": {

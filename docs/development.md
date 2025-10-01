@@ -302,7 +302,7 @@ import React, { useState, useEffect } from "react";
 import { cn } from "clsx";
 
 // Internal packages
-import { Button } from "@protomolecule/ui";
+import { Button } from "@robeasthope/ui";
 
 // Relative imports
 import { utils } from "@/utils";
@@ -500,7 +500,7 @@ Monitor bundle size for published packages:
 ```bash
 # Check package size
 
-npx bundlephobia @protomolecule/ui
+npx bundlephobia @robeasthope/ui
 ```
 
 ## Resources

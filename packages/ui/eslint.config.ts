@@ -1,3 +1,3 @@
-import protomolecule from "@protomolecule/eslint-config";
+import robeasthope from "@robeasthope/eslint-config";
 
-export default [...protomolecule];
+export default [...robeasthope];

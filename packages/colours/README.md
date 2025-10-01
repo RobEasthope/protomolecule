@@ -1,15 +1,15 @@
-# @protomolecule/colours
+# @robeasthope/colours
 
 Radix UI color system integration for Protomolecule projects, providing a comprehensive palette with dark mode support.
 
 ## 📦 Installation
 
 ```bash
-npm install @protomolecule/colours
+npm install @robeasthope/colours
 # or
-pnpm add @protomolecule/colours
+pnpm add @robeasthope/colours
 # or
-yarn add @protomolecule/colours
+yarn add @robeasthope/colours
 ```
 
 ## 🚀 Usage
@@ -19,7 +19,7 @@ yarn add @protomolecule/colours
 Import the color system in your main CSS file:
 
 ```css
-@import "@protomolecule/colours";
+@import "@robeasthope/colours";
 
 /* Use color variables */
 .my-component {
@@ -34,7 +34,7 @@ Import the color system in your main CSS file:
 Import at the application root:
 
 ```javascript
-import "@protomolecule/colours";
+import "@robeasthope/colours";
 ```
 
 ### With Tailwind CSS
