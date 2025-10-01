@@ -9,6 +9,8 @@
 
 A modern, open-source React component library monorepo built with TypeScript, Storybook, and Tailwind CSS v4.
 
+> **Package Namespace**: All packages are published under the `@robeasthope/*` namespace for npm and GitHub Packages compatibility.
+>
 > **Open Source**: This project is open source and free to use. Feel free to fork, modify, and use in your own projects at your own risk.
 
 ## 📚 Documentation
@@ -128,7 +130,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/RobEasthope/protomolecule)
-- [NPM Organisation](https://www.npmjs.com/org/protomolecule)
+- [NPM Packages](https://www.npmjs.com/~robeasthope) - Published under `@robeasthope/*` namespace
 - [Storybook](http://localhost:6006) (when running locally)
 
 ---

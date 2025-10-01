@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Package Namespace
+
+**All packages use the `@robeasthope/*` namespace** for npm and GitHub Packages publishing. This namespace aligns with the GitHub username for seamless GitHub Packages integration.
+
 ## Git Commit and PR Conventions
 
 ### Conventional Commits Format
