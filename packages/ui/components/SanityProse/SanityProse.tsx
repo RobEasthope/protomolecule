@@ -1,6 +1,6 @@
-import { Box } from "@/components/Box/Box";
 import { cn } from "@/utils/tailwind";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { createElement } from "react";
 import { type TypedObject } from "sanity";
 
 export type SanityProseProps = {
@@ -20,12 +20,12 @@ export function SanityProse({
     return null;
   }
 
-  return (
-    <Box as={as} className={cn("prose", "text-ink", className)}>
-      <PortableText
-        components={components as PortableTextComponents}
-        value={content}
-      />
-    </Box>
+  return createElement(
+    as,
+    { className: cn("prose", "text-ink", className) },
+    <PortableText
+      components={components as PortableTextComponents}
+      value={content}
+    />,
   );
 }

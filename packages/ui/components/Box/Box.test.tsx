@@ -1,6 +1,10 @@
 import { Box } from "./Box";
 import { render, screen } from "@testing-library/react";
 
+/**
+ * @deprecated Box component is deprecated. These tests remain for backward compatibility.
+ * @see https://github.com/RobEasthope/protomolecule/issues/187
+ */
 describe("Box", () => {
   it("renders children correctly", () => {
     render(<Box as="div">Lorem ipsum</Box>);
