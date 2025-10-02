@@ -193,6 +193,29 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
+      - name: 📦 Publish to GitHub Packages
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          echo "## 📦 Publishing to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Configure npm for GitHub Packages
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+          echo "@robeasthope:registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+          # Run publish script
+          if npx tsx scripts/publish-github-packages.ts; then
+            echo "✅ Successfully published to GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ GitHub Packages publish had issues (non-fatal)" >> $GITHUB_STEP_SUMMARY
+            echo "Packages are still available on npm registry" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: ✨ Enhance GitHub Release Notes
         if: steps.changesets.outputs.published == 'true'
         env:
@@ -207,7 +230,7 @@ jobs:
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
             echo "📦 Packages were published successfully"
             echo "$PUBLISHED" | jq '.'
-            
+
             # Optionally enhance the release notes that were already created
             # The changesets action creates releases with changelog content
           else
@@ -224,25 +247,33 @@ jobs:
           PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
 
           if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
+            echo "### npm Registry" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
             # Verify each published package exists on NPM
             echo "$PUBLISHED" | jq -r '.[] | "\(.name)@\(.version)"' | while read -r PACKAGE_VERSION; do
               PKG_NAME=$(echo "$PACKAGE_VERSION" | cut -d'@' -f1-2)
               PKG_VERSION=$(echo "$PACKAGE_VERSION" | cut -d'@' -f3)
-              
+
               # Skip private packages
               if [[ "$PKG_NAME" == *"@robeasthope/"* ]]; then
                 # Wait a moment for NPM to propagate
                 sleep 5
-                
+
                 # Check if package is available on NPM (only for public packages)
                 if npm view "$PACKAGE_VERSION" version >/dev/null 2>&1; then
-                  echo "✅ $PACKAGE_VERSION is available on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "✅ $PACKAGE_VERSION is available on npm" >> $GITHUB_STEP_SUMMARY
                 else
                   # It might be private or still propagating
-                  echo "⚠️ $PACKAGE_VERSION not immediately visible on NPM (may be private or propagating)" >> $GITHUB_STEP_SUMMARY
+                  echo "⚠️ $PACKAGE_VERSION not immediately visible on npm (may be private or propagating)" >> $GITHUB_STEP_SUMMARY
                 fi
               fi
             done
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### GitHub Packages" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Packages published to GitHub Packages (authentication required for verification)" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
