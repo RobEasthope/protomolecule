@@ -1,5 +1,36 @@
 # @protomolecule/ui
 
+## 4.1.0
+
+### Minor Changes
+
+- [`73d377c`](https://github.com/RobEasthope/protomolecule/commit/73d377cc36af65fa672bfe68628b223c1c313eb3) [#188](https://github.com/RobEasthope/protomolecule/pull/188) - Deprecate Box component in favor of standard HTML elements. The component remains exported for backward compatibility but should not be used in new code.
+
+  **Migration guide:**
+
+  For static elements:
+
+  ```tsx
+  {
+    children && <div className={cn("...")}>{children}</div>;
+  }
+  ```
+
+  For dynamic elements:
+
+  ```tsx
+  {
+    children && createElement(as, { className: cn("...") }, children);
+  }
+  ```
+
+  **Changes:**
+  - Added `@deprecated` JSDoc to Box component with migration examples
+  - Updated SanityProse to use `createElement` instead of Box
+  - Box component will be removed in a future major version
+
+  See issue #187 for full migration guide.
+
 ## 4.0.0
 
 ### Major Changes
