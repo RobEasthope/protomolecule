@@ -5,7 +5,8 @@
   "description": "GitHub repository configuration and rulesets for consistent branch protection",
   "license": "MIT",
   "files": [
-    "rulesets"
+    "rulesets",
+    "scripts"
   ],
   "scripts": {
     "clean": "rimraf node_modules",
