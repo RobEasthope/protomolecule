@@ -88,14 +88,22 @@ for ruleset_file in "$RULESETS_DIR"/*.json; do
 
     echo -e "${YELLOW}Updating ruleset: $ruleset_name (ID: $ruleset_id)${NC}"
 
-    if gh api "repos/$OWNER/$REPO/rulesets/$ruleset_id" \
+    # Capture stderr while preserving exit code
+    error_output=$(gh api "repos/$OWNER/$REPO/rulesets/$ruleset_id" \
         --method PUT \
         --input "$ruleset_file" \
-        --silent 2>/dev/null; then
+        2>&1 >/dev/null)
+    exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
         echo -e "${GREEN}✓ Successfully updated: $ruleset_name${NC}"
         ((updated_count++))
     else
         echo -e "${RED}✗ Failed to update: $ruleset_name${NC}"
+        # Show the actual error message for debugging
+        if [ -n "$error_output" ]; then
+            echo -e "${RED}  Error: ${error_output}${NC}"
+        fi
     fi
     echo ""
 done

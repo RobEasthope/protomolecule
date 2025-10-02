@@ -58,18 +58,33 @@ fi
 apply_ruleset() {
     local ruleset_file="$1"
     local ruleset_name=$(basename "$ruleset_file" .json)
+    local error_output
+    local exit_code
 
     echo -e "${YELLOW}Applying ruleset: $ruleset_name${NC}"
 
-    if gh api "repos/$OWNER/$REPO/rulesets" \
+    # Capture stderr while preserving exit code
+    error_output=$(gh api "repos/$OWNER/$REPO/rulesets" \
         --method POST \
         --input "$ruleset_file" \
-        --silent 2>/dev/null; then
+        2>&1 >/dev/null)
+    exit_code=$?
+
+    if [ $exit_code -eq 0 ]; then
         echo -e "${GREEN}✓ Successfully applied: $ruleset_name${NC}"
         return 0
     else
-        echo -e "${RED}✗ Failed to apply: $ruleset_name${NC}"
-        echo -e "${YELLOW}  Note: Ruleset might already exist. Use update-rulesets.sh to update existing rulesets.${NC}"
+        # Check if it's the "already exists" error
+        if echo "$error_output" | grep -qi "already exists\|duplicate"; then
+            echo -e "${YELLOW}⊘ Ruleset already exists: $ruleset_name${NC}"
+            echo -e "${YELLOW}  Use update-rulesets.sh to update existing rulesets.${NC}"
+        else
+            echo -e "${RED}✗ Failed to apply: $ruleset_name${NC}"
+            # Show the actual error message for debugging
+            if [ -n "$error_output" ]; then
+                echo -e "${RED}  Error: ${error_output}${NC}"
+            fi
+        fi
         return 1
     fi
 }
