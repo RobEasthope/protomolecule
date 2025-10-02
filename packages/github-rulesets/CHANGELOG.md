@@ -1,5 +1,16 @@
 # @protomolecule/github-rulesets
 
+## 1.1.0
+
+### Minor Changes
+
+- [`bb51e10`](https://github.com/RobEasthope/protomolecule/commit/bb51e109191ebf7ee81d06e16545f946c425fe2d) [#194](https://github.com/RobEasthope/protomolecule/pull/194) - Add comprehensive branch protection rules and automation scripts
+  - Enhanced production ruleset with pull request reviews, status checks, and linear history enforcement
+  - Added apply-rulesets.sh script to create rulesets in repositories via GitHub CLI
+  - Added update-rulesets.sh script to update existing rulesets by name matching
+  - Updated README with script usage examples and multi-repo sync strategies
+  - Removed repo-specific fields from ruleset JSON for true portability across repositories
+
 ## 1.0.2
 
 ### Patch Changes
