@@ -17,9 +17,5 @@ export const ignoredFileAndFolders = {
     "**/coverage/*",
     "**/eslint.config.ts",
     "**/eslint.config.mjs",
-    // Packages without JavaScript/TypeScript code
-    "**/packages/colours/**",
-    "**/packages/github-rulesets/**",
-    "**/packages/tsconfig/**",
   ],
 } satisfies Linter.Config;
