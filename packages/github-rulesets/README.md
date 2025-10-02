@@ -33,6 +33,55 @@ The production ruleset enforces:
 - **No Deletions**: Protected branches cannot be deleted
 - **Linear History**: Enforces merge commits or rebase, no merge bubbles
 
+## ⚠️ Important: Customize Before Applying
+
+**Status Check Names Must Match Your CI/CD Workflows**
+
+The production ruleset includes hardcoded status check names that must match your GitHub Actions workflow job names **exactly**:
+
+- `Lint`
+- `Build`
+- `Test`
+- `Changeset Check`
+
+### Before Applying to a Repository
+
+**Option 1: Update the Ruleset (Recommended)**
+
+Edit `rulesets/Protect production ruleset.json` to match your workflow job names:
+
+```json
+{
+  "type": "required_status_checks",
+  "parameters": {
+    "required_status_checks": [
+      {
+        "context": "Your-Lint-Job-Name",
+        "integration_id": 15368
+      }
+    ]
+  }
+}
+```
+
+**Option 2: Update Your Workflows**
+
+Ensure your GitHub Actions workflows use the exact job names from the ruleset:
+
+```yaml
+jobs:
+  Lint: # Must match "Lint" in ruleset exactly
+    name: Lint
+    runs-on: ubuntu-latest
+    # ...
+```
+
+**⚠️ Failure to match names will result in:**
+
+- Required status checks that never complete
+- Pull requests blocked from merging
+- CI checks that pass but don't satisfy ruleset requirements
+
 ## 🛠️ How to Apply Rulesets
 
 ### Via Scripts (Recommended)
