@@ -8,6 +8,20 @@ export type BoxProps = {
   readonly ref?: React.Ref<HTMLDivElement>;
 };
 
+/**
+ * @deprecated Box component is deprecated. Use standard HTML elements instead.
+ *
+ * For static elements:
+ * ```tsx
+ * {children && <div className={cn("...")}>{children}</div>}
+ * ```
+ *
+ * For dynamic elements:
+ * ```tsx
+ * {children && createElement(as, { className: cn("...") }, children)}
+ * ```
+ * @see https://github.com/RobEasthope/protomolecule/issues/187
+ */
 export function Box({
   as = "div",
   children,
