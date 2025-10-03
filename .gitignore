@@ -31,6 +31,11 @@ dist-ssr
 .vitest
 coverage
 
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
 # Notes
 SPEC.md
 
