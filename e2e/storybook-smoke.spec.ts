@@ -37,4 +37,27 @@ test.describe("Storybook Smoke Test", () => {
     const canvas = page.locator("#storybook-preview-iframe");
     await expect(canvas).toBeVisible();
   });
+
+  test("should have basic accessibility features", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    // Verify page has a meaningful title for screen readers
+    const title = await page.title();
+    expect(title.length).toBeGreaterThan(0);
+    expect(title).not.toBe("Untitled");
+
+    // Check for main landmark or navigation role
+    const hasNavigation = await page
+      .locator('[role="navigation"]')
+      .count()
+      .then((count) => count > 0);
+    const hasMain = (await page.locator("main, [role='main']").count()) > 0;
+
+    expect(hasNavigation || hasMain).toBe(true);
+
+    // Verify navigation has accessible structure
+    const navigation = page.locator('[role="navigation"]').first();
+    await expect(navigation).toBeVisible();
+  });
 });
