@@ -19,7 +19,7 @@ jobs:
         run: echo "JOB_START=$(date +%s)" >> $GITHUB_ENV
 
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🔧 Setup Monorepo
         uses: ./.github/actions/setup-monorepo
