@@ -24,13 +24,14 @@ test.describe("Storybook Smoke Test", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Look for any story link in the sidebar and click it
-    // This ensures at least one component story can load
-    const storyLink = page
-      .locator('[role="navigation"] a[data-item-id]')
-      .first();
-    await expect(storyLink).toBeVisible();
-    await storyLink.click();
+    // Verify at least one story exists in the sidebar
+    const storyLinks = page.locator('[role="navigation"] a[data-item-id]');
+    await expect(storyLinks).not.toHaveCount(0);
+
+    // Click the first available story
+    const firstStory = storyLinks.first();
+    await expect(firstStory).toBeVisible();
+    await firstStory.click();
 
     // Verify the story canvas is visible
     const canvas = page.locator("#storybook-preview-iframe");
