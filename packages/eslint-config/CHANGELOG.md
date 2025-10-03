@@ -1,5 +1,30 @@
 # @protomolecule/eslint-config
 
+## 3.0.2
+
+### Patch Changes
+
+- [`e1913ab`](https://github.com/RobEasthope/protomolecule/commit/e1913ab0fba40c755194b6e80ff320112c14859b) [#192](https://github.com/RobEasthope/protomolecule/pull/192) - Add dual publishing to GitHub Packages registry. Packages are now published to both npm (primary) and GitHub Packages (backup) registries.
+
+  **Changes:**
+  - Added automatic publishing to GitHub Packages after npm publish
+  - Non-fatal error handling for GitHub Packages (npm remains primary)
+  - Updated documentation with GitHub Packages installation info
+
+  **For users:**
+  - No action required - packages still install from npm by default
+  - GitHub Packages available as backup registry (requires authentication)
+  - See README for GitHub Packages setup instructions
+
+  See issue #191 for implementation details.
+
+- [`1226985`](https://github.com/RobEasthope/protomolecule/commit/12269850a3be2d526795e978db4cc658f4e428af) [#192](https://github.com/RobEasthope/protomolecule/pull/192) - Improve GitHub Packages publishing script robustness
+  - Add error handling for JSON parsing
+  - Add package name and path validation
+  - Track success/failure counts for better error reporting
+  - Add comprehensive JSDoc comments
+  - Document environment variables and exit codes
+
 ## 3.0.1
 
 ### Patch Changes
