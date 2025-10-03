@@ -55,7 +55,7 @@
     "@robeasthope/eslint-config": "workspace:*",
     "@robeasthope/markdownlint-config": "workspace:*",
     "@robeasthope/tsconfig": "workspace:*",
-    "@types/node": "^22.18.1",
+    "@types/node": "^24.6.2",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",
     "eslint": "^9.34.0",
