@@ -93,7 +93,7 @@
     "@types/node": "^20.12.12",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
     "@vitest/ui": "^3.2.4",
     "eslint": "^9.34.0",
     "happy-dom": "^14.11.0",
