@@ -1,0 +1,112 @@
+# Dependabot configuration for automated dependency updates
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # npm dependencies in the monorepo root
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+
+    # Group updates by type for easier review
+    groups:
+      # Type definitions - patch updates only
+      # Safe to auto-merge: type definitions rarely cause runtime issues
+      types-patch:
+        dependency-type: "development"
+        update-types: ["patch"]
+        patterns:
+          - "@types/*"
+
+      # Development tooling - patch updates only
+      # Safe to auto-merge: build tools, formatters, linters
+      dev-tools-patch:
+        dependency-type: "development"
+        update-types: ["patch"]
+        patterns:
+          - "prettier*"
+          - "eslint*"
+          - "rimraf"
+          - "turbo"
+          - "tsx"
+          - "husky"
+          - "lint-staged"
+
+      # Build and bundling tools - patch updates only
+      build-tools-patch:
+        dependency-type: "development"
+        update-types: ["patch"]
+        patterns:
+          - "@changesets/*"
+          - "typescript"
+          - "@typescript-eslint/*"
+
+      # Testing frameworks - minor and patch updates
+      # Requires manual review but grouped for efficiency
+      testing:
+        update-types: ["minor", "patch"]
+        patterns:
+          - "vitest*"
+          - "@vitest/*"
+          - "happy-dom"
+          - "@testing-library/*"
+
+      # Storybook - minor and patch updates
+      # Grouped together as Storybook packages should stay in sync
+      storybook:
+        update-types: ["minor", "patch"]
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+
+      # React ecosystem - requires manual review
+      # Keep React and related packages in sync
+      react:
+        update-types: ["minor", "patch"]
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+
+    # Limit concurrent PRs to avoid overwhelming CI
+    open-pull-requests-limit: 10
+
+    # Assign PRs to maintainer for review
+    reviewers:
+      - "RobEasthope"
+
+    # Add labels for filtering
+    labels:
+      - "dependencies"
+      - "automated"
+
+    # Commit message prefix follows conventional commits
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "Europe/London"
+
+    open-pull-requests-limit: 5
+
+    reviewers:
+      - "RobEasthope"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+    commit-message:
+      prefix: "ci"
