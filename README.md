@@ -74,9 +74,9 @@ This monorepo contains the following packages:
 
 ### Installing Published Packages
 
-Packages are available on both npm and GitHub Packages registries:
+#### From npm (Recommended - No Authentication Required)
 
-#### From npm (recommended)
+All packages are published to npm and install without any configuration:
 
 ```bash
 # React component library
@@ -89,9 +89,20 @@ npm install --save-dev @robeasthope/eslint-config
 npm install @robeasthope/colours
 ```
 
-#### From GitHub Packages
+**No setup needed** - packages install from npm by default.
 
-Packages are also published to GitHub Packages as a backup registry. See [GitHub's documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry) for authentication setup.
+#### From GitHub Packages (Optional Backup)
+
+Packages are also available on GitHub Packages as a backup registry. This requires authentication:
+
+1. Create a GitHub Personal Access Token with `read:packages` scope
+2. Configure npm (in project `.npmrc` or global `~/.npmrc`):
+   ```bash
+   echo "@robeasthope:registry=https://npm.pkg.github.com" >> .npmrc
+   echo "//npm.pkg.github.com/:_authToken=YOUR_TOKEN" >> .npmrc
+   ```
+
+**Note:** Most users should use npm installation (above). GitHub Packages is provided as an optional backup. See [GitHub's documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry) for more details.
 
 ## 🛠️ Available Scripts
 

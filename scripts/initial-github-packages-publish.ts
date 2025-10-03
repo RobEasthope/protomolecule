@@ -2,8 +2,12 @@
 /**
  * Initial manual publish to GitHub Packages
  *
+ * ⚠️  MAINTAINERS ONLY - For initial GitHub Packages setup
+ * ⚠️  Normal package installation uses npm (no authentication required)
+ * ⚠️  This script does NOT modify your global ~/.npmrc file
+ *
  * This script performs the first-time publish of packages to GitHub Packages.
- * After this initial publish, the automated workflow can handle subsequent releases.
+ * After this initial publish, the automated workflow handles subsequent releases.
  *
  * Environment variables required:
  * - GITHUB_TOKEN or GH_TOKEN: GitHub personal access token with packages:write scope
@@ -11,13 +15,13 @@
  * Prerequisites:
  * 1. Authenticate with GitHub: gh auth login
  * 2. Export token: export GITHUB_TOKEN=$(gh auth token)
- * 3. Run from repository root: tsx scripts/initial-github-packages-publish.ts
+ * 3. Run from repository root: pnpm tsx scripts/initial-github-packages-publish.ts
  *
  * What it does:
- * - Reads current package versions from package.json
- * - Configures npm for GitHub Packages registry
+ * - Creates temporary .npmrc for GitHub Packages authentication
  * - Publishes each package to GitHub Packages
- * - Restores original package.json files
+ * - Cleans up temporary configuration automatically
+ * - Does NOT modify your global ~/.npmrc file
  *
  * Exit codes:
  * - 0: Success
@@ -25,8 +29,7 @@
  */
 
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync } from "fs";
-import os from "os";
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 import { join } from "path";
 
 // Packages to publish (exclude private packages)
@@ -38,7 +41,7 @@ const PACKAGES = [
 
 /**
  * Main entry point for initial GitHub Packages publish
- * Configures npm and publishes all packages to GitHub Packages
+ * Uses temporary .npmrc configuration that is automatically cleaned up
  */
 function main() {
   // eslint-disable-next-line no-console
@@ -64,26 +67,31 @@ function main() {
   // eslint-disable-next-line no-console
   console.log("");
 
-  // Configure npm for GitHub Packages
-  configureNpmForGitHub(token);
+  // Create temporary .npmrc for GitHub Packages
+  const temporaryNpmrcPath = createTemporaryNpmrc(token);
 
   // Track publish results
   let successCount = 0;
   let failureCount = 0;
 
-  // Publish each package
-  for (const pkg of PACKAGES) {
-    try {
-      publishPackage(pkg);
-      successCount++;
-    } catch (error) {
-      failureCount++;
-      console.error(`❌ Failed to publish ${pkg.name}`);
-      console.error(
-        `   Error: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      // Continue to next package instead of exiting
+  try {
+    // Publish each package
+    for (const pkg of PACKAGES) {
+      try {
+        publishPackage(pkg, temporaryNpmrcPath);
+        successCount++;
+      } catch (error) {
+        failureCount++;
+        console.error(`❌ Failed to publish ${pkg.name}`);
+        console.error(
+          `   Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+        // Continue to next package instead of exiting
+      }
     }
+  } finally {
+    // Always clean up temporary .npmrc
+    cleanupTemporaryNpmrc(temporaryNpmrcPath);
   }
 
   // eslint-disable-next-line no-console
@@ -103,7 +111,9 @@ function main() {
       "1. Verify packages at https://github.com/RobEasthope?tab=packages",
     );
     // eslint-disable-next-line no-console
-    console.log("2. Merge PR #192 to enable automated dual publishing");
+    console.log(
+      "2. Future releases will automatically publish to both registries",
+    );
   }
 
   if (failureCount > 0) {
@@ -120,51 +130,58 @@ function main() {
 }
 
 /**
- * Configures user's .npmrc for GitHub Packages authentication
+ * Creates a temporary .npmrc file for GitHub Packages authentication
  * @param token - GitHub personal access token
+ * @returns Path to the temporary .npmrc file
  */
-function configureNpmForGitHub(token: string) {
-  const npmrcPath = join(os.homedir(), ".npmrc");
+function createTemporaryNpmrc(token: string): string {
+  const temporaryNpmrcPath = join(process.cwd(), ".npmrc.github-packages-temp");
 
   // eslint-disable-next-line no-console
-  console.log("📝 Configuring .npmrc for GitHub Packages...");
+  console.log("📝 Creating temporary .npmrc for GitHub Packages...");
 
-  // Read existing .npmrc if it exists
-  let npmrcContent = "";
-  try {
-    npmrcContent = readFileSync(npmrcPath, "utf8");
-  } catch {
-    // File doesn't exist, start fresh
-  }
+  // Only include auth token, NOT scope override
+  // This allows npm to use GitHub Packages with explicit --registry flag
+  const githubConfig = `//npm.pkg.github.com/:_authToken=${token}`;
 
-  // Add GitHub Packages configuration if not already present
-  const githubConfig = `
-# GitHub Packages configuration
-//npm.pkg.github.com/:_authToken=${token}
-@robeasthope:registry=https://npm.pkg.github.com
-`;
+  writeFileSync(temporaryNpmrcPath, githubConfig);
 
-  if (npmrcContent.includes("npm.pkg.github.com")) {
-    // eslint-disable-next-line no-console
-    console.log("✅ .npmrc already configured");
-  } else {
-    writeFileSync(npmrcPath, npmrcContent + githubConfig);
-    // eslint-disable-next-line no-console
-    console.log("✅ .npmrc configured");
-  }
-
+  // eslint-disable-next-line no-console
+  console.log("✅ Created temporary .npmrc");
+  // eslint-disable-next-line no-console
+  console.log("⚠️  This does NOT modify your global ~/.npmrc file");
   // eslint-disable-next-line no-console
   console.log("");
+
+  return temporaryNpmrcPath;
 }
 
 /**
- * Publishes a single package to GitHub Packages
+ * Cleans up the temporary .npmrc file
+ * @param temporaryNpmrcPath - Path to the temporary .npmrc file
+ */
+function cleanupTemporaryNpmrc(temporaryNpmrcPath: string) {
+  if (existsSync(temporaryNpmrcPath)) {
+    unlinkSync(temporaryNpmrcPath);
+    // eslint-disable-next-line no-console
+    console.log("");
+    // eslint-disable-next-line no-console
+    console.log("🧹 Cleaned up temporary configuration");
+  }
+}
+
+/**
+ * Publishes a single package to GitHub Packages using temporary .npmrc
  * @param pkg - Package configuration
  * @param pkg.name - Package name (e.g., "@robeasthope/ui")
  * @param pkg.path - Relative path to package directory
+ * @param temporaryNpmrcPath - Path to temporary .npmrc file
  * @throws Error if publish fails
  */
-function publishPackage(pkg: { name: string; path: string }) {
+function publishPackage(
+  pkg: { name: string; path: string },
+  temporaryNpmrcPath: string,
+) {
   const packagePath = join(process.cwd(), pkg.path);
   const packageJsonPath = join(packagePath, "package.json");
 
@@ -204,10 +221,14 @@ function publishPackage(pkg: { name: string; path: string }) {
     // Write modified package.json
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
 
-    // Publish to GitHub Packages
+    // Publish to GitHub Packages using temporary .npmrc
     try {
       execSync("npm publish --registry=https://npm.pkg.github.com/", {
         cwd: packagePath,
+        env: {
+          ...process.env,
+          NPM_CONFIG_USERCONFIG: temporaryNpmrcPath, // Use temp .npmrc
+        },
         stdio: "inherit",
       });
       // eslint-disable-next-line no-console
