@@ -45,3 +45,7 @@ SPEC.md
 # TypeScript build info
 *.tsbuildinfo
 .tsbuildinfo
+
+# Act (GitHub Actions local runner)
+.actrc
+.secrets
