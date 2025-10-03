@@ -14,63 +14,33 @@ updates:
 
     # Group updates by type for easier review
     groups:
-      # Type definitions - patch updates only
-      # Safe to auto-merge: type definitions rarely cause runtime issues
-      types-patch:
+      # All development dependencies - non-breaking updates
+      # Combines tooling, testing, and type definitions
+      dev-dependencies:
         dependency-type: "development"
-        update-types: ["patch"]
-        patterns:
-          - "@types/*"
-
-      # Development tooling - patch updates only
-      # Safe to auto-merge: build tools, formatters, linters
-      dev-tools-patch:
-        dependency-type: "development"
-        update-types: ["patch"]
-        patterns:
-          - "prettier*"
-          - "eslint*"
-          - "rimraf"
-          - "turbo"
-          - "tsx"
-          - "husky"
-          - "lint-staged"
-
-      # Build and bundling tools - patch updates only
-      build-tools-patch:
-        dependency-type: "development"
-        update-types: ["patch"]
-        patterns:
-          - "@changesets/*"
-          - "typescript"
-          - "@typescript-eslint/*"
-
-      # Testing frameworks - minor and patch updates
-      # Requires manual review but grouped for efficiency
-      testing:
         update-types: ["minor", "patch"]
         patterns:
-          - "vitest*"
-          - "@vitest/*"
-          - "happy-dom"
-          - "@testing-library/*"
+          - "*"
 
-      # Storybook - minor and patch updates
-      # Grouped together as Storybook packages should stay in sync
-      storybook:
+      # Production dependencies - non-breaking updates
+      # Includes React, Storybook, and runtime dependencies
+      prod-dependencies:
+        dependency-type: "production"
         update-types: ["minor", "patch"]
         patterns:
-          - "storybook"
-          - "@storybook/*"
+          - "*"
 
-      # React ecosystem - requires manual review
-      # Keep React and related packages in sync
-      react:
-        update-types: ["minor", "patch"]
-        patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react*"
+      # Major updates for development dependencies
+      # Grouped for review but kept separate from non-breaking changes
+      dev-major:
+        dependency-type: "development"
+        update-types: ["major"]
+
+      # Major updates for production dependencies
+      # Require careful review and testing
+      prod-major:
+        dependency-type: "production"
+        update-types: ["major"]
 
     # Limit concurrent PRs to avoid overwhelming CI
     open-pull-requests-limit: 10
@@ -98,6 +68,12 @@ updates:
       day: "monday"
       time: "10:00"
       timezone: "Europe/London"
+
+    # Group all GitHub Actions updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
     open-pull-requests-limit: 5
 
