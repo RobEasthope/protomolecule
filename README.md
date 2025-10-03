@@ -74,6 +74,10 @@ This monorepo contains the following packages:
 
 ### Installing Published Packages
 
+Packages are available on both npm and GitHub Packages registries:
+
+#### From npm (recommended)
+
 ```bash
 # React component library
 npm install @robeasthope/ui
@@ -84,6 +88,10 @@ npm install --save-dev @robeasthope/eslint-config
 # Colour system
 npm install @robeasthope/colours
 ```
+
+#### From GitHub Packages
+
+Packages are also published to GitHub Packages as a backup registry. See [GitHub's documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry) for authentication setup.
 
 ## 🛠️ Available Scripts
 
@@ -192,7 +200,8 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/RobEasthope/protomolecule)
-- [NPM Packages](https://www.npmjs.com/~robeasthope) - Published under `@robeasthope/*` namespace
+- [npm Packages](https://www.npmjs.com/~robeasthope) - Published under `@robeasthope/*` namespace
+- [GitHub Packages](https://github.com/RobEasthope?tab=packages) - Backup registry (requires authentication)
 - [Storybook](http://localhost:6006) (when running locally)
 
 ---
