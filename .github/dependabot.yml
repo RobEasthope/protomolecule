@@ -32,7 +32,6 @@ updates:
           - "eslint*"
           - "rimraf"
           - "turbo"
-          - "vitest"
           - "tsx"
           - "husky"
           - "lint-staged"
@@ -59,6 +58,7 @@ updates:
       # Storybook - minor and patch updates
       # Grouped together as Storybook packages should stay in sync
       storybook:
+        update-types: ["minor", "patch"]
         patterns:
           - "storybook"
           - "@storybook/*"
@@ -66,6 +66,7 @@ updates:
       # React ecosystem - requires manual review
       # Keep React and related packages in sync
       react:
+        update-types: ["minor", "patch"]
         patterns:
           - "react"
           - "react-dom"
