@@ -107,6 +107,68 @@ All commands run from the monorepo root:
 
 See the [Development Guide](./docs/development.md) for a complete list of available scripts.
 
+## 🧪 Testing Workflows Locally
+
+The project uses [Act](https://github.com/nektos/act) to run GitHub Actions workflows locally. This enables faster iteration and debugging without requiring push/PR cycles.
+
+### Prerequisites
+
+- **Docker Desktop** must be running
+- **Act** installed via Homebrew: `brew install act`
+- **Configuration**: Copy `.actrc.example` to `.actrc` for local settings
+
+### Quick Start
+
+```bash
+# Copy example configuration
+cp .actrc.example .actrc
+
+# List all available workflows
+act -l
+
+# Test CI workflow (dry run)
+act pull_request -W .github/workflows/linting-and-testing.yml -n
+
+# Run push event workflows
+act push
+
+# Run specific job
+act -j build
+
+# Verbose output for debugging
+act push --verbose
+```
+
+### Common Workflows
+
+```bash
+# Test linting and testing workflow
+act pull_request -W .github/workflows/linting-and-testing.yml
+
+# Test release workflow
+act push -W .github/workflows/release.yml
+
+# Run with secrets (interactive prompt)
+act -s GITHUB_TOKEN
+```
+
+### Important Notes
+
+- **First run downloads Docker images** (~500MB) - subsequent runs are much faster
+- **Secrets** need to be provided via `-s` flag or `.secrets` file (git-ignored)
+- **Not 100% identical** to GitHub Actions - some features may behave slightly differently
+
+### Troubleshooting
+
+| Issue                               | Solution                                                            |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| "Cannot connect to Docker daemon"   | Ensure Docker Desktop is running                                    |
+| Workflow fails with missing secrets | Pass secrets via `-s GITHUB_TOKEN` or create `.secrets` file        |
+| "No workflows detected"             | Specify workflow file: `act -W .github/workflows/workflow-name.yml` |
+| First run is very slow              | Expected - downloading Docker images (~500MB)                       |
+
+For more information, see the [Act documentation](https://nektosact.com/usage/index.html).
+
 ## 🏗️ Tech Stack
 
 - **Monorepo**: [Turborepo](https://turbo.build/)

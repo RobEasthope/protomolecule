@@ -21,7 +21,7 @@ jobs:
       packages: write # Required for publishing to GitHub Packages
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           # Use RELEASE_PAT for protected branches and version commits
@@ -175,7 +175,7 @@ jobs:
 
       - name: 🚀 Create Release or Publish
         id: changesets
-        uses: changesets/action@v1.4.8
+        uses: changesets/action@v1.5.3
         with:
           # This will run pnpm changeset version && pnpm changeset publish
           publish: pnpm changeset publish

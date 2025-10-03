@@ -1,0 +1,18 @@
+# Act Configuration Example
+# Copy this file to .actrc and customize as needed
+# .actrc is git-ignored to keep local settings private
+
+# Container architecture (use linux/amd64 for Apple Silicon compatibility)
+--container-architecture linux/amd64
+
+# Artifact server path for workflow artifacts
+--artifact-server-path /tmp/artifacts
+
+# Default runner image (Medium: ~500MB, good balance of size and compatibility)
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# Optional: Use a secrets file (ensure .secrets is in .gitignore!)
+# --secret-file .secrets
+
+# For more configuration options, see:
+# https://nektosact.com/usage/index.html#configuration-file

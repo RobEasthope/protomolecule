@@ -18,6 +18,7 @@
     "scripts/**/*.mjs",
     "test/**/*.ts",
     "test/**/*.js",
+    "e2e/**/*.ts",
     ".changeset/**/*.js"
   ],
   "exclude": [

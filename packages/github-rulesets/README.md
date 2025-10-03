@@ -24,32 +24,119 @@ These rulesets can be imported into your GitHub repository settings to enforce c
 
 The production ruleset enforces:
 
-- **Required Reviews**: Pull requests require approval before merging
+- **Required Reviews**: 1 approval required before merging
 - **Dismiss Stale Reviews**: Previous approvals dismissed when new commits pushed
-- **Required Status Checks**: CI/CD must pass before merging
-- **Up-to-date Branches**: Branches must be up to date with base branch
+- **Required Thread Resolution**: All PR conversation threads must be resolved
+- **Required Status Checks**: All CI/CD checks must pass (Lint, Build, Test, Changeset Check)
+- **Up-to-date Branches**: Branches must be up to date with base branch before merging
 - **No Force Pushes**: Prevents history rewriting on protected branches
 - **No Deletions**: Protected branches cannot be deleted
-- **Linear History**: Enforces a clean commit history
+- **Linear History**: Enforces merge commits or rebase, no merge bubbles
+
+## ⚠️ Important: Customize Before Applying
+
+**Status Check Names Must Match Your CI/CD Workflows**
+
+The production ruleset includes hardcoded status check names that must match your GitHub Actions workflow job names **exactly**:
+
+- `Lint`
+- `Build`
+- `Test`
+- `Changeset Check`
+
+### Before Applying to a Repository
+
+**Option 1: Update the Ruleset (Recommended)**
+
+Edit `rulesets/Protect production ruleset.json` to match your workflow job names:
+
+```json
+{
+  "type": "required_status_checks",
+  "parameters": {
+    "required_status_checks": [
+      {
+        "context": "Your-Lint-Job-Name",
+        "integration_id": 15368
+      }
+    ]
+  }
+}
+```
+
+**Option 2: Update Your Workflows**
+
+Ensure your GitHub Actions workflows use the exact job names from the ruleset:
+
+```yaml
+jobs:
+  Lint: # Must match "Lint" in ruleset exactly
+    name: Lint
+    runs-on: ubuntu-latest
+    # ...
+```
+
+**⚠️ Failure to match names will result in:**
+
+- Required status checks that never complete
+- Pull requests blocked from merging
+- CI checks that pass but don't satisfy ruleset requirements
 
 ## 🛠️ How to Apply Rulesets
+
+### Via Scripts (Recommended)
+
+This package includes helper scripts to apply and update rulesets across repositories.
+
+**Apply rulesets to a new repository:**
+
+```bash
+# Apply all rulesets
+./scripts/apply-rulesets.sh OWNER REPO --all
+
+# Apply specific ruleset
+./scripts/apply-rulesets.sh OWNER REPO "Protect production ruleset.json"
+
+# Example
+./scripts/apply-rulesets.sh RobEasthope my-new-repo --all
+```
+
+**Update existing rulesets in a repository:**
+
+```bash
+# Automatically matches rulesets by name and updates them
+./scripts/update-rulesets.sh OWNER REPO
+
+# Example
+./scripts/update-rulesets.sh RobEasthope protomolecule
+```
+
+**Prerequisites:**
+
+- GitHub CLI (`gh`) installed and authenticated
+- Repository admin access
 
 ### Via GitHub UI
 
 1. Navigate to your repository's **Settings**
 2. Go to **Rules** > **Rulesets**
 3. Click **"New ruleset"** > **"Import"**
-4. Select the JSON file from this package
+4. Select the JSON file from `rulesets/` directory
 5. Review and adjust settings as needed
 6. Click **"Create"** to apply
 
-### Via GitHub CLI
+### Via GitHub CLI (Manual)
 
 ```bash
-# Export ruleset from this package
+# Create ruleset in a repository
 gh api repos/OWNER/REPO/rulesets \
   --method POST \
-  --input "Protect production ruleset.json"
+  --input "rulesets/Protect production ruleset.json"
+
+# Update existing ruleset (get ID from repo settings)
+gh api repos/OWNER/REPO/rulesets/RULESET_ID \
+  --method PUT \
+  --input "rulesets/Protect production ruleset.json"
 ```
 
 ### Via GitHub API
@@ -92,16 +179,48 @@ await octokit.repos.createRepoRuleset({
 
 ### Common Customizations
 
-- **Different branch names**: Update `conditions.ref_name.include`
-- **Review requirements**: Modify `required_approving_review_count`
-- **Status checks**: Add your CI/CD workflow names
-- **Bypass permissions**: Configure who can bypass rules
+- **Different branch names**: Update `conditions.ref_name.include` (use `~DEFAULT_BRANCH` for main branch)
+- **Review requirements**: Modify `required_approving_review_count` in the `pull_request` rule
+- **Status checks**: Update `required_status_checks` array with your CI/CD job names (integration_id 15368 is GitHub Actions)
+- **Bypass permissions**: Add entries to `bypass_actors` array (requires actor IDs from GitHub API)
+
+### Sharing Rulesets Across Repositories
+
+**Method 1: Use the Scripts (Easiest)**
+
+```bash
+# Apply to multiple repos with a loop
+for repo in repo1 repo2 repo3; do
+  ./scripts/apply-rulesets.sh OWNER $repo --all
+done
+
+# Update rulesets across multiple repos
+for repo in repo1 repo2 repo3; do
+  ./scripts/update-rulesets.sh OWNER $repo
+done
+```
+
+**Method 2: Copy-Paste JSON**
+
+1. Copy the ruleset JSON file to your other repo
+2. Import via GitHub UI: Settings → Rules → Rulesets → Import
+3. Adjust repo-specific status check names if needed
+
+**Method 3: Organization-Level Rulesets**
+
+- Create at org level: `https://github.com/organizations/ORG/settings/rules`
+- Apply to all repos or specific repos via targeting
+- Centrally managed, no manual sync needed
 
 ## 📁 Package Structure
 
 ```text
 packages/github-rulesets/
-├── Protect production ruleset.json
+├── rulesets/
+│   └── Protect production ruleset.json
+├── scripts/
+│   ├── apply-rulesets.sh       # Apply rulesets to repos
+│   └── update-rulesets.sh      # Update existing rulesets
 ├── package.json
 └── README.md
 ```

@@ -1,11 +1,12 @@
 {
   "name": "@robeasthope/github-rulesets",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "private": true,
   "description": "GitHub repository configuration and rulesets for consistent branch protection",
   "license": "MIT",
   "files": [
-    "rulesets"
+    "rulesets",
+    "scripts"
   ],
   "scripts": {
     "clean": "rimraf node_modules",

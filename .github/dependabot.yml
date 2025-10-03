@@ -1,0 +1,88 @@
+# Dependabot configuration for automated dependency updates
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # npm dependencies in the monorepo root
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/London"
+
+    # Group updates by type for easier review
+    groups:
+      # All development dependencies - non-breaking updates
+      # Combines tooling, testing, and type definitions
+      dev-dependencies:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+        patterns:
+          - "*"
+
+      # Production dependencies - non-breaking updates
+      # Includes React, Storybook, and runtime dependencies
+      prod-dependencies:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+        patterns:
+          - "*"
+
+      # Major updates for development dependencies
+      # Grouped for review but kept separate from non-breaking changes
+      dev-major:
+        dependency-type: "development"
+        update-types: ["major"]
+
+      # Major updates for production dependencies
+      # Require careful review and testing
+      prod-major:
+        dependency-type: "production"
+        update-types: ["major"]
+
+    # Limit concurrent PRs to avoid overwhelming CI
+    open-pull-requests-limit: 10
+
+    # Assign PRs to maintainer for review
+    reviewers:
+      - "RobEasthope"
+
+    # Add labels for filtering
+    labels:
+      - "dependencies"
+      - "automated"
+
+    # Commit message prefix follows conventional commits
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "Europe/London"
+
+    # Group all GitHub Actions updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+    open-pull-requests-limit: 5
+
+    reviewers:
+      - "RobEasthope"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+    commit-message:
+      prefix: "ci"
