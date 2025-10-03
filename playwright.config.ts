@@ -52,6 +52,9 @@ export default defineConfig({
   // Test directory
   testDir: "./e2e",
 
+  // Set reasonable test timeout (15s for E2E smoke tests)
+  timeout: 15000,
+
   // Shared settings for all projects
   use: {
     // Base URL for tests (Storybook runs on port 6006)
