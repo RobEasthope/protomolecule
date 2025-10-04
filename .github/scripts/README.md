@@ -253,7 +253,7 @@ These scripts use a **separate ESLint configuration** (`.github/scripts/eslint.c
 
 ### How It Works
 
-- Root `.eslintignore` excludes `.github/scripts/` from standard linting
+- Root `eslint.config.ts` ignores `.github/scripts/` in the `ignores` array
 - Scripts directory has its own `eslint.config.ts` with CI-appropriate rules
 - Both configs work together without conflicts
 
