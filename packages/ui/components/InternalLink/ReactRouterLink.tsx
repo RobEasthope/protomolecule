@@ -44,8 +44,6 @@ export function ReactRouterLink({
   return (
     <Link
       className={className}
-      role="link"
-      tabIndex={0}
       to={href === homePageSlug ? "/" : `/${href}`}
       {...rest}
     >
