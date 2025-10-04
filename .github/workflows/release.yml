@@ -161,18 +161,6 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: 🏷️ Generate Release Title
-        id: release_title
-        run: |
-          # Generate descriptive PR title based on changesets
-          if [ -f "scripts/get-release-title.ts" ]; then
-            TITLE=$(npx tsx scripts/get-release-title.ts)
-            echo "Generated title: $TITLE"
-            echo "title=$TITLE" >> $GITHUB_OUTPUT
-          else
-            echo "title=chore: version packages" >> $GITHUB_OUTPUT
-          fi
-
       - name: 🚀 Create Release or Publish
         id: changesets
         uses: changesets/action@v1.5.3
@@ -180,9 +168,9 @@ jobs:
           # This will run pnpm changeset version && pnpm changeset publish
           publish: pnpm changeset publish
           # Commit message for version updates
-          commit: "chore: version packages [skip ci]"
-          # Title for version update PRs - now uses dynamic title
-          title: "${{ steps.release_title.outputs.title || 'chore: version packages' }}"
+          commit: "release: version packages for release"
+          # Title for version update PRs - will be enhanced in next step
+          title: "release: version packages for release"
           # Create GitHub releases automatically
           createGithubReleases: true
         env:
@@ -193,6 +181,42 @@ jobs:
           npm_config_fetch_retries: 5
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
+
+      - name: 🏷️ Enhance Release PR Title
+        if: steps.changesets.outputs.hasChangesets == 'true' && steps.changesets.outputs.pullRequestNumber != ''
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="${{ steps.changesets.outputs.pullRequestNumber }}"
+          echo "Enhancing PR #${PR_NUMBER} with package information..."
+
+          # Extract package names from the PR body text (changesets includes them there)
+          # This is more reliable than parsing diffs and works in CI without filesystem access
+          PACKAGE_LIST=$(timeout 30s gh pr view "$PR_NUMBER" --json body -q ".body" | \
+            grep -oP '@robeasthope/[a-z0-9-]+' | \
+            grep -v '@robeasthope/monorepo' | \
+            sort -u | \
+            tr '\n' ',' | \
+            sed 's/,$//' || echo "")
+
+          if [[ -z "$PACKAGE_LIST" ]]; then
+            echo "⚠️  Could not extract package names from PR body, keeping default title"
+            exit 0
+          fi
+
+          # Create descriptive title
+          # Use comma separator only when multiple packages (no trailing comma for single package)
+          NEW_TITLE="release: ${PACKAGE_LIST}"
+
+          # Update PR title with timeout
+          if timeout 30s gh pr edit "$PR_NUMBER" --title "$NEW_TITLE"; then
+            echo "✅ Updated PR #${PR_NUMBER} title to: $NEW_TITLE"
+          else
+            echo "❌ Failed to update PR title (timeout or error)"
+            exit 0
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📊 Detect Published Packages
         id: detect_published
