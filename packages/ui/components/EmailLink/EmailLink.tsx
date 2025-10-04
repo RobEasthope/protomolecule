@@ -37,8 +37,12 @@ export function EmailLink({
     return <span className={className}>{children || null}</span>;
   }
 
+  // Create accessible label if not provided by user
+  const ariaLabel = rest["aria-label"] || `Send email to ${email}`;
+
   return (
     <a
+      aria-label={ariaLabel}
       className={cn(className, "hover:text-saffron duration-300")}
       href={`mailto:${email}`}
       rel="noopener noreferrer"

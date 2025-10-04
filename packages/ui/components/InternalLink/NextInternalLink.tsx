@@ -28,8 +28,6 @@ export function NextInternalLink({
     <Link
       className={className}
       href={href === homePageSlug ? "/" : `/${href}`}
-      role="link"
-      tabIndex={0}
       {...rest}
     >
       {children || null}

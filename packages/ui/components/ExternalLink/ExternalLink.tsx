@@ -18,8 +18,16 @@ export function ExternalLink({
     return null;
   }
 
+  // Create accessible label if not provided by user
+  const ariaLabel =
+    rest["aria-label"] ||
+    (typeof children === "string"
+      ? `${children} (opens in new tab)`
+      : undefined);
+
   return (
     <a
+      aria-label={ariaLabel}
       className={cn("hover:text-link duration-300", className)}
       href={href}
       rel="noopener noreferrer"

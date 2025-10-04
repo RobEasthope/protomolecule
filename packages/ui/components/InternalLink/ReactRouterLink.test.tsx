@@ -73,7 +73,6 @@ describe("ReactRouterLink", () => {
     const link = screen.getByRole("link");
     expect(link.getAttribute("data-testid")).toBe("custom-link");
     expect(link.getAttribute("aria-label")).toBe("Contact us");
-    expect(link.getAttribute("tabindex")).toBe("0");
   });
 
   it("handles undefined homePageSlug correctly", () => {
