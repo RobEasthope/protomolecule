@@ -1,0 +1,112 @@
+#!/bin/sh
+
+# Pre-push hook to check for changesets when packages are modified
+# This prevents pushing package changes without a changeset
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo "🔍 Pre-push: Checking for changesets..."
+
+# Get the remote and branch being pushed to
+remote="$1"
+url="$2"
+
+# Read the push details from stdin
+while read local_ref local_sha remote_ref remote_sha
+do
+  # Skip if deleting a branch
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    exit 0
+  fi
+
+  # If remote_sha is all zeros, this is a new branch
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    # Compare against main/master branch
+    if git show-ref --verify --quiet refs/heads/main; then
+      base_branch="main"
+    elif git show-ref --verify --quiet refs/heads/master; then
+      base_branch="master"
+    else
+      # Can't determine base, allow push
+      echo "⚠️  Warning: Could not determine base branch, skipping changeset check"
+      exit 0
+    fi
+    range="$base_branch..$local_sha"
+  else
+    # Compare what we're about to push
+    range="$remote_sha..$local_sha"
+  fi
+
+  # Check if any packages have changed in this range
+  # First filter to only files in packages/ (same as CI workflow line 145)
+  CHANGED_FILES=$(git diff --name-only $range 2>/dev/null | grep "^packages/" || true)
+
+  if [ -z "$CHANGED_FILES" ]; then
+    echo "${GREEN}✅ No package changes - changeset not required${NC}"
+    continue
+  fi
+
+  # Check if changes require a changeset (exclude docs-only changes)
+  # This logic matches the CI workflow for consistency
+  REQUIRES_CHANGESET=false
+  for file in $CHANGED_FILES; do
+    # Require changeset for source code changes
+    if echo "$file" | grep -qE "^packages/[^/]+/(src|dist|lib|index\.|.*\.(ts|tsx|js|jsx|mjs|cjs)$)"; then
+      REQUIRES_CHANGESET=true
+      break
+    fi
+    # Require changeset for functional package.json changes
+    if echo "$file" | grep -q "package.json$"; then
+      # Check if the diff includes changes to dependencies, exports, main, module, types, or scripts
+      if git diff $range "$file" | grep -qE '^\+.*"(dependencies|peerDependencies|exports|main|module|types|bin|scripts)":'; then
+        REQUIRES_CHANGESET=true
+        break
+      fi
+    fi
+    # Require changeset for config changes that affect builds
+    if echo "$file" | grep -qE "(tsconfig|vite\.config|rollup\.config|webpack\.config)"; then
+      REQUIRES_CHANGESET=true
+      break
+    fi
+  done
+
+  if [ "$REQUIRES_CHANGESET" = "true" ]; then
+    echo "${YELLOW}📝 Package source code changes detected${NC}"
+
+    # Check for changeset files (excluding README.md)
+    # Use robust method with fallback to avoid errors when no files exist
+    CHANGESET_FILES=$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md || true)
+
+    if [ -z "$CHANGESET_FILES" ]; then
+      echo ""
+      echo "${RED}❌ Pre-push check failed!${NC}"
+      echo ""
+      echo "You're trying to push package changes without a changeset."
+      echo ""
+      echo "To fix this:"
+      echo "  1. Run: ${GREEN}pnpm changeset${NC}"
+      echo "  2. Select the affected packages"
+      echo "  3. Choose the version bump type (patch/minor/major)"
+      echo "  4. Describe your changes"
+      echo "  5. Commit the changeset file: ${GREEN}git add .changeset/*.md && git commit -m 'chore: add changeset'${NC}"
+      echo "  6. Push again: ${GREEN}git push${NC}"
+      echo ""
+      echo "To skip this check (not recommended): ${YELLOW}git push --no-verify${NC}"
+      echo ""
+      exit 1
+    else
+      # Count changeset files safely
+      changeset_count=$(echo "$CHANGESET_FILES" | wc -l | tr -d ' ')
+      echo "${GREEN}✅ Changeset found ($changeset_count file(s))${NC}"
+    fi
+  else
+    echo "${GREEN}✅ Package changes are documentation-only - changeset not required${NC}"
+  fi
+done
+
+echo "${GREEN}✅ Pre-push checks passed${NC}"
+exit 0
