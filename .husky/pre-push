@@ -42,15 +42,46 @@ do
   fi
 
   # Check if any packages have changed in this range
-  CHANGED_FILES=$(git diff --name-only $range 2>/dev/null)
+  # First filter to only files in packages/ (same as CI workflow line 145)
+  CHANGED_FILES=$(git diff --name-only $range 2>/dev/null | grep "^packages/" || true)
 
-  if echo "$CHANGED_FILES" | grep -q "^packages/"; then
-    echo "${YELLOW}📝 Package changes detected${NC}"
+  if [ -z "$CHANGED_FILES" ]; then
+    echo "${GREEN}✅ No package changes - changeset not required${NC}"
+    continue
+  fi
+
+  # Check if changes require a changeset (exclude docs-only changes)
+  # This logic matches the CI workflow for consistency
+  REQUIRES_CHANGESET=false
+  for file in $CHANGED_FILES; do
+    # Require changeset for source code changes
+    if echo "$file" | grep -qE "^packages/[^/]+/(src|dist|lib|index\.|.*\.(ts|tsx|js|jsx|mjs|cjs)$)"; then
+      REQUIRES_CHANGESET=true
+      break
+    fi
+    # Require changeset for functional package.json changes
+    if echo "$file" | grep -q "package.json$"; then
+      # Check if the diff includes changes to dependencies, exports, main, module, types, or scripts
+      if git diff $range "$file" | grep -qE '^\+.*"(dependencies|peerDependencies|exports|main|module|types|bin|scripts)":'; then
+        REQUIRES_CHANGESET=true
+        break
+      fi
+    fi
+    # Require changeset for config changes that affect builds
+    if echo "$file" | grep -qE "(tsconfig|vite\.config|rollup\.config|webpack\.config)"; then
+      REQUIRES_CHANGESET=true
+      break
+    fi
+  done
+
+  if [ "$REQUIRES_CHANGESET" = "true" ]; then
+    echo "${YELLOW}📝 Package source code changes detected${NC}"
 
     # Check for changeset files (excluding README.md)
-    changeset_count=$(ls -1 .changeset/*.md 2>/dev/null | grep -v README.md | wc -l | tr -d ' ')
+    # Use robust method with fallback to avoid errors when no files exist
+    CHANGESET_FILES=$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md || true)
 
-    if [ "$changeset_count" -eq "0" ]; then
+    if [ -z "$CHANGESET_FILES" ]; then
       echo ""
       echo "${RED}❌ Pre-push check failed!${NC}"
       echo ""
@@ -68,10 +99,12 @@ do
       echo ""
       exit 1
     else
+      # Count changeset files safely
+      changeset_count=$(echo "$CHANGESET_FILES" | wc -l | tr -d ' ')
       echo "${GREEN}✅ Changeset found ($changeset_count file(s))${NC}"
     fi
   else
-    echo "${GREEN}✅ No package changes - changeset not required${NC}"
+    echo "${GREEN}✅ Package changes are documentation-only - changeset not required${NC}"
   fi
 done
 
