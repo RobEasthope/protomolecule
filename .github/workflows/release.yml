@@ -351,13 +351,13 @@ jobs:
           if [ "${{ steps.changesets.outputs.published }}" == "true" ]; then
             echo "### ✅ Release Successful!" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            
+
             # Display published packages
             PUBLISHED='${{ steps.changesets.outputs.publishedPackages }}'
             if [ -n "$PUBLISHED" ] && [ "$PUBLISHED" != "[]" ]; then
               echo "**Published Packages:**" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
-              
+
               # Parse and display packages nicely
               if command -v jq >/dev/null 2>&1; then
                 echo "$PUBLISHED" | jq -r '.[] | "- **\(.name)** v\(.version)"' >> $GITHUB_STEP_SUMMARY || {
@@ -372,10 +372,10 @@ jobs:
                 echo '```' >> $GITHUB_STEP_SUMMARY
               fi
             fi
-            
+
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "GitHub releases have been created with full changelogs." >> $GITHUB_STEP_SUMMARY
-            
+
           elif [ "${{ steps.changesets.outputs.hasChangesets }}" == "false" ]; then
             echo "### ℹ️ No Release Needed" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY

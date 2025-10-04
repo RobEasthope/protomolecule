@@ -47,3 +47,4 @@ ignore: |
   .husky/
   .vscode/
   .github/actions/*/node_modules/
+  pnpm-lock.yaml
