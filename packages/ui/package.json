@@ -1,6 +1,6 @@
 {
   "name": "@robeasthope/ui",
-  "version": "4.1.2",
+  "version": "4.2.0",
   "description": "React component library with Storybook, Tailwind CSS v4, and Sanity CMS integration",
   "keywords": [
     "react",
