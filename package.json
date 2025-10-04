@@ -21,6 +21,7 @@
     "lint:root:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --ignore-pattern 'packages/**' --fix --cache --cache-location .turbo/.eslintcache-root",
     "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
     "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
+    "lint:yaml": "python3 -m yamllint .",
     "prepare": "husky",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@robeasthope/ui",
@@ -29,6 +30,9 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:ui": "playwright test --ui",
     "test:hooks": "vitest run .github/scripts",
+    "test:scripts": "vitest run --config .github/scripts/vitest.config.ts",
+    "test:scripts:coverage": "vitest run --config .github/scripts/vitest.config.ts --coverage",
+    "test:scripts:watch": "vitest --config .github/scripts/vitest.config.ts",
     "test:ui": "turbo run test:ui --filter=@robeasthope/ui",
     "typecheck": "tsc --noEmit"
   },

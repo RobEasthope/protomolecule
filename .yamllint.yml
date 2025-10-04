@@ -1,0 +1,50 @@
+---
+# yamllint configuration for YAML files and GitHub Actions workflows
+# See: https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+
+rules:
+  # Line length - allow longer lines for readability in workflows
+  line-length:
+    max: 120
+    level: warning
+
+  # Comments - require space after '#' but allow starting at column 1
+  comments:
+    min-spaces-from-content: 1
+
+  # Indentation - 2 spaces, consistent with Prettier
+  indentation:
+    spaces: 2
+    indent-sequences: true
+
+  # Truthy values - allow 'on' for GitHub Actions triggers
+  truthy:
+    allowed-values: ["true", "false", "on", "off"]
+    check-keys: false
+
+  # Document start - don't require '---' at start
+  document-start: disable
+
+  # Quoted strings - don't enforce quotes everywhere
+  quoted-strings:
+    quote-type: any
+    required: false
+
+  # Empty values - allow empty values in mappings
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+
+ignore: |
+  node_modules/
+  dist/
+  build/
+  coverage/
+  .turbo/
+  .changeset/
+  .husky/
+  .vscode/
+  .github/actions/*/node_modules/
+  pnpm-lock.yaml
