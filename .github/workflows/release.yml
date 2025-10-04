@@ -191,8 +191,10 @@ jobs:
           echo "Enhancing PR #${PR_NUMBER} with package information..."
 
           # Extract package names from the PR body text (changesets includes them there)
-          # This is more reliable than parsing diffs and works in CI without filesystem access
+          # Match only package release headers (## @package/name@version format)
+          # This avoids matching example package names in changeset descriptions
           PACKAGE_LIST=$(timeout 30s gh pr view "$PR_NUMBER" --json body -q ".body" | \
+            grep -E '^## @robeasthope/[a-z0-9-]+@' | \
             grep -oE '@robeasthope/[a-z0-9-]+' | \
             grep -v '@robeasthope/monorepo' | \
             sort -u | \
