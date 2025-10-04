@@ -30,6 +30,11 @@ export const FullProseComponents: PortableTextComponents = {
     number: ({ children }) => <ol>{children}</ol>,
   },
   marks: {
+    code: ({ children }) => (
+      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm text-inherit">
+        {children}
+      </code>
+    ),
     em: ({ children }) => <em className="text-inherit italic">{children}</em>,
     EmailLink: ({ children, value }) => (
       <EmailLink email={value?.email}>{children}</EmailLink>
