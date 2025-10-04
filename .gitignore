@@ -48,4 +48,4 @@ SPEC.md
 
 # Act (GitHub Actions local runner)
 .actrc
-.secrets
+.secrets.npmrc.github-packages-temp

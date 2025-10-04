@@ -19,6 +19,7 @@
 
 import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import os from "os";
 import { join } from "path";
 
 type PublishedPackage = {
@@ -31,6 +32,9 @@ type PublishedPackage = {
  * Reads PUBLISHED_PACKAGES env var and publishes each package
  */
 function main() {
+  // Verify user's .npmrc doesn't have scope override
+  checkUserNpmrc();
+
   const publishedPackagesJson = process.env.PUBLISHED_PACKAGES;
 
   if (!publishedPackagesJson || publishedPackagesJson === "[]") {
@@ -211,6 +215,32 @@ function getPackagePath(packageName: string): string {
   }
 
   return packagePath;
+}
+
+/**
+ * Checks if user's .npmrc has problematic scope override
+ * Warns but doesn't fail - this is for developer awareness
+ */
+function checkUserNpmrc() {
+  const homeNpmrc = join(os.homedir(), ".npmrc");
+
+  if (!existsSync(homeNpmrc)) {
+    return; // No .npmrc, nothing to check
+  }
+
+  const content = readFileSync(homeNpmrc, "utf8");
+
+  if (content.includes("@robeasthope:registry=")) {
+    console.warn("");
+    console.warn("⚠️  WARNING: Found @robeasthope:registry in your ~/.npmrc");
+    console.warn(
+      "⚠️  This may cause packages to resolve from GitHub Packages instead of npm",
+    );
+    console.warn("");
+    console.warn("To fix this, run:");
+    console.warn("  pnpm tsx scripts/cleanup-npmrc.ts");
+    console.warn("");
+  }
 }
 
 // Run the script
