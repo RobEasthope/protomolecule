@@ -193,7 +193,7 @@ jobs:
           # Extract package names from the PR body text (changesets includes them there)
           # This is more reliable than parsing diffs and works in CI without filesystem access
           PACKAGE_LIST=$(timeout 30s gh pr view "$PR_NUMBER" --json body -q ".body" | \
-            grep -oP '@robeasthope/[a-z0-9-]+' | \
+            grep -oE '@robeasthope/[a-z0-9-]+' | \
             grep -v '@robeasthope/monorepo' | \
             sort -u | \
             tr '\n' ',' | \
