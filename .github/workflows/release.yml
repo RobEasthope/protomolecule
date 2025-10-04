@@ -194,6 +194,68 @@ jobs:
           npm_config_fetch_retry_mintimeout: 20000
           npm_config_fetch_retry_maxtimeout: 120000
 
+      - name: 📊 Detect Published Packages
+        id: detect_published
+        if: steps.changesets.outputs.published == 'true'
+        # Use 'pnpm tsx' not 'tsx' - tsx is in node_modules/.bin, not in PATH
+        run: pnpm tsx .github/scripts/detect-published.ts
+
+      - name: 📝 Create Individual Package Releases
+        if: steps.detect_published.outputs.published == 'true'
+        # Use 'pnpm tsx' not 'tsx' - tsx is in node_modules/.bin, not in PATH
+        # Pass JSON via environment variable to avoid shell quoting issues
+        run: pnpm tsx .github/scripts/create-releases.ts "${{ github.repository }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.detect_published.outputs.publishedPackages }}
+
+      - name: 🔢 Bump Monorepo Version
+        if: steps.detect_published.outputs.published == 'true'
+        # Use 'pnpm tsx' not 'tsx' - tsx is in node_modules/.bin, not in PATH
+        # Pass JSON via environment variable to avoid shell quoting issues
+        run: pnpm tsx .github/scripts/bump-monorepo.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.detect_published.outputs.publishedPackages }}
+
+      - name: 🤖 Generate AI Release Summary
+        if: steps.detect_published.outputs.published == 'true'
+        # Use 'pnpm tsx' not 'tsx' - tsx is in node_modules/.bin, not in PATH
+        run: pnpm tsx .github/scripts/generate-summary.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎉 Create Monorepo GitHub Release
+        if: steps.detect_published.outputs.published == 'true'
+        run: |
+          set -euo pipefail
+
+          NEW_VERSION=$(cat /tmp/new-version.txt)
+          USED_AI=$(cat /tmp/used-ai.txt)
+
+          if [[ "$USED_AI" == "true" ]]; then
+            echo "Creating release with AI-generated summary..."
+          else
+            echo "Creating release with template fallback..."
+          fi
+
+          # Create GitHub release (skip if already exists)
+          if gh release view "v${NEW_VERSION}" &>/dev/null; then
+            echo "⚠️  Release v${NEW_VERSION} already exists, skipping creation"
+            echo "   Existing release: https://github.com/${{ github.repository }}/releases/tag/v${NEW_VERSION}"
+          else
+            if ! gh release create "v${NEW_VERSION}" \
+              --title "v${NEW_VERSION}" \
+              --notes-file /tmp/release-summary.txt \
+              --target main; then
+              echo "❌ ERROR: Failed to create monorepo release v${NEW_VERSION}"
+              exit 1
+            fi
+            echo "✅ Successfully created monorepo release v${NEW_VERSION}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 📦 Publish to GitHub Packages
         if: steps.changesets.outputs.published == 'true'
         env:
