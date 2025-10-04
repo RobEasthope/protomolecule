@@ -6,7 +6,7 @@ import { type TypedObject } from "sanity";
 export type SanityProseProps = {
   readonly as: string;
   readonly className?: string;
-  readonly components: unknown;
+  readonly components: PortableTextComponents;
   readonly content: TypedObject | TypedObject[];
 };
 
@@ -23,9 +23,6 @@ export function SanityProse({
   return createElement(
     as,
     { className: cn("prose", "text-ink", className) },
-    <PortableText
-      components={components as PortableTextComponents}
-      value={content}
-    />,
+    <PortableText components={components} value={content} />,
   );
 }
