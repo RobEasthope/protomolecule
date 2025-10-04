@@ -2,6 +2,37 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Start for New Contributors
+
+### Making Code Changes
+
+1. **Package changes** → Create changeset for the specific package (e.g., `@robeasthope/ui`)
+2. **Infrastructure changes** → Create changeset for `@robeasthope/infrastructure`
+3. **Documentation only** → No changeset required
+
+### Example Workflow
+
+```bash
+# Make changes to UI package
+vim packages/ui/src/components/Button.tsx
+
+# Create package changeset
+pnpm changeset
+# Select: @robeasthope/ui, minor, "Add loading state to Button"
+
+# OR make infrastructure changes
+vim .github/workflows/release.yml
+
+# Create infrastructure changeset
+pnpm changeset
+# Select: @robeasthope/infrastructure, patch, "Fix release workflow timing"
+
+# Commit with conventional format
+git commit -m "feat(ui): add loading state to Button component"
+```
+
+See sections below for detailed guidance on [Changesets](#changeset-requirements), [Infrastructure](#infrastructure-package), and [Git Conventions](#git-commit-and-pr-conventions).
+
 ## Package Namespace
 
 **All packages use the `@robeasthope/*` namespace** for npm and GitHub Packages publishing. This namespace aligns with the GitHub username for seamless GitHub Packages integration.
@@ -95,16 +126,17 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
 
 ### When Changesets ARE NOT Required
 
-**DO NOT** create changesets for:
+**DO NOT** create package changesets for infrastructure changes:
 
-- ❌ Root `package.json` script changes
-- ❌ `.github/` directory changes (workflows, scripts, actions)
-- ❌ Root configuration files (`.prettierrc`, `.eslintrc`, etc.)
-- ❌ Documentation updates (`*.md` files)
-- ❌ Build/test tooling configuration at root level
-- ❌ CI/CD configuration changes
-- ❌ Git hooks or linting configuration
-- ❌ Any changes that only affect development workflow, not published packages
+- ❌ Root `package.json` script changes → Use `@robeasthope/infrastructure` changeset
+- ❌ `.github/` directory changes (workflows, scripts, actions) → Use `@robeasthope/infrastructure` changeset
+- ❌ Root configuration files (`.prettierrc`, `.eslintrc`, etc.) → Use `@robeasthope/infrastructure` changeset
+- ❌ Build/test tooling configuration at root level → Use `@robeasthope/infrastructure` changeset
+- ❌ CI/CD configuration changes → Use `@robeasthope/infrastructure` changeset
+- ❌ Git hooks or linting configuration → Use `@robeasthope/infrastructure` changeset
+- ✅ Documentation updates (`*.md` files) → No changeset required
+
+See [Infrastructure Package](#infrastructure-package) for infrastructure changeset guidelines.
 
 ### Creating Changesets
 
@@ -283,7 +315,7 @@ Create changesets for `@robeasthope/infrastructure` when modifying:
 - `.yamllint.yml` - YAML linting rules
 - `.actrc`, `.actrc.example` - Act configuration
 
-See `infrastructure/README.md` for comprehensive guidance.
+See `infrastructure/README.md` for comprehensive changeset guidance and `.github/scripts/README.md` for release automation documentation.
 
 ### Version Guidelines
 
