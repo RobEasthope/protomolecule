@@ -21,6 +21,7 @@
     "lint:root:fix": "eslint '**/*.{js,jsx,ts,tsx,mjs}' --ignore-pattern 'packages/**' --fix --cache --cache-location .turbo/.eslintcache-root",
     "lint:workflows": "npx yaml-lint .github/workflows/*.yml",
     "lint:workflows:fix": "npx prettier --write .github/workflows/*.yml && npx yaml-lint .github/workflows/*.yml",
+    "lint:yaml": "yamllint .",
     "prepare": "husky",
     "sort-pkg-json": "npx sort-package-json && turbo run sort-pkg-json",
     "storybook": "turbo run storybook --filter=@robeasthope/ui",
