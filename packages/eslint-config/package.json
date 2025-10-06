@@ -1,6 +1,6 @@
 {
   "name": "@robeasthope/eslint-config",
-  "version": "3.0.3",
+  "version": "4.0.0",
   "description": "Shared ESLint configuration with TypeScript and React support",
   "keywords": [
     "eslint",
