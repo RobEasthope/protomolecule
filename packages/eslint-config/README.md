@@ -4,13 +4,27 @@ Shared ESLint v9 configuration with TypeScript and React support.
 
 ## 📦 Installation
 
-This package is designed to be publishable to npm:
+Install the config along with required peer dependencies:
 
 ```bash
-npm install --save-dev @robeasthope/eslint-config
-# or
-pnpm add -D @robeasthope/eslint-config
+pnpm add -D @robeasthope/eslint-config \
+  eslint-plugin-import-x \
+  eslint-plugin-react \
+  eslint-plugin-react-hooks \
+  eslint-plugin-jsx-a11y \
+  eslint-plugin-unicorn \
+  eslint-plugin-prettier \
+  eslint-plugin-promise \
+  eslint-plugin-regexp \
+  eslint-plugin-n \
+  eslint-plugin-jsdoc \
+  typescript-eslint
+
+# Optional: Add Astro plugin if using Astro
+pnpm add -D eslint-plugin-astro
 ```
+
+> **Note:** pnpm will warn you if any required peer dependencies are missing during installation.
 
 ## 🚀 Usage
 
@@ -72,6 +86,8 @@ This configuration includes:
 
 ## 🛠️ Customization
 
+### Override Rules
+
 You can override any rules by adding them to your local config:
 
 ```javascript
@@ -85,6 +101,46 @@ export default [
   },
 ];
 ```
+
+### Using Re-exported Plugins
+
+All plugins are re-exported for custom configurations in monorepo workspaces:
+
+```javascript
+import eslintConfig, {
+  pluginReact,
+  pluginImportX,
+  pluginUnicorn,
+  typescriptEslint,
+} from "@robeasthope/eslint-config";
+
+export default [
+  ...eslintConfig,
+  {
+    plugins: {
+      react: pluginReact,
+    },
+    rules: {
+      "react/jsx-uses-react": "error",
+    },
+  },
+];
+```
+
+**Available exports:**
+
+- `pluginAstro` - Astro linting rules
+- `pluginImportX` - Import/export ordering and resolution
+- `pluginJsdoc` - JSDoc comment validation
+- `pluginJsxA11y` - Accessibility rules for JSX
+- `pluginN` - Node.js best practices
+- `pluginPrettier` - Prettier integration
+- `pluginPromise` - Promise best practices
+- `pluginReact` - React rules
+- `pluginReactHooks` - React Hooks rules
+- `pluginRegexp` - Regular expression best practices
+- `pluginUnicorn` - Code quality improvements
+- `typescriptEslint` - TypeScript ESLint utilities
 
 ## 🔧 Development
 
