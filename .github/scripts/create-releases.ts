@@ -21,10 +21,15 @@
  *   1: Error (invalid input, release creation failed, etc.)
  */
 
-import { execSync } from 'node:child_process';
-import { readFileSync, existsSync, appendFileSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { execSync } from "node:child_process";
+import {
+  readFileSync,
+  existsSync,
+  appendFileSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 export interface Package {
   name: string;
@@ -55,7 +60,7 @@ function addToSummary(text: string): void {
  */
 function releaseExists(tag: string): boolean {
   try {
-    execSync(`gh release view "${tag}"`, { stdio: 'ignore' });
+    execSync(`gh release view "${tag}"`, { stdio: "ignore" });
     return true;
   } catch {
     return false;
@@ -67,12 +72,12 @@ function releaseExists(tag: string): boolean {
  * Pure function - easily testable
  */
 export function getChangelogPaths(packageName: string): string[] {
-  if (packageName === '@robeasthope/infrastructure') {
-    return ['infrastructure/CHANGELOG.md'];
+  if (packageName === "@protomolecule/infrastructure") {
+    return ["infrastructure/CHANGELOG.md"];
   }
 
   // Extract package name without scope
-  const pkgName = packageName.replace('@robeasthope/', '');
+  const pkgName = packageName.replace("@robeasthope/", "");
 
   // Try apps/ first, then packages/
   return [`apps/${pkgName}/CHANGELOG.md`, `packages/${pkgName}/CHANGELOG.md`];
@@ -84,7 +89,7 @@ export function getChangelogPaths(packageName: string): string[] {
  */
 export function findChangelogPath(
   packageName: string,
-  fileExists: FileExistsFn
+  fileExists: FileExistsFn,
 ): string | null {
   const paths = getChangelogPaths(packageName);
 
@@ -103,21 +108,21 @@ export function findChangelogPath(
  */
 export function extractChangelogContent(
   content: string,
-  version: string
+  version: string,
 ): string {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   // No need to escape - we're doing literal string matching with startsWith
   const versionHeader = `## ${version}`;
 
   // Find the start of this version section
   const startIndex = lines.findIndex((line) => line.startsWith(versionHeader));
-  if (startIndex === -1) return '';
+  if (startIndex === -1) return "";
 
   // Find the end (next version header or end of file)
   // Match full semver pattern: ## 1.2.3 (not ## Unreleased or other headers)
   const endIndex = lines.findIndex(
-    (line, idx) => idx > startIndex && line.match(/^## \d+\.\d+\.\d+/)
+    (line, idx) => idx > startIndex && line.match(/^## \d+\.\d+\.\d+/),
   );
 
   // Extract content between headers (excluding the header itself)
@@ -126,27 +131,26 @@ export function extractChangelogContent(
       ? lines.slice(startIndex + 1)
       : lines.slice(startIndex + 1, endIndex);
 
-  return changelogLines.join('\n').trim();
+  return changelogLines.join("\n").trim();
 }
 
 /**
  * Creates a GitHub release
  */
-function createRelease(
-  tag: string,
-  changelog: string,
-  version: string
-): void {
+function createRelease(tag: string, changelog: string, version: string): void {
   const notes = changelog || `Release ${version}`;
 
   // Write notes to temporary file to prevent command injection
   const notesFile = join(tmpdir(), `release-notes-${Date.now()}.md`);
-  writeFileSync(notesFile, notes, 'utf8');
+  writeFileSync(notesFile, notes, "utf8");
 
   try {
-    execSync(`gh release create "${tag}" --title "${tag}" --notes-file "${notesFile}" --target main`, {
-      stdio: 'inherit'
-    });
+    execSync(
+      `gh release create "${tag}" --title "${tag}" --notes-file "${notesFile}" --target main`,
+      {
+        stdio: "inherit",
+      },
+    );
   } catch (error) {
     console.error(`❌ ERROR: Failed to create release for ${tag}`);
     throw error;
@@ -159,9 +163,9 @@ function createRelease(
 function createReleases(): void {
   // Validate arguments
   if (process.argv.length < 3) {
-    console.error('❌ ERROR: Missing required argument');
-    console.error('Usage: tsx create-releases.ts <repository>');
-    console.error('Environment variable PUBLISHED_PACKAGES must be set');
+    console.error("❌ ERROR: Missing required argument");
+    console.error("Usage: tsx create-releases.ts <repository>");
+    console.error("Environment variable PUBLISHED_PACKAGES must be set");
     process.exit(1);
   }
 
@@ -170,7 +174,7 @@ function createReleases(): void {
   // Get published packages from environment variable (avoids shell quoting issues with JSON)
   const publishedJson = process.env.PUBLISHED_PACKAGES;
   if (!publishedJson) {
-    console.error('❌ ERROR: PUBLISHED_PACKAGES environment variable not set');
+    console.error("❌ ERROR: PUBLISHED_PACKAGES environment variable not set");
     process.exit(1);
   }
 
@@ -179,17 +183,19 @@ function createReleases(): void {
   try {
     packages = JSON.parse(publishedJson) as Package[];
   } catch (error) {
-    console.error('❌ ERROR: Invalid JSON in PUBLISHED_PACKAGES environment variable');
+    console.error(
+      "❌ ERROR: Invalid JSON in PUBLISHED_PACKAGES environment variable",
+    );
     console.error(`Received: ${publishedJson}`);
     process.exit(1);
   }
 
-  console.log('Creating releases for published packages...');
+  console.log("Creating releases for published packages...");
 
   // Initialize summary table
-  addToSummary('## 🚀 Release Summary\n\n');
-  addToSummary('| Package | Version | Tag | Release |\n');
-  addToSummary('|---------|---------|-----|---------|\\n');
+  addToSummary("## 🚀 Release Summary\n\n");
+  addToSummary("| Package | Version | Tag | Release |\n");
+  addToSummary("|---------|---------|-----|---------|\\n");
 
   for (const pkg of packages) {
     const { name, version } = pkg;
@@ -198,7 +204,7 @@ function createReleases(): void {
     if (!PACKAGE_NAME_REGEX.test(name)) {
       console.error(`❌ ERROR: Invalid package name format: ${name}`);
       console.error(
-        'Expected format: @scope/package-name (lowercase, alphanumeric, hyphens only)'
+        "Expected format: @scope/package-name (lowercase, alphanumeric, hyphens only)",
       );
       process.exit(1);
     }
@@ -207,7 +213,7 @@ function createReleases(): void {
     if (!SEMVER_REGEX.test(version)) {
       console.error(`❌ ERROR: Invalid version format: ${version}`);
       console.error(
-        'Expected semver format (e.g., 1.0.0, 1.0.0-beta.1, 1.0.0+build.123)'
+        "Expected semver format (e.g., 1.0.0, 1.0.0-beta.1, 1.0.0+build.123)",
       );
       process.exit(1);
     }
@@ -218,20 +224,22 @@ function createReleases(): void {
     // Check if release already exists (idempotency)
     if (releaseExists(tag)) {
       console.log(`⚠️  Release ${tag} already exists, skipping creation`);
-      console.log(`   Existing release: https://github.com/${repository}/releases/tag/${tag}`);
+      console.log(
+        `   Existing release: https://github.com/${repository}/releases/tag/${tag}`,
+      );
 
       const releaseUrl = `https://github.com/${repository}/releases/tag/${tag}`;
       addToSummary(
-        `| ${name} | ${version} | \`${tag}\` | [View Release](${releaseUrl}) |\\n`
+        `| ${name} | ${version} | \`${tag}\` | [View Release](${releaseUrl}) |\\n`,
       );
       continue;
     }
 
     // Extract changelog
     const changelogPath = findChangelogPath(name, existsSync);
-    let changelog = '';
+    let changelog = "";
     if (changelogPath && existsSync(changelogPath)) {
-      const content = readFileSync(changelogPath, 'utf8');
+      const content = readFileSync(changelogPath, "utf8");
       changelog = extractChangelogContent(content, version);
     }
 
@@ -242,7 +250,7 @@ function createReleases(): void {
 
       const releaseUrl = `https://github.com/${repository}/releases/tag/${tag}`;
       addToSummary(
-        `| ${name} | ${version} | \`${tag}\` | [View Release](${releaseUrl}) |\\n`
+        `| ${name} | ${version} | \`${tag}\` | [View Release](${releaseUrl}) |\\n`,
       );
     } catch (error) {
       process.exit(1);
@@ -252,7 +260,7 @@ function createReleases(): void {
   // Add summary footer
   addToSummary(`\n**Total packages released:** ${packages.length}\n`);
 
-  console.log('🎉 All package releases created successfully');
+  console.log("🎉 All package releases created successfully");
 }
 
 // Run the script only if executed directly (not imported)
@@ -261,7 +269,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     createReleases();
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('❌ ERROR: Unexpected error:', errorMessage);
+    console.error("❌ ERROR: Unexpected error:", errorMessage);
     process.exit(1);
   }
 }

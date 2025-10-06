@@ -1,4 +1,4 @@
-# @robeasthope/infrastructure
+# @protomolecule/infrastructure
 
 Virtual package for tracking monorepo infrastructure and tooling changes.
 
@@ -8,7 +8,7 @@ This package exists solely to track version history of infrastructure changes th
 
 ## When to Create Changesets for Infrastructure
 
-Create changesets for `@robeasthope/infrastructure` when making changes to:
+Create changesets for `@protomolecule/infrastructure` when making changes to:
 
 ### CI/CD & Workflows
 
@@ -69,7 +69,7 @@ Create changesets for `@robeasthope/infrastructure` when making changes to:
 
 ```bash
 pnpm changeset
-# When prompted, select @robeasthope/infrastructure
+# When prompted, select @protomolecule/infrastructure
 # Choose patch/minor/major based on change significance
 ```
 
@@ -79,7 +79,7 @@ Create `.changeset/your-change-name.md`:
 
 ```markdown
 ---
-"@robeasthope/infrastructure": patch
+"@protomolecule/infrastructure": patch
 ---
 
 Description of infrastructure change
@@ -114,7 +114,7 @@ Description of infrastructure change
 
 ```markdown
 ---
-"@robeasthope/infrastructure": patch
+"@protomolecule/infrastructure": patch
 ---
 
 Fix: GitHub Actions workflow now correctly handles release failures
@@ -124,7 +124,7 @@ Fix: GitHub Actions workflow now correctly handles release failures
 
 ```markdown
 ---
-"@robeasthope/infrastructure": minor
+"@protomolecule/infrastructure": minor
 ---
 
 Add: YAML linting with yamllint and actionlint in CI
@@ -134,7 +134,7 @@ Add: YAML linting with yamllint and actionlint in CI
 
 ```markdown
 ---
-"@robeasthope/infrastructure": major
+"@protomolecule/infrastructure": major
 ---
 
 BREAKING: Upgrade to Node 22, requires developers to update local environment
