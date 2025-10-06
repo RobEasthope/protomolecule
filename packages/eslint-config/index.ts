@@ -9,6 +9,8 @@ import { typescriptOverrides } from "./rules/typescriptOverrides";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
 import pluginImportX from "eslint-plugin-import-x";
 
+// Re-export Astro parser for proper resolution in monorepo workspaces
+export { default as astroParser } from "astro-eslint-parser";
 // Re-export plugins for workspace consumers
 // This fixes plugin resolution when eslint-config is installed at monorepo root
 // but ESLint is run from workspace subdirectories
