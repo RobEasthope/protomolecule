@@ -108,8 +108,10 @@ do
   fi
 
   # Check for infrastructure changes that should be tracked in @protomolecule/infrastructure
-  # These are critical files that affect the build system, CI/CD, or developer workflow
-  INFRA_FILES=$(git diff --name-only "$range" 2>/dev/null | grep -E "^(\.github/workflows/|\.github/scripts/|\.github/actions/|\.husky/|turbo\.json$|pnpm-workspace\.yaml$|eslint\.config\.ts$|tsconfig\.json$|\.prettierrc\.json$|\.markdownlint-cli2\.jsonc$|\.yamllint\.yml$|package\.json$|\.actrc$|\.actrc\.example$)" || true)
+  # Policy: All tracked files in repo root (excluding pnpm-lock.yaml) are infrastructure
+  # Rationale: pnpm-lock.yaml is the only root file that changes automatically as a side-effect
+  #            Everything else requires intentional human edits and affects monorepo infrastructure
+  INFRA_FILES=$(git diff --name-only "$range" 2>/dev/null | grep -E "^[^/]+$" | grep -v "pnpm-lock\.yaml" || true)
 
   if [ -n "$INFRA_FILES" ]; then
     echo "${YELLOW}📦 Infrastructure changes detected${NC}"
