@@ -437,6 +437,79 @@ act --secret-file .secrets
 **Issue:** "No workflows detected"
 **Solution:** Specify workflow file: `act -W .github/workflows/workflow-name.yml`
 
+### Git Config Cleanup
+
+**Problem:** The `act` tool sets local git config to simulate GitHub Actions:
+
+```ini
+user.name=github-actions[bot]
+user.email=github-actions[bot]@users.noreply.github.com
+```
+
+This config persists in `.git/config` after act finishes, **overriding your global git config**. Subsequent commits (including those by Claude Code) will be incorrectly attributed to `github-actions[bot]` instead of you.
+
+**Solution 1: Shell Wrapper (Recommended)**
+
+Add this wrapper to your `~/.zshrc` or `~/.bashrc` for automatic cleanup:
+
+```bash
+# Wrapper for 'act' that auto-cleans local git config
+act() {
+  command act "$@"
+  local exit_code=$?
+
+  # Check if local git config was set by act
+  if git config --local user.name > /dev/null 2>&1; then
+    git config --local --unset user.name 2>/dev/null || true
+    git config --local --unset user.email 2>/dev/null || true
+    echo "🧹 Cleaned up local git config"
+  fi
+
+  return $exit_code
+}
+```
+
+**How it works:**
+
+1. Runs the actual `act` command with all arguments
+2. Preserves the exit code from act
+3. Checks if local git config was set
+4. Removes both `user.name` and `user.email` from local config
+5. Returns act's original exit code
+
+**Solution 2: Cleanup Script**
+
+Run the cleanup script manually after using act:
+
+```bash
+.github/scripts/act-cleanup.sh
+```
+
+The script will detect and remove local git config set by act, restoring your global config for subsequent commits.
+
+**Solution 3: Manual Cleanup**
+
+Remove local git config manually:
+
+```bash
+git config --local --unset user.name
+git config --local --unset user.email
+```
+
+**Verification:**
+
+Check your current git config:
+
+```bash
+# View all config (global + local)
+git config user.name
+git config user.email
+
+# View only local config (should be empty after cleanup)
+git config --local user.name
+git config --local user.email
+```
+
 ## Release Automation Scripts
 
 ### Overview
