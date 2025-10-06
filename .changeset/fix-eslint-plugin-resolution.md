@@ -17,28 +17,48 @@ import robeasthope from "@robeasthope/eslint-config";
 export default [...robeasthope];
 ```
 
-**Solution (Option 1: Re-export Plugins):**
+**Solution:**
 
-- Added explicit plugin re-exports alongside the config
-- Moved key plugins from transitive to direct dependencies
-- Consumers can now import plugins if needed for custom configurations
+- Re-exported 12 core plugins alongside the config for proper resolution
+- Moved plugins to peerDependencies (consumers must install them)
+- Package managers will warn about missing peer dependencies during installation
+- Consumers can import re-exported plugins if needed for custom configurations
 
 **Changes:**
 
-- Re-exported 12 core plugins: `pluginImportX`, `pluginReact`, `pluginReactHooks`, `pluginJsxA11y`, `pluginUnicorn`, `pluginPrettier`, `pluginPromise`, `pluginRegexp`, `pluginN`, `pluginJsdoc`, `pluginAstro`, `typescriptEslint`
-- Moved plugins from transitive (via eslint-config-canonical) to direct dependencies
+- Re-exported plugins: `pluginImportX`, `pluginReact`, `pluginReactHooks`, `pluginJsxA11y`, `pluginUnicorn`, `pluginPrettier`, `pluginPromise`, `pluginRegexp`, `pluginN`, `pluginJsdoc`, `pluginAstro`, `typescriptEslint`
+- Converted plugins to peerDependencies (except `eslint-plugin-astro` which is optional)
 - Added TypeScript type suppression for plugins without type declarations
 
 **Breaking Changes:**
 
-- Package size will increase due to explicit plugin dependencies
-- This is a major version bump due to dependency changes
+- Consumers must now install required plugins as peer dependencies
+- Package managers will show warnings if plugins are missing
+- Installation command provided in package warnings
+
+**Installation:**
+
+```bash
+pnpm add -D @robeasthope/eslint-config \
+  eslint-plugin-import-x \
+  eslint-plugin-react \
+  eslint-plugin-react-hooks \
+  eslint-plugin-jsx-a11y \
+  eslint-plugin-unicorn \
+  eslint-plugin-prettier \
+  eslint-plugin-promise \
+  eslint-plugin-regexp \
+  eslint-plugin-n \
+  eslint-plugin-jsdoc \
+  typescript-eslint
+```
 
 **Benefits:**
 
 - ✅ Fixes plugin resolution in workspace subdirectories
 - ✅ Enables simplified consumer configs
-- ✅ Consumers can access plugins for custom rules if needed
-- ✅ More explicit dependency management
+- ✅ Smaller package size (plugins not bundled)
+- ✅ Consumers control plugin versions
+- ✅ Clear warnings when plugins are missing
 
 Closes #255
