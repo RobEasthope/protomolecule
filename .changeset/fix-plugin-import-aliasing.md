@@ -41,4 +41,8 @@ export const astroImportFix = {
 };
 ```
 
+**Note on Astro compatibility:**
+This fix is essential for Astro files. The `rules/astro.ts` configuration uses `"import/no-unresolved"` rule to ignore Astro virtual imports. Without the plugin aliasing, this rule reference would fail because ESLint couldn't find the "import" plugin.
+
 Closes #259
+Related to #261
