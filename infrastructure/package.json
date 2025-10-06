@@ -1,6 +1,6 @@
 {
   "name": "@protomolecule/infrastructure",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "private": true,
   "description": "Virtual package for tracking monorepo infrastructure and tooling changes"
 }
