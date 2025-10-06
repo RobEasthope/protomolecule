@@ -7,6 +7,7 @@ import { preferences } from "./rules/preferences";
 import { storybook } from "./rules/storybook";
 import { typescriptOverrides } from "./rules/typescriptOverrides";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
+import pluginImportX from "eslint-plugin-import-x";
 
 // Re-export plugins for workspace consumers
 // This fixes plugin resolution when eslint-config is installed at monorepo root
@@ -27,6 +28,16 @@ export { default as pluginUnicorn } from "eslint-plugin-unicorn";
 export * as typescriptEslint from "typescript-eslint";
 
 const config: any[] = [
+  // Plugin aliasing for eslint-config-canonical compatibility
+  // Canonical config references "import" but package is "eslint-plugin-import-x"
+  // Register under both names for backward compatibility
+  // See: https://github.com/RobEasthope/protomolecule/issues/259
+  {
+    plugins: {
+      import: pluginImportX, // Alias for canonical config compatibility
+      "import-x": pluginImportX, // Standard name
+    },
+  },
   ignoredFileAndFolders,
   ...eslintConfigCanonicalAuto,
   packageJson,
