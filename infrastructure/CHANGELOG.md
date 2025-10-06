@@ -1,4 +1,4 @@
-# @robeasthope/infrastructure
+# @protomolecule/infrastructure
 
 ## 2.0.1
 

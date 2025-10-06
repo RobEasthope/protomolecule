@@ -107,7 +107,7 @@ do
     echo "${GREEN}✅ Package changes are documentation-only - changeset not required${NC}"
   fi
 
-  # Check for infrastructure changes that should be tracked in @robeasthope/infrastructure
+  # Check for infrastructure changes that should be tracked in @protomolecule/infrastructure
   # These are critical files that affect the build system, CI/CD, or developer workflow
   INFRA_FILES=$(git diff --name-only "$range" 2>/dev/null | grep -E "^(\.github/workflows/|\.github/scripts/|\.github/actions/|\.husky/|turbo\.json$|pnpm-workspace\.yaml$|eslint\.config\.ts$|tsconfig\.json$|\.prettierrc\.json$|\.markdownlint-cli2\.jsonc$|\.yamllint\.yml$|package\.json$|\.actrc$|\.actrc\.example$)" || true)
 
@@ -120,15 +120,15 @@ do
     echo "$INFRA_FILES" | sed 's/^/  - /'
     echo ""
 
-    # Check for changeset affecting @robeasthope/infrastructure
+    # Check for changeset affecting @protomolecule/infrastructure
     # grep -l returns files containing the pattern, xargs handles the case when files exist
-    INFRA_CHANGESET=$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md | xargs grep -l '@robeasthope/infrastructure' 2>/dev/null || true)
+    INFRA_CHANGESET=$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md | xargs grep -l '@protomolecule/infrastructure' 2>/dev/null || true)
 
     if [ -z "$INFRA_CHANGESET" ]; then
       echo ""
       echo "${RED}❌ Pre-push check failed!${NC}"
       echo ""
-      echo "You're pushing infrastructure changes without a changeset for ${YELLOW}@robeasthope/infrastructure${NC}."
+      echo "You're pushing infrastructure changes without a changeset for ${YELLOW}@protomolecule/infrastructure${NC}."
       echo ""
       echo "Infrastructure changes need to be tracked in the changelog so we can:"
       echo "  • Document when critical tooling/workflow changes were made"
@@ -137,7 +137,7 @@ do
       echo ""
       echo "To fix this:"
       echo "  1. Run: ${GREEN}pnpm changeset${NC}"
-      echo "  2. Select ${GREEN}@robeasthope/infrastructure${NC} package"
+      echo "  2. Select ${GREEN}@protomolecule/infrastructure${NC} package"
       echo "  3. Choose version bump:"
       echo "     • ${GREEN}patch${NC} - Bug fixes, minor config tweaks"
       echo "     • ${GREEN}minor${NC} - New features, workflow additions"

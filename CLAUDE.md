@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Making Code Changes
 
 1. **Package changes** → Create changeset for the specific package (e.g., `@robeasthope/ui`)
-2. **Infrastructure changes** → Create changeset for `@robeasthope/infrastructure`
+2. **Infrastructure changes** → Create changeset for `@protomolecule/infrastructure`
 3. **Documentation only** → No changeset required
 
 ### Example Workflow
@@ -25,7 +25,7 @@ vim .github/workflows/release.yml
 
 # Create infrastructure changeset
 pnpm changeset
-# Select: @robeasthope/infrastructure, patch, "Fix release workflow timing"
+# Select: @protomolecule/infrastructure, patch, "Fix release workflow timing"
 
 # Commit with conventional format
 git commit -m "feat(ui): add loading state to Button component"
@@ -128,12 +128,12 @@ Create a changeset **ONLY** when you modify source code in `packages/*/src/` or 
 
 **DO NOT** create package changesets for infrastructure changes:
 
-- ❌ Root `package.json` script changes → Use `@robeasthope/infrastructure` changeset
-- ❌ `.github/` directory changes (workflows, scripts, actions) → Use `@robeasthope/infrastructure` changeset
-- ❌ Root configuration files (`.prettierrc`, `.eslintrc`, etc.) → Use `@robeasthope/infrastructure` changeset
-- ❌ Build/test tooling configuration at root level → Use `@robeasthope/infrastructure` changeset
-- ❌ CI/CD configuration changes → Use `@robeasthope/infrastructure` changeset
-- ❌ Git hooks or linting configuration → Use `@robeasthope/infrastructure` changeset
+- ❌ Root `package.json` script changes → Use `@protomolecule/infrastructure` changeset
+- ❌ `.github/` directory changes (workflows, scripts, actions) → Use `@protomolecule/infrastructure` changeset
+- ❌ Root configuration files (`.prettierrc`, `.eslintrc`, etc.) → Use `@protomolecule/infrastructure` changeset
+- ❌ Build/test tooling configuration at root level → Use `@protomolecule/infrastructure` changeset
+- ❌ CI/CD configuration changes → Use `@protomolecule/infrastructure` changeset
+- ❌ Git hooks or linting configuration → Use `@protomolecule/infrastructure` changeset
 - ✅ Documentation updates (`*.md` files) → No changeset required
 
 See [Infrastructure Package](#infrastructure-package) for infrastructure changeset guidelines.
@@ -182,7 +182,7 @@ See [Infrastructure Package](#infrastructure-package) for infrastructure changes
 
 **Private packages** (`tsconfig`, `github-rulesets`) still require changesets for version tracking but are not published to NPM.
 
-**When in doubt:** If you're only modifying files at the repository root level or in `.github/`, you should create a changeset for `@robeasthope/infrastructure` instead of a package changeset. See [Infrastructure Package](#infrastructure-package) below.
+**When in doubt:** If you're only modifying files at the repository root level or in `.github/`, you should create a changeset for `@protomolecule/infrastructure` instead of a package changeset. See [Infrastructure Package](#infrastructure-package) below.
 
 ## Monorepo Structure
 
@@ -286,11 +286,11 @@ This is a React component library monorepo built with:
 
 ### Purpose
 
-The `infrastructure/` directory contains a virtual package (`@robeasthope/infrastructure`) for tracking CI/CD, workflow, and tooling changes separate from code packages. It has no actual code - it's purely for version tracking.
+The `infrastructure/` directory contains a virtual package (`@protomolecule/infrastructure`) for tracking CI/CD, workflow, and tooling changes separate from code packages. It has no actual code - it's purely for version tracking.
 
 ### When to Create Infrastructure Changesets
 
-Create changesets for `@robeasthope/infrastructure` when modifying:
+Create changesets for `@protomolecule/infrastructure` when modifying:
 
 **CI/CD & Workflows:**
 
@@ -345,7 +345,7 @@ Runs `lint-staged` to format and lint staged files:
 **Infrastructure Changeset Enforcement:**
 
 - Detects changes to `.github/`, `.husky/`, root configs, and tooling files
-- Requires a changeset for `@robeasthope/infrastructure`
+- Requires a changeset for `@protomolecule/infrastructure`
 - Lists the changed infrastructure files for clarity
 - Provides helpful guidance on creating infrastructure changesets
 

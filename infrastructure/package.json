@@ -1,5 +1,5 @@
 {
-  "name": "@robeasthope/infrastructure",
+  "name": "@protomolecule/infrastructure",
   "version": "2.0.1",
   "private": true,
   "description": "Virtual package for tracking monorepo infrastructure and tooling changes"
