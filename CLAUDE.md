@@ -290,30 +290,29 @@ The `infrastructure/` directory contains a virtual package (`@protomolecule/infr
 
 ### When to Create Infrastructure Changesets
 
+**Simple Rule: All tracked files in the repository root (excluding `pnpm-lock.yaml`) are infrastructure files.**
+
 Create changesets for `@protomolecule/infrastructure` when modifying:
 
-**CI/CD & Workflows:**
+**Any file in the repository root:**
 
-- `.github/workflows/` - GitHub Actions workflows
-- `.github/actions/` - Custom composite actions
-- `.github/scripts/` - Release automation scripts
+- Documentation: `README.md`, `CLAUDE.md`
+- Configuration: `turbo.json`, `pnpm-workspace.yaml`, `eslint.config.ts`, `tsconfig.json`, `.prettierrc.json`, `.markdownlint-cli2.jsonc`, `.yamllint.yml`
+- Root package: `package.json`
+- Git configuration: `.gitignore`, `.gitattributes`, `.husky/`
+- Tooling: `.actrc`, `.actrc.example`, `.editorconfig`
+- Workspace: `*.code-workspace`
+- Any other root-level file
 
-**Build & Tooling:**
+**Subdirectories that are infrastructure:**
 
-- `turbo.json`, `pnpm-workspace.yaml`
-- Root `package.json` scripts and dependencies
-- ESLint, Prettier, TypeScript configs at root level
+- `.github/` - All GitHub Actions, workflows, scripts, and actions
 
-**Git Configuration:**
+**The ONLY exception:**
 
-- `.husky/` - Git hooks
-- `lint-staged` configuration
-- `.gitignore`, `.gitattributes`
+- ❌ `pnpm-lock.yaml` - Changes automatically, no changeset required
 
-**Linting & Validation:**
-
-- `.yamllint.yml` - YAML linting rules
-- `.actrc`, `.actrc.example` - Act configuration
+**Rationale:** Every file in the repo root affects monorepo infrastructure and cross-cutting concerns. The only exception is `pnpm-lock.yaml`, which changes automatically as a side-effect of package operations. Everything else requires intentional human edits and should be tracked.
 
 See `infrastructure/README.md` for comprehensive changeset guidance and `.github/scripts/README.md` for release automation documentation.
 
