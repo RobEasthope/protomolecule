@@ -480,7 +480,154 @@ describe("generateChangelogBasedSummary", () => {
     expect(result).toContain("## 2.1.0");
     expect(result).toContain("ESLint feature");
     expect(result).toContain("Infrastructure update");
-    // Check that sections are separated by double newlines
-    expect(result).toMatch(/ESLint feature\n\n## 2\.1\.0/);
+    // Check that sections are separated by package subheadings
+    expect(result).toContain("### @robeasthope/eslint-config");
+    expect(result).toContain("### @protomolecule/infrastructure");
+    // Package subheading should come between sections
+    expect(result).toMatch(
+      /ESLint feature\n\n### @protomolecule\/infrastructure/,
+    );
+  });
+
+  it("adds package subheadings in multi-package releases", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+      { name: "@robeasthope/ui", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md") ||
+      path.includes("ui/CHANGELOG.md");
+
+    const mockReadFile = (path: string) => {
+      if (path.includes("eslint-config")) {
+        return `## 1.0.0\n\n### Minor Changes\n\n- ESLint feature`;
+      }
+      if (path.includes("ui")) {
+        return `## 1.0.0\n\n### Minor Changes\n\n- UI feature`;
+      }
+      return "";
+    };
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    // Should have package name subheadings
+    expect(result).toContain("### @robeasthope/eslint-config");
+    expect(result).toContain("### @robeasthope/ui");
+    // Subheadings should come before version headers
+    expect(result).toMatch(/### @robeasthope\/eslint-config\n\n## 1\.0\.0/);
+    expect(result).toMatch(/### @robeasthope\/ui\n\n## 1\.0\.0/);
+  });
+
+  it("handles multiple packages without duplicate header confusion", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/pkg1", version: "2.0.0" },
+      { name: "@robeasthope/pkg2", version: "2.0.0" },
+      { name: "@robeasthope/pkg3", version: "2.0.0" },
+    ];
+
+    const mockFileExists = () => true;
+    const mockReadFile = () =>
+      `## 2.0.0\n\n### Major Changes\n\n- Breaking change`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    // All three packages should have subheadings
+    expect(result).toContain("### @robeasthope/pkg1");
+    expect(result).toContain("### @robeasthope/pkg2");
+    expect(result).toContain("### @robeasthope/pkg3");
+    // Should have three separate "## 2.0.0" sections (one per package)
+    const versionMatches = result.match(/## 2\.0\.0/g);
+    expect(versionMatches).toHaveLength(3);
+  });
+
+  it("handles empty CHANGELOG files", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
+    const mockReadFile = () => "";
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@1.0.0");
+    // Should not contain package subheading if no section extracted
+    expect(result).not.toContain("### @robeasthope/eslint-config");
+  });
+
+  it("handles CHANGELOG with only title", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
+    const mockReadFile = () =>
+      `# @robeasthope/eslint-config\n\nThis is the changelog.`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@1.0.0");
+    // Should not contain version section
+    expect(result).not.toContain("## 1.0.0");
+  });
+
+  it("extracts v-prefixed versions when searching for v-prefixed version", () => {
+    const changelog = `# Package
+
+## v1.0.0
+
+### Patch Changes
+
+- Fix something
+
+## v0.9.0
+`;
+
+    const result = extractChangelogSection(changelog, "v1.0.0");
+
+    expect(result).toContain("## v1.0.0");
+    expect(result).toContain("Fix something");
+    expect(result).not.toContain("## v0.9.0");
+  });
+
+  it("does not match v-prefix when searching without v-prefix", () => {
+    const changelog = `# Package
+
+## v1.0.0
+
+### Patch Changes
+
+- Fix something
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    // Should NOT match "## v1.0.0" when searching for "1.0.0"
+    expect(result).toBeNull();
   });
 });

@@ -95,7 +95,8 @@ export function extractChangelogSection(
   const startIndex = match.index;
 
   // Find next version header (or end of file)
-  const nextVersionRegex = /^## \d+\.\d+\.\d+$/m;
+  // Match both standard versions (1.0.0) and v-prefixed versions (v1.0.0)
+  const nextVersionRegex = /^## v?\d+\.\d+\.\d+/m;
   const restOfContent = changelogContent.slice(startIndex + match[0].length);
   const nextMatch = restOfContent.match(nextVersionRegex);
 
@@ -142,6 +143,8 @@ export function generateChangelogBasedSummary(
       const section = extractChangelogSection(changelogContent, pkg.version);
 
       if (section) {
+        // Add package name subheading to prevent confusion when multiple packages share version numbers
+        summary += `### ${pkg.name}\n\n`;
         summary += `${section}\n\n`;
       } else {
         console.log(
