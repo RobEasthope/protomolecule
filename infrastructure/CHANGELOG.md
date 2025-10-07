@@ -1,5 +1,93 @@
 # @protomolecule/infrastructure
 
+## 2.2.0
+
+### Minor Changes
+
+- [`9ff3f5b`](https://github.com/RobEasthope/protomolecule/commit/9ff3f5bdb7beb1ad75008305325d4cb03f359f61) [#271](https://github.com/RobEasthope/protomolecule/pull/271) - Replace AI-generated release summaries with CHANGELOG-based extraction
+
+  **Problem:**
+  The current release workflow uses GitHub Models API to generate AI summaries, which causes multiple issues:
+  - ❌ **Rate limits:** 150 requests/day limit
+  - ❌ **Complex permissions:** Requires `id-token: write` permission
+  - ❌ **Token usage:** Unnecessary AI token consumption
+  - ❌ **Re-writing existing content:** CHANGELOGs already contain all the information
+  - ❌ **Missing links:** AI summaries don't preserve PR/commit links from changesets
+
+  **Solution:**
+  Rewrote `generate-summary.ts` to extract release notes directly from package CHANGELOG.md files that changesets automatically generates.
+
+  **Implementation:**
+  1. **New Functions:**
+     - `findChangelogPath()` - Locates package CHANGELOGs in packages/, apps/, infrastructure/
+     - `extractChangelogSection()` - Extracts version-specific content using regex
+     - `generateChangelogBasedSummary()` - Combines all package sections
+     - Maintains same input/output interface for workflow compatibility
+  2. **Workflow Updates:**
+     - Removed `GITHUB_TOKEN` env var from generate-summary step
+     - Removed `USED_AI` file check
+     - Updated comments to reflect CHANGELOG-based approach
+  3. **Comprehensive Tests:**
+     - 22 tests covering all functions (84 total tests across all scripts)
+     - Tests for CHANGELOG path discovery
+     - Tests for version section extraction
+     - Tests for multi-line content and markdown link preservation
+     - Tests for fallback behavior
+
+  **Benefits:**
+  - ✅ **Zero rate limits** - No API calls
+  - ✅ **Zero tokens** - No AI usage
+  - ✅ **Faster execution** - Direct file reads vs API calls
+  - ✅ **More accurate** - Uses exact changeset content with PR/commit links preserved
+  - ✅ **Simpler maintenance** - No API key management or permission configuration
+  - ✅ **Better formatting** - Preserves markdown links: [`abc123`](url) and [#42](url)
+
+  **Example Output:**
+
+  ```markdown
+  ## Workspace Updates
+
+  - @robeasthope/eslint-config@4.1.0
+  - @protomolecule/infrastructure@2.1.0
+
+  ## 4.1.0
+
+  ### Minor Changes
+
+  - [`7d563c1`](https://github.com/RobEasthope/protomolecule/commit/...) [#266](https://github.com/RobEasthope/protomolecule/pull/266) - Add common import ignore patterns...
+
+  ## 2.1.0
+
+  ### Minor Changes
+
+  - [`abc1234`](https://github.com/RobEasthope/protomolecule/commit/...) - Update build configuration...
+  ```
+
+  Closes #269
+
+### Patch Changes
+
+- [`20aab65`](https://github.com/RobEasthope/protomolecule/commit/20aab65d37a0a799236502abee57dd0099753213) [#270](https://github.com/RobEasthope/protomolecule/pull/270) - Fix markdownlint processing all files during lint-staged runs
+
+  **Problem:** When committing files with lint-staged, markdownlint was processing ALL markdown files in the repo, not just the staged ones. This caused unrelated markdown files to be auto-fixed and left unstaged.
+
+  **Root Cause:** The `globs` array in `.markdownlint-cli2.jsonc` was overriding the specific file paths that lint-staged passes to markdownlint.
+
+  **Solution:** Moved glob patterns from config file to package.json scripts:
+  - Removed `globs` from `.markdownlint-cli2.jsonc`
+  - Added globs to all `lint:md` and `lint:md:fix` scripts in root and package.json files
+
+  **Benefits:**
+  - ✅ `pnpm lint:md` still works (uses globs from scripts)
+  - ✅ lint-staged only processes staged files (file args take precedence)
+  - ✅ No more surprise modifications to unstaged markdown files
+  - ✅ Clear separation: config = rules, scripts/args = file selection
+
+  **Files Modified:**
+  - `.markdownlint-cli2.jsonc` - Removed globs array
+  - `package.json` - Added globs to root lint:md scripts
+  - All package `package.json` files - Added globs to lint:md scripts
+
 ## 2.1.0
 
 ### Minor Changes
