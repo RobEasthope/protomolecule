@@ -210,20 +210,12 @@ jobs:
 
       - name: Run generate-summary script
         run: pnpm tsx .github/scripts/generate-summary.ts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate output
         run: |
           # Check that summary file was created
           if [[ ! -f /tmp/release-summary.txt ]]; then
             echo "❌ Missing /tmp/release-summary.txt"
-            exit 1
-          fi
-
-          # Check that used-ai file was created
-          if [[ ! -f /tmp/used-ai.txt ]]; then
-            echo "❌ Missing /tmp/used-ai.txt"
             exit 1
           fi
 
@@ -236,9 +228,6 @@ jobs:
 
           echo "Release summary preview:"
           echo "$SUMMARY" | head -n 5
-
-          AI_USED=$(cat /tmp/used-ai.txt)
-          echo "AI used: $AI_USED"
 
           echo "✅ generate-summary script passed all tests"
 
