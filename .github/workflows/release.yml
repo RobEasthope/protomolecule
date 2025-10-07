@@ -244,12 +244,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISHED_PACKAGES: ${{ steps.detect_published.outputs.publishedPackages }}
 
-      - name: 🤖 Generate AI Release Summary
+      - name: 📝 Generate Release Summary from CHANGELOGs
         if: steps.detect_published.outputs.published == 'true'
         # Use 'pnpm tsx' not 'tsx' - tsx is in node_modules/.bin, not in PATH
+        # Extracts version-specific sections from package CHANGELOG.md files
         run: pnpm tsx .github/scripts/generate-summary.ts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🎉 Create Monorepo GitHub Release
         if: steps.detect_published.outputs.published == 'true'
@@ -257,13 +256,8 @@ jobs:
           set -euo pipefail
 
           NEW_VERSION=$(cat /tmp/new-version.txt)
-          USED_AI=$(cat /tmp/used-ai.txt)
 
-          if [[ "$USED_AI" == "true" ]]; then
-            echo "Creating release with AI-generated summary..."
-          else
-            echo "Creating release with template fallback..."
-          fi
+          echo "Creating release with CHANGELOG-based summary..."
 
           # Create GitHub release (skip if already exists)
           if gh release view "v${NEW_VERSION}" &>/dev/null; then

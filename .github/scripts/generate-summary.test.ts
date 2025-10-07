@@ -1,231 +1,633 @@
 import { describe, it, expect } from "vitest";
 import {
-  determineSummaryDepth,
-  formatPackageSummary,
-  generateFallbackSummary,
-  validateAIResponse,
+  findChangelogPath,
+  extractChangelogSection,
+  generateChangelogBasedSummary,
   type Package,
-  type BumpType,
 } from "./generate-summary";
 
-describe("determineSummaryDepth", () => {
-  it("returns brief for single package patch", () => {
-    const result = determineSummaryDepth("patch", 1);
+describe("findChangelogPath", () => {
+  it("finds CHANGELOG in packages directory", () => {
+    const mockFileExists = (path: string) =>
+      path.includes("packages/eslint-config/CHANGELOG.md");
 
-    expect(result).toBe("brief");
+    const result = findChangelogPath(
+      "@robeasthope/eslint-config",
+      "/repo",
+      mockFileExists,
+    );
+
+    expect(result).toBe("/repo/packages/eslint-config/CHANGELOG.md");
   });
 
-  it("returns brief for single package minor", () => {
-    const result = determineSummaryDepth("minor", 1);
+  it("finds CHANGELOG in apps directory", () => {
+    const mockFileExists = (path: string) =>
+      path.includes("apps/my-app/CHANGELOG.md");
 
-    expect(result).toBe("brief");
+    const result = findChangelogPath(
+      "@robeasthope/my-app",
+      "/repo",
+      mockFileExists,
+    );
+
+    expect(result).toBe("/repo/apps/my-app/CHANGELOG.md");
   });
 
-  it("returns detailed for single package major", () => {
-    const result = determineSummaryDepth("major", 1);
+  it("finds CHANGELOG in infrastructure directory", () => {
+    const mockFileExists = (path: string) =>
+      path.includes("infrastructure/CHANGELOG.md");
 
-    expect(result).toBe("detailed");
+    const result = findChangelogPath(
+      "@protomolecule/infrastructure",
+      "/repo",
+      mockFileExists,
+    );
+
+    expect(result).toBe("/repo/infrastructure/CHANGELOG.md");
   });
 
-  it("returns comprehensive for major with 2 packages", () => {
-    const result = determineSummaryDepth("major", 2);
+  it("returns null when CHANGELOG not found", () => {
+    const mockFileExists = () => false;
 
-    expect(result).toBe("comprehensive");
+    const result = findChangelogPath(
+      "@robeasthope/nonexistent",
+      "/repo",
+      mockFileExists,
+    );
+
+    expect(result).toBeNull();
   });
 
-  it("returns comprehensive for major with 3+ packages", () => {
-    const result = determineSummaryDepth("major", 5);
+  it("handles package names without scope", () => {
+    const mockFileExists = (path: string) =>
+      path.includes("packages/eslint-config/CHANGELOG.md");
 
-    expect(result).toBe("comprehensive");
+    const result = findChangelogPath("eslint-config", "/repo", mockFileExists);
+
+    expect(result).toBe("/repo/packages/eslint-config/CHANGELOG.md");
   });
 
-  it("returns detailed for 3+ packages with minor bump", () => {
-    const result = determineSummaryDepth("minor", 3);
+  it("checks packages directory before apps directory", () => {
+    const checkedPaths: string[] = [];
+    const mockFileExists = (path: string) => {
+      checkedPaths.push(path);
+      return path.includes("apps/ui/CHANGELOG.md");
+    };
 
-    expect(result).toBe("detailed");
-  });
+    const result = findChangelogPath(
+      "@robeasthope/ui",
+      "/repo",
+      mockFileExists,
+    );
 
-  it("returns detailed for 3+ packages with patch bump", () => {
-    const result = determineSummaryDepth("patch", 3);
-
-    expect(result).toBe("detailed");
-  });
-
-  it("returns brief for 2 packages with minor bump", () => {
-    const result = determineSummaryDepth("minor", 2);
-
-    expect(result).toBe("brief");
+    expect(result).toBe("/repo/apps/ui/CHANGELOG.md");
+    expect(checkedPaths[0]).toContain("packages/ui");
+    expect(checkedPaths[1]).toContain("apps/ui");
   });
 });
 
-describe("formatPackageSummary", () => {
-  it("formats single package", () => {
-    const packages: Package[] = [
-      { name: "@robeasthope/markdown", version: "1.0.0" },
-    ];
+describe("extractChangelogSection", () => {
+  it("extracts simple version section", () => {
+    const changelog = `# Package Name
 
-    const result = formatPackageSummary(packages);
+## 1.0.0
 
-    expect(result).toBe("@robeasthope/markdown@1.0.0");
+### Patch Changes
+
+- Fix something
+
+## 0.9.0
+
+### Minor Changes
+
+- Add feature
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    expect(result).toContain("## 1.0.0");
+    expect(result).toContain("Fix something");
+    expect(result).not.toContain("## 0.9.0");
+    expect(result).not.toContain("Add feature");
   });
 
-  it("formats multiple packages with newlines", () => {
+  it("extracts version section with multi-line content", () => {
+    const changelog = `# @robeasthope/eslint-config
+
+## 4.1.0
+
+### Minor Changes
+
+- [\`7d563c1\`](https://github.com/RobEasthope/protomolecule/commit/7d563c1) [#266](https://github.com/RobEasthope/protomolecule/pull/266) - Add common import ignore patterns to Astro rules
+
+  **Enhancement:**
+  Added commonly-needed import ignore patterns to the Astro configuration.
+
+  **Benefits:**
+  - ✅ Reduces boilerplate in consumer configs
+  - ✅ Covers 90%+ of Astro projects out of the box
+
+## 4.0.2
+
+### Patch Changes
+
+- Fix parser resolution
+`;
+
+    const result = extractChangelogSection(changelog, "4.1.0");
+
+    expect(result).toContain("## 4.1.0");
+    expect(result).toContain("Add common import ignore patterns");
+    expect(result).toContain("**Enhancement:**");
+    expect(result).toContain("✅ Reduces boilerplate");
+    expect(result).not.toContain("## 4.0.2");
+    expect(result).not.toContain("Fix parser resolution");
+  });
+
+  it("extracts last version section (no next version)", () => {
+    const changelog = `# Package
+
+## 2.0.0
+
+### Major Changes
+
+- Breaking change
+
+## 1.0.0
+
+### Minor Changes
+
+- Initial release
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    expect(result).toContain("## 1.0.0");
+    expect(result).toContain("Initial release");
+    expect(result).not.toContain("Breaking change");
+  });
+
+  it("returns null when version not found", () => {
+    const changelog = `# Package
+
+## 1.0.0
+
+### Patch Changes
+
+- Fix something
+`;
+
+    const result = extractChangelogSection(changelog, "2.0.0");
+
+    expect(result).toBeNull();
+  });
+
+  it("handles version at start of file", () => {
+    const changelog = `## 1.0.0
+
+### Patch Changes
+
+- Fix something
+
+## 0.9.0
+
+### Minor Changes
+
+- Add feature
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    expect(result).toContain("## 1.0.0");
+    expect(result).toContain("Fix something");
+    expect(result).not.toContain("## 0.9.0");
+  });
+
+  it("preserves markdown links in extracted section", () => {
+    const changelog = `# Package
+
+## 1.0.0
+
+### Patch Changes
+
+- [\`abc123\`](https://github.com/user/repo/commit/abc123) [#42](https://github.com/user/repo/pull/42) - Fix something
+
+## 0.9.0
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    expect(result).toContain("[`abc123`]");
+    expect(result).toContain("(https://github.com/user/repo/commit/abc123)");
+    expect(result).toContain("[#42]");
+    expect(result).toContain("(https://github.com/user/repo/pull/42)");
+  });
+
+  it("handles version sections with code blocks", () => {
+    const changelog = `# Package
+
+## 1.0.0
+
+### Minor Changes
+
+- New feature
+
+  \`\`\`typescript
+  const example = "code";
+  \`\`\`
+
+## 0.9.0
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0");
+
+    expect(result).toContain("## 1.0.0");
+    expect(result).toContain("```typescript");
+    expect(result).toContain('const example = "code";');
+    expect(result).not.toContain("## 0.9.0");
+  });
+
+  it("handles version with special characters", () => {
+    const changelog = `# Package
+
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- Beta release
+
+## 0.9.0
+`;
+
+    const result = extractChangelogSection(changelog, "1.0.0-beta.1");
+
+    expect(result).toContain("## 1.0.0-beta.1");
+    expect(result).toContain("Beta release");
+  });
+});
+
+describe("generateChangelogBasedSummary", () => {
+  it("generates summary for single package", () => {
     const packages: Package[] = [
-      { name: "@robeasthope/markdown", version: "1.0.0" },
-      { name: "@robeasthope/ui", version: "2.1.0" },
-      { name: "@protomolecule/infrastructure", version: "0.3.0" },
+      { name: "@robeasthope/eslint-config", version: "4.1.0" },
     ];
 
-    const result = formatPackageSummary(packages);
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
 
-    expect(result).toBe(
-      "@robeasthope/markdown@1.0.0\n@robeasthope/ui@2.1.0\n@protomolecule/infrastructure@0.3.0",
+    const mockReadFile = () => `# @robeasthope/eslint-config
+
+## 4.1.0
+
+### Minor Changes
+
+- Add new feature
+`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@4.1.0");
+    expect(result).toContain("## 4.1.0");
+    expect(result).toContain("Add new feature");
+  });
+
+  it("generates summary for multiple packages", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "4.1.0" },
+      { name: "@protomolecule/infrastructure", version: "2.1.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md") ||
+      path.includes("infrastructure/CHANGELOG.md");
+
+    const mockReadFile = (path: string) => {
+      if (path.includes("eslint-config")) {
+        return `## 4.1.0\n\n### Minor Changes\n\n- ESLint feature`;
+      }
+      if (path.includes("infrastructure")) {
+        return `## 2.1.0\n\n### Minor Changes\n\n- Infrastructure update`;
+      }
+      return "";
+    };
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("* @robeasthope/eslint-config@4.1.0");
+    expect(result).toContain("* @protomolecule/infrastructure@2.1.0");
+    expect(result).toContain("ESLint feature");
+    expect(result).toContain("Infrastructure update");
+  });
+
+  it("handles missing CHANGELOG files gracefully", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/nonexistent", version: "1.0.0" },
+    ];
+
+    const mockFileExists = () => false;
+    const mockReadFile = () => "";
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/nonexistent@1.0.0");
+    expect(result).toContain(
+      "_See individual package changelogs for detailed changes._",
     );
   });
 
-  it("handles empty array", () => {
-    const result = formatPackageSummary([]);
-
-    expect(result).toBe("");
-  });
-
-  it("handles pre-release versions", () => {
+  it("handles version not found in CHANGELOG", () => {
     const packages: Package[] = [
-      { name: "@robeasthope/markdown", version: "1.0.0-beta.1" },
+      { name: "@robeasthope/eslint-config", version: "5.0.0" },
     ];
 
-    const result = formatPackageSummary(packages);
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
 
-    expect(result).toBe("@robeasthope/markdown@1.0.0-beta.1");
-  });
-});
+    const mockReadFile = () => `## 4.1.0\n\n### Minor Changes\n\n- Old version`;
 
-describe("generateFallbackSummary", () => {
-  it("generates template for single package", () => {
-    const packages: Package[] = [
-      { name: "@robeasthope/markdown", version: "1.0.0" },
-    ];
-
-    const result = generateFallbackSummary(packages);
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
 
     expect(result).toContain("## Workspace Updates");
-    expect(result).toContain("* @robeasthope/markdown@1.0.0");
-    expect(result).toContain("AI summary unavailable");
-    expect(result).toContain("see individual package changelogs");
+    expect(result).toContain("* @robeasthope/eslint-config@5.0.0");
+    // Should include fallback message when version not found
+    expect(result).toContain(
+      "_See individual package changelogs for detailed changes._",
+    );
   });
 
-  it("generates template for multiple packages", () => {
+  it("preserves markdown formatting from CHANGELOGs", () => {
     const packages: Package[] = [
-      { name: "@robeasthope/markdown", version: "1.0.0" },
-      { name: "@robeasthope/ui", version: "2.1.0" },
+      { name: "@robeasthope/eslint-config", version: "4.1.0" },
     ];
 
-    const result = generateFallbackSummary(packages);
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
 
-    expect(result).toContain("* @robeasthope/markdown@1.0.0");
-    expect(result).toContain("* @robeasthope/ui@2.1.0");
+    const mockReadFile = () => `## 4.1.0
+
+### Minor Changes
+
+- [\`abc123\`](https://github.com/user/repo/commit/abc123) [#42](https://github.com/user/repo/pull/42) - New feature
+
+  **Benefits:**
+  - ✅ Benefit 1
+  - ✅ Benefit 2
+`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("[`abc123`]");
+    expect(result).toContain("[#42]");
+    expect(result).toContain("**Benefits:**");
+    expect(result).toContain("✅ Benefit 1");
   });
 
   it("handles empty packages array", () => {
-    const result = generateFallbackSummary([]);
+    const packages: Package[] = [];
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      () => false,
+      () => "",
+    );
 
     expect(result).toContain("## Workspace Updates");
-    expect(result).toContain("AI summary unavailable");
   });
 
-  it("formats with markdown list items", () => {
+  it("handles read errors gracefully", () => {
     const packages: Package[] = [
-      { name: "@robeasthope/test", version: "1.0.0" },
+      { name: "@robeasthope/eslint-config", version: "4.1.0" },
     ];
 
-    const result = generateFallbackSummary(packages);
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
 
-    // Should start with * for markdown list
-    expect(result).toMatch(/\* @robeasthope\/test@1\.0\.0/);
+    const mockReadFile = () => {
+      throw new Error("EACCES: permission denied");
+    };
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@4.1.0");
   });
-});
 
-describe("validateAIResponse", () => {
-  it("validates valid string response", () => {
-    const content = "This is a valid AI response with sufficient length.";
+  it("separates package sections with blank lines", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "4.1.0" },
+      { name: "@protomolecule/infrastructure", version: "2.1.0" },
+    ];
 
-    const result = validateAIResponse(content);
+    const mockFileExists = (path: string) => {
+      return (
+        path.includes("eslint-config/CHANGELOG.md") ||
+        path.includes("infrastructure/CHANGELOG.md")
+      );
+    };
 
-    expect(result).toBe(content);
-  });
+    const mockReadFile = (path: string) => {
+      if (path.includes("eslint-config")) {
+        return `## 4.1.0\n\n### Minor Changes\n\n- ESLint feature`;
+      }
+      if (path.includes("infrastructure")) {
+        return `## 2.1.0\n\n### Minor Changes\n\n- Infrastructure update`;
+      }
+      return "";
+    };
 
-  it("throws on empty string", () => {
-    expect(() => validateAIResponse("")).toThrow(
-      "AI response is empty or not a string",
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
+    );
+
+    // Should have double newlines between the two package sections
+    expect(result).toContain("## 4.1.0");
+    expect(result).toContain("## 2.1.0");
+    expect(result).toContain("ESLint feature");
+    expect(result).toContain("Infrastructure update");
+    // Check that sections are separated by package subheadings
+    expect(result).toContain("### @robeasthope/eslint-config");
+    expect(result).toContain("### @protomolecule/infrastructure");
+    // Package subheading should come between sections
+    expect(result).toMatch(
+      /ESLint feature\n\n### @protomolecule\/infrastructure/,
     );
   });
 
-  it("throws on null", () => {
-    expect(() => validateAIResponse(null)).toThrow(
-      "AI response is empty or not a string",
+  it("adds package subheadings in multi-package releases", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+      { name: "@robeasthope/ui", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md") ||
+      path.includes("ui/CHANGELOG.md");
+
+    const mockReadFile = (path: string) => {
+      if (path.includes("eslint-config")) {
+        return `## 1.0.0\n\n### Minor Changes\n\n- ESLint feature`;
+      }
+      if (path.includes("ui")) {
+        return `## 1.0.0\n\n### Minor Changes\n\n- UI feature`;
+      }
+      return "";
+    };
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
     );
+
+    // Should have package name subheadings
+    expect(result).toContain("### @robeasthope/eslint-config");
+    expect(result).toContain("### @robeasthope/ui");
+    // Subheadings should come before version headers
+    expect(result).toMatch(/### @robeasthope\/eslint-config\n\n## 1\.0\.0/);
+    expect(result).toMatch(/### @robeasthope\/ui\n\n## 1\.0\.0/);
   });
 
-  it("throws on undefined", () => {
-    expect(() => validateAIResponse(undefined)).toThrow(
-      "AI response is empty or not a string",
+  it("handles multiple packages without duplicate header confusion", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/pkg1", version: "2.0.0" },
+      { name: "@robeasthope/pkg2", version: "2.0.0" },
+      { name: "@robeasthope/pkg3", version: "2.0.0" },
+    ];
+
+    const mockFileExists = () => true;
+    const mockReadFile = () =>
+      `## 2.0.0\n\n### Major Changes\n\n- Breaking change`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
     );
+
+    // All three packages should have subheadings
+    expect(result).toContain("### @robeasthope/pkg1");
+    expect(result).toContain("### @robeasthope/pkg2");
+    expect(result).toContain("### @robeasthope/pkg3");
+    // Should have three separate "## 2.0.0" sections (one per package)
+    const versionMatches = result.match(/## 2\.0\.0/g);
+    expect(versionMatches).toHaveLength(3);
   });
 
-  it("throws on number", () => {
-    expect(() => validateAIResponse(123)).toThrow(
-      "AI response is empty or not a string",
+  it("handles empty CHANGELOG files", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
+    const mockReadFile = () => "";
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
     );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@1.0.0");
+    // Should not contain package subheading if no section extracted
+    expect(result).not.toContain("### @robeasthope/eslint-config");
   });
 
-  it("throws on object", () => {
-    expect(() => validateAIResponse({ content: "test" })).toThrow(
-      "AI response is empty or not a string",
+  it("handles CHANGELOG with only title", () => {
+    const packages: Package[] = [
+      { name: "@robeasthope/eslint-config", version: "1.0.0" },
+    ];
+
+    const mockFileExists = (path: string) =>
+      path.includes("eslint-config/CHANGELOG.md");
+    const mockReadFile = () =>
+      `# @robeasthope/eslint-config\n\nThis is the changelog.`;
+
+    const result = generateChangelogBasedSummary(
+      packages,
+      "/repo",
+      mockFileExists,
+      mockReadFile,
     );
+
+    expect(result).toContain("## Workspace Updates");
+    expect(result).toContain("* @robeasthope/eslint-config@1.0.0");
+    // Should not contain version section
+    expect(result).not.toContain("## 1.0.0");
   });
 
-  it("throws on too short response", () => {
-    expect(() => validateAIResponse("short")).toThrow(
-      "AI response too short: 5 characters",
-    );
+  it("extracts v-prefixed versions when searching for v-prefixed version", () => {
+    const changelog = `# Package
+
+## v1.0.0
+
+### Patch Changes
+
+- Fix something
+
+## v0.9.0
+`;
+
+    const result = extractChangelogSection(changelog, "v1.0.0");
+
+    expect(result).toContain("## v1.0.0");
+    expect(result).toContain("Fix something");
+    expect(result).not.toContain("## v0.9.0");
   });
 
-  it("throws on response at 9 characters (boundary)", () => {
-    expect(() => validateAIResponse("123456789")).toThrow(
-      "AI response too short: 9 characters",
-    );
-  });
+  it("does not match v-prefix when searching without v-prefix", () => {
+    const changelog = `# Package
 
-  it("accepts response at 10 characters (boundary)", () => {
-    const content = "1234567890";
+## v1.0.0
 
-    const result = validateAIResponse(content);
+### Patch Changes
 
-    expect(result).toBe(content);
-  });
+- Fix something
+`;
 
-  it("throws on too long response", () => {
-    const content = "x".repeat(5001);
+    const result = extractChangelogSection(changelog, "1.0.0");
 
-    expect(() => validateAIResponse(content)).toThrow(
-      "AI response too long: 5001 characters",
-    );
-  });
-
-  it("accepts response at 5000 characters (boundary)", () => {
-    const content = "x".repeat(5000);
-
-    const result = validateAIResponse(content);
-
-    expect(result).toBe(content);
-  });
-
-  it("accepts typical AI response length", () => {
-    const content =
-      "## Summary\n\nThis release includes updates to the markdown package with improved performance and new features.\n\n## Highlights\n* ✨ New feature\n* ⚡ Performance improvements";
-
-    const result = validateAIResponse(content);
-
-    expect(result).toBe(content);
+    // Should NOT match "## v1.0.0" when searching for "1.0.0"
+    expect(result).toBeNull();
   });
 });
