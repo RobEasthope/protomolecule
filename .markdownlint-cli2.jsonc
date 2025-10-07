@@ -2,11 +2,4 @@
   "config": {
     "extends": "@robeasthope/markdownlint-config",
   },
-  "globs": [
-    "**/*.{md,mdx}",
-    "!**/node_modules/**",
-    "!**/dist/**",
-    "!**/.turbo/**",
-    "!**/.astro/**",
-  ],
 }
