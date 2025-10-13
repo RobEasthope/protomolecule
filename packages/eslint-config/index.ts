@@ -5,6 +5,7 @@ import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";
 import { storybook } from "./rules/storybook";
+import { testFiles } from "./rules/testFiles";
 import { typescriptOverrides } from "./rules/typescriptOverrides";
 import eslintConfigCanonicalAuto from "eslint-config-canonical/auto";
 import pluginImportX from "eslint-plugin-import-x";
@@ -45,6 +46,7 @@ const config: any[] = [
   packageJson,
   storybook,
   typescriptOverrides,
+  testFiles,
   ...astro,
   preferences,
 ];
