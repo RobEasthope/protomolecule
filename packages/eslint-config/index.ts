@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { astro } from "./rules/astro";
 import { commonjs } from "./rules/commonjs";
+import { frameworkRouting } from "./rules/frameworkRouting";
 import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";
@@ -31,6 +32,7 @@ const config: any[] = [
   testFiles,
   ...astro,
   preferences,
+  frameworkRouting,
 ];
 
 export default config;

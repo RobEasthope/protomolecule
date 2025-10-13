@@ -4,10 +4,8 @@ export default [
   ...robeasthope,
   {
     ignores: [
-      // Packages without JavaScript/TypeScript code
-      "packages/colours/**",
-      "packages/github-rulesets/**",
-      "packages/tsconfig/**",
+      // All packages have their own ESLint configs
+      "packages/**",
       // CI/CD automation scripts (console logging required)
       ".github/scripts/**",
       "scripts/**",
