@@ -2,9 +2,9 @@ import { type Linter } from "eslint";
 import globals from "globals";
 
 export const commonjs = {
-  files: ["**/*.js", "**/*.cjs"],
-  // Exclude ES modules
-  ignores: ["**/*.mjs"],
+  files: ["**/*.cjs"],
+  // Exclude node_modules
+  ignores: ["**/node_modules/**"],
   languageOptions: {
     globals: {
       ...globals.node,
