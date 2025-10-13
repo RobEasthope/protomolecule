@@ -52,7 +52,8 @@
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
-    "eslint-config-canonical": "^45.0.1"
+    "eslint-config-canonical": "^45.0.1",
+    "globals": "^16.4.0"
   },
   "devDependencies": {
     "@robeasthope/markdownlint-config": "workspace:*",
