@@ -21,6 +21,7 @@ export const preferences = {
           "**/*.spec.{ts,tsx,js,jsx}",
           "**/__tests__/**/*",
           "**/*.config.{ts,js,mjs,cjs}",
+          "**/index.{ts,tsx,js,jsx}",
           ".changeset/**",
           ".github/scripts/**",
           "scripts/**",
@@ -28,7 +29,7 @@ export const preferences = {
         packageDir: ["./", "../", "../../"],
       },
     ],
-    "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
+    "no-console": ["warn", { allow: ["error", "debug", "warn", "log"] }],
     "perfectionist/sort-modules": "off",
     "prettier/prettier": [
       "error",
