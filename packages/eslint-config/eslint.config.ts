@@ -14,13 +14,6 @@ const config: any[] = [
   storybook,
   typescriptOverrides,
   preferences,
-  // Override for eslint-config package itself - allow peer dependency imports
-  {
-    files: ["**/*.ts"],
-    rules: {
-      "import/no-extraneous-dependencies": "off",
-    },
-  },
 ];
 
 export default config;
