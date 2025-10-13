@@ -14,14 +14,6 @@ const config: any[] = [
   storybook,
   typescriptOverrides,
   preferences,
-  // Disable import/no-extraneous-dependencies for this package
-  // ESLint configs need devDependencies in their main exports
-  {
-    files: ["**/*.{ts,tsx,js,jsx}"],
-    rules: {
-      "import/no-extraneous-dependencies": "off",
-    },
-  },
 ];
 
 export default config;
