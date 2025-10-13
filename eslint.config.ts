@@ -13,4 +13,11 @@ export default [
       "scripts/**",
     ],
   },
+  // Override for eslint-config package - allow peer dependency imports
+  {
+    files: ["packages/eslint-config/**/*.ts"],
+    rules: {
+      "import/no-extraneous-dependencies": "off",
+    },
+  },
 ];

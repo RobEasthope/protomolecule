@@ -19,6 +19,7 @@ jobs:
       pull-requests: write
       issues: read
       packages: write # Required for publishing to GitHub Packages
+      id-token: write # Required for npm provenance
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v5
@@ -33,14 +34,6 @@ jobs:
 
       - name: 🔐 Validate Required Secrets
         run: |
-          # Check for required secrets
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "❌ Error: NPM_TOKEN secret is not configured"
-            echo "Please add NPM_TOKEN to your repository secrets for publishing to NPM"
-            exit 1
-          fi
-          echo "✅ NPM_TOKEN is configured"
-
           # Check for optional PAT (warn if missing but don't fail)
           if [ -z "${{ secrets.RELEASE_PAT }}" ]; then
             echo "⚠️ Warning: RELEASE_PAT is not configured"
@@ -48,6 +41,8 @@ jobs:
           else
             echo "✅ RELEASE_PAT is configured"
           fi
+
+          echo "✅ Using npm OIDC trusted publishers for authentication"
 
       - name: 🔍 Validate Release Dependencies
         run: |
@@ -166,7 +161,8 @@ jobs:
         uses: changesets/action@v1.5.3
         with:
           # This will run pnpm changeset version && pnpm changeset publish
-          publish: pnpm changeset publish
+          # --provenance flag enables supply chain attestations via OIDC
+          publish: pnpm changeset publish --provenance
           # Commit message for version updates
           commit: "release: version packages for release"
           # Title for version update PRs - will be enhanced in next step
@@ -175,7 +171,7 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # NPM_TOKEN not needed - using OIDC trusted publishers
           HUSKY: 0 # Disable Husky hooks in CI
           # Add retry configuration for npm operations
           npm_config_fetch_retries: 5
