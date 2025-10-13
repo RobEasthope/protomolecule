@@ -1,5 +1,83 @@
 # @protomolecule/eslint-config
 
+## 4.2.0
+
+### Minor Changes
+
+- [`3a186e2`](https://github.com/RobEasthope/protomolecule/commit/3a186e2201b62bef4952905d5b612b5f7c98c679) [#286](https://github.com/RobEasthope/protomolecule/pull/286) - Allow console.log() in no-console ESLint rule
+
+  The no-console rule now allows console.log() alongside error, debug, and warn methods. This change enables legitimate use of console.log() in:
+  - GitHub Actions scripts for CI output visibility
+  - CLI tools for normal operation
+  - Utility scripts for progress reporting
+
+  The rule remains configured as a warning (not error), maintaining visibility while allowing practical usage.
+
+- [`bfe99a3`](https://github.com/RobEasthope/protomolecule/commit/bfe99a3b5814441d9e5b08b2baf3afdf31c82c1c) [#288](https://github.com/RobEasthope/protomolecule/pull/288) - Add CommonJS support for .cjs files
+
+  The ESLint config now properly handles `.cjs` files, treating them as CommonJS scripts with appropriate Node.js environment globals.
+
+  **Features:**
+  - Automatically matches `**/*.cjs` files
+  - Sets `sourceType: "script"` for proper CommonJS parsing
+  - Provides Node.js globals (`require`, `module`, `exports`, `console`, `process`, etc.)
+  - Provides ES2021 globals
+
+  **Use case:**
+
+  This enables `.cjs` files (CommonJS by convention) to use `require()` and `module.exports` without ESLint parsing errors. Note that `.js` files are treated as ES modules by default, matching modern Node.js behavior.
+
+  **Dependencies:**
+
+  Added `globals` package (v15.18.0) for Node.js and ES global definitions.
+
+- [`6cb7b3c`](https://github.com/RobEasthope/protomolecule/commit/6cb7b3cb9cc08f3e926b76c57b3b6ba0e715b55d) [#290](https://github.com/RobEasthope/protomolecule/pull/290) - Configure import/no-extraneous-dependencies for monorepos
+
+  The `import/no-extraneous-dependencies` rule now understands monorepo structures, allows devDependencies in appropriate file types, and recognizes peerDependencies.
+
+  **Features:**
+
+  **Monorepo support:**
+  - `packageDir: ["./", "../", "../../"]` - checks parent directories for `package.json`
+  - Resolves dependencies declared in workspace root, not just local package
+
+  **PeerDependencies support:**
+  - `peerDependencies: true` - allows imports from peerDependencies
+  - Essential for shared configs (ESLint configs, etc.) that re-export plugins
+
+  **DevDependencies allowed in:**
+  - Test files: `**/*.test.{ts,tsx,js,jsx}`, `**/*.spec.{ts,tsx,js,jsx}`, `**/__tests__/**/*`
+  - Config files: `**/*.config.{ts,js,mjs,cjs}`
+  - Utility directories: `.changeset/**`, `.github/scripts/**`, `scripts/**`
+
+  **Problems solved:**
+
+  Before this change:
+  1. Utility directories without local `package.json` would error when importing workspace root dependencies
+  2. ESLint configs couldn't import plugins from peerDependencies
+
+  ```javascript
+  // .changeset/changelogFunctions.test.js
+  import { describe, expect, it } from "vitest";
+  // ❌ Error: 'vitest' should be listed in dependencies
+  // (even though it's in root package.json)
+  ```
+
+  After this change, the rule correctly finds dependencies in ancestor `package.json` files and recognizes peerDependencies.
+
+- [`fa8f8d0`](https://github.com/RobEasthope/protomolecule/commit/fa8f8d06a0c708c7e5c472f35057ef82bec40bf6) [#287](https://github.com/RobEasthope/protomolecule/pull/287) - Add relaxed TypeScript rules for test files
+
+  Created new test file overrides that downgrade strict TypeScript rules from error to warning in test files:
+  - `@typescript-eslint/no-explicit-any` → warning (allows testing type validation)
+  - `@typescript-eslint/no-non-null-assertion` → warning (allows assertions after preconditions)
+
+  Test files are matched by:
+  - `**/*.test.{ts,tsx,js,jsx}`
+  - `**/*.spec.{ts,tsx,js,jsx}`
+  - `**/__tests__/**/*.{ts,tsx,js,jsx}`
+
+  These rules remain warnings (not disabled) to maintain visibility during code review, while allowing idiomatic test patterns without blocking CI/CD.
+
 ## 4.1.0
 
 ### Minor Changes
