@@ -13,6 +13,21 @@ export const preferences = {
     "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
     "func-style": ["error", "declaration"],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: [
+          "**/*.test.{ts,tsx,js,jsx}",
+          "**/*.spec.{ts,tsx,js,jsx}",
+          "**/__tests__/**/*",
+          "**/*.config.{ts,js,mjs,cjs}",
+          ".changeset/**",
+          ".github/scripts/**",
+          "scripts/**",
+        ],
+        packageDir: ["./", "../", "../../"],
+      },
+    ],
     "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
     "perfectionist/sort-modules": "off",
     "prettier/prettier": [
