@@ -4,31 +4,31 @@ Shared ESLint v9 configuration with TypeScript and React support.
 
 ## 📦 Installation
 
-Install the config along with required peer dependencies:
+Install the config along with ESLint:
 
 ```bash
-pnpm add -D @robeasthope/eslint-config \
-  eslint-plugin-import-x \
-  eslint-plugin-react \
-  eslint-plugin-react-hooks \
-  eslint-plugin-jsx-a11y \
-  eslint-plugin-unicorn \
-  eslint-plugin-prettier \
-  eslint-plugin-promise \
-  eslint-plugin-regexp \
-  eslint-plugin-n \
-  eslint-plugin-jsdoc \
-  typescript-eslint
-
-# Optional: Add Astro plugin if using Astro
-pnpm add -D eslint-plugin-astro
+pnpm add -D @robeasthope/eslint-config eslint
 ```
 
-> **Note:** pnpm will warn you if any required peer dependencies are missing during installation.
+That's it! All ESLint plugins are bundled as dependencies, so you don't need to install them separately.
+
+### Migrating from v4.x
+
+If you're upgrading from v4.x, you can remove the plugin dependencies:
+
+```bash
+# Update to v5.0.0
+pnpm update @robeasthope/eslint-config@5.0.0
+
+# Remove plugin dependencies (now bundled)
+pnpm remove astro-eslint-parser eslint-plugin-import-x \
+  eslint-plugin-jsdoc eslint-plugin-jsx-a11y eslint-plugin-n \
+  eslint-plugin-prettier eslint-plugin-promise eslint-plugin-react \
+  eslint-plugin-react-hooks eslint-plugin-regexp eslint-plugin-unicorn \
+  typescript-eslint
+```
 
 ## 🚀 Usage
-
-### ESLint v9 Flat Config
 
 In your `eslint.config.js`:
 
@@ -46,16 +46,7 @@ export default [
 ];
 ```
 
-### Legacy Config (ESLint < v9)
-
-In your `.eslintrc.js`:
-
-```javascript
-module.exports = {
-  extends: ["@robeasthope/eslint-config"],
-  // your custom rules
-};
-```
+> **Note:** This config requires ESLint v9+ with flat config. For older ESLint versions, use `@robeasthope/eslint-config@4.x`.
 
 ## ✨ Features
 
@@ -102,17 +93,13 @@ export default [
 ];
 ```
 
-### Using Re-exported Plugins
+### Custom Plugin Configuration
 
-All plugins are re-exported for custom configurations in monorepo workspaces:
+If you need to configure plugins directly, install them separately:
 
 ```javascript
-import eslintConfig, {
-  pluginReact,
-  pluginImportX,
-  pluginUnicorn,
-  typescriptEslint,
-} from "@robeasthope/eslint-config";
+import eslintConfig from "@robeasthope/eslint-config";
+import pluginReact from "eslint-plugin-react";
 
 export default [
   ...eslintConfig,
@@ -126,21 +113,6 @@ export default [
   },
 ];
 ```
-
-**Available exports:**
-
-- `pluginAstro` - Astro linting rules
-- `pluginImportX` - Import/export ordering and resolution
-- `pluginJsdoc` - JSDoc comment validation
-- `pluginJsxA11y` - Accessibility rules for JSX
-- `pluginN` - Node.js best practices
-- `pluginPrettier` - Prettier integration
-- `pluginPromise` - Promise best practices
-- `pluginReact` - React rules
-- `pluginReactHooks` - React Hooks rules
-- `pluginRegexp` - Regular expression best practices
-- `pluginUnicorn` - Code quality improvements
-- `typescriptEslint` - TypeScript ESLint utilities
 
 ## 🔧 Development
 
