@@ -13,7 +13,7 @@ export const preferences = {
     "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
     "func-style": ["error", "declaration"],
-    "no-console": ["warn", { allow: ["error", "debug", "warn"] }],
+    "no-console": ["warn", { allow: ["error", "debug", "warn", "log"] }],
     "perfectionist/sort-modules": "off",
     "prettier/prettier": [
       "error",
