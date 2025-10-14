@@ -156,21 +156,13 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-      - name: 🔐 Configure npm for OIDC Publishing
-        run: |
-          # For OIDC trusted publishers, npm doesn't need a traditional auth token
-          # The --provenance flag triggers OIDC authentication automatically
-          # We just need to ensure we're pointing to the correct registry
-          echo "registry=https://registry.npmjs.org/" > .npmrc
-          echo "✅ npm configured for OIDC trusted publishers"
-
       - name: 🚀 Create Release or Publish
         id: changesets
         uses: changesets/action@v1.5.3
         with:
           # This will run pnpm changeset version && pnpm changeset publish
-          # --provenance flag enables supply chain attestations via OIDC
-          publish: pnpm changeset publish --provenance
+          # Provenance is enabled via publishConfig.provenance in package.json
+          publish: pnpm changeset publish
           # Commit message for version updates
           commit: "release: version packages for release"
           # Title for version update PRs - will be enhanced in next step
