@@ -26,6 +26,14 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: "pnpm"
 
+    - name: ⬆️ Upgrade npm for OIDC support
+      shell: bash
+      run: |
+        # npm trusted publishing requires npm CLI v11.5.1+
+        # Node.js 22 ships with npm 10.x, so we need to upgrade
+        npm install -g npm@latest
+        echo "✅ npm upgraded to $(npm --version)"
+
     - name: 🏪 Get pnpm store directory
       id: pnpm-cache
       shell: bash
