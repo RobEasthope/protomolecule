@@ -2,8 +2,11 @@ name: E2E Testing
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    paths:
+      # Run when UI package changes
+      - 'packages/ui/**'
+      # Run when workflow changes
+      - '.github/workflows/e2e-testing.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
