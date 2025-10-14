@@ -156,6 +156,14 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
+      - name: 🔐 Configure npm for OIDC Publishing
+        run: |
+          # For OIDC trusted publishers, npm doesn't need a traditional auth token
+          # The --provenance flag triggers OIDC authentication automatically
+          # We just need to ensure we're pointing to the correct registry
+          echo "registry=https://registry.npmjs.org/" > .npmrc
+          echo "✅ npm configured for OIDC trusted publishers"
+
       - name: 🚀 Create Release or Publish
         id: changesets
         uses: changesets/action@v1.5.3
