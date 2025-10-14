@@ -2,16 +2,20 @@
 "@protomolecule/infrastructure": patch
 ---
 
-Fix npm OIDC publishing by configuring provenance at package level
+Fix npm OIDC publishing by upgrading npm CLI and configuring provenance
 
 **Problem:**
-The `changesets/action` was overwriting our `.npmrc` configuration, causing `ENEEDAUTH` errors when attempting to publish with OIDC trusted publishers.
+Publishing to npm with OIDC trusted publishers was failing with `ENEEDAUTH` errors, despite having `id-token: write` permission configured.
 
-**Root Cause:**
-We were trying to configure npm registry settings via a workflow step that created `.npmrc`, but the changesets action detects this file doesn't have user-specific auth and replaces it with its own version, throwing away our configuration.
+**Root Causes:**
+
+1. **npm version too old**: Node.js 22 ships with npm 10.9.3, but npm trusted publishing requires **npm CLI v11.5.1+**
+2. **Missing provenance config**: Packages didn't have `provenance: true` in `publishConfig`
 
 **Solution:**
-Following the approach recommended in changesets issue #1152, we now configure provenance directly in each package's `package.json`:
+
+1. **Upgrade npm CLI** in the workflow to v11+ (latest) to enable OIDC support
+2. **Configure provenance per-package** following changesets issue #1152 guidance:
 
 ```json
 {
@@ -22,16 +26,18 @@ Following the approach recommended in changesets issue #1152, we now configure p
 }
 ```
 
-This enables npm CLI to:
+With npm 11.5.1+, this configuration enables the npm CLI to:
 
-1. Automatically use OIDC authentication when `id-token: write` permission is present
-2. Generate provenance attestations for published packages
-3. Work correctly with changesets/action without requiring `.npmrc` manipulation
+1. Automatically detect `id-token: write` permission in GitHub Actions
+2. Request OIDC tokens from GitHub
+3. Authenticate with npm using trusted publishers
+4. Generate cryptographic provenance attestations
 
 **Changes:**
 
+- ✅ Added `npm install -g npm@latest` step to upgrade npm CLI to v11+
 - ✅ Added `provenance: true` to all published packages (ui, eslint-config, colours, markdownlint-config)
-- ✅ Removed `.npmrc` configuration step from workflow
+- ✅ Removed `.npmrc` configuration step from workflow (npm CLI handles it automatically)
 - ✅ Removed `--provenance` flag from publish command (now configured per-package)
 
 **Benefits:**
