@@ -1,5 +1,13 @@
 # @protomolecule/infrastructure
 
+## 2.3.1
+
+### Patch Changes
+
+- [`85e4dc5`](https://github.com/RobEasthope/protomolecule/commit/85e4dc55e3f574dc2c276c828c0a9c102152bcd8) [#302](https://github.com/RobEasthope/protomolecule/pull/302) - Fix npm OIDC publishing by configuring registry before publish
+
+  Added npm registry configuration step before the changesets action to resolve ENEEDAUTH authentication errors when publishing with OIDC trusted publishers. The `.npmrc` file now explicitly sets the npm registry, allowing the `--provenance` flag to handle OIDC authentication automatically.
+
 ## 2.3.0
 
 ### Minor Changes
