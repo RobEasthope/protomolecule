@@ -1,5 +1,11 @@
 # @protomolecule/eslint-config
 
+## 5.2.1
+
+### Patch Changes
+
+- [`d08c518`](https://github.com/RobEasthope/protomolecule/commit/d08c51891dcc436e248926a8c2c2aa79cadbc0c1) [#311](https://github.com/RobEasthope/protomolecule/pull/311) - Relax func-style rule from error to warning and simplify options. Changed severity from 'error' to 'warn' and removed custom options for arrow functions and named exports to simplify rule enforcement while still encouraging function declarations.
+
 ## 5.2.0
 
 ### Minor Changes

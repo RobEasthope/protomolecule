@@ -1,5 +1,23 @@
 # @protomolecule/infrastructure
 
+## 2.3.4
+
+### Patch Changes
+
+- [`df38525`](https://github.com/RobEasthope/protomolecule/commit/df3852575081fb138e6cfed5a73f164fdf155448) [#309](https://github.com/RobEasthope/protomolecule/pull/309) - Optimize E2E testing workflow to run only when necessary
+
+  **Changes:**
+  - Remove push trigger - workflow now only runs on pull requests
+  - Add path filtering to skip when UI package is unchanged
+  - Prevents unnecessary CI runs on release automation commits
+
+  **Benefits:**
+  - Reduces GitHub Actions minutes usage
+  - Faster PR feedback (no queuing for irrelevant changes)
+  - Matches pattern used in linting-and-testing workflow
+
+  Closes #308
+
 ## 2.3.3
 
 ### Patch Changes
