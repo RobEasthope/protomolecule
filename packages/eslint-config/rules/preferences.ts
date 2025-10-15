@@ -15,11 +15,7 @@ export const preferences = {
     // Allow arrow functions for exported const with type annotations (React Router v7, Remix patterns)
     // e.g., `export const links: Route.LinksFunction = () => [...]`
     // See: https://github.com/RobEasthope/protomolecule/issues/299
-    "func-style": [
-      "error",
-      "declaration",
-      { allowArrowFunctions: true, overrides: { namedExports: "expression" } },
-    ],
+    "func-style": ["warn", "declaration"],
     "import/no-extraneous-dependencies": [
       "error",
       {
