@@ -16,12 +16,6 @@
   "name": "Protect production",
   "rules": [
     {
-      "type": "creation"
-    },
-    {
-      "type": "update"
-    },
-    {
       "type": "deletion"
     },
     {
