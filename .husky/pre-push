@@ -1,13 +1,62 @@
 #!/bin/sh
 
-# Pre-push hook to check for changesets when packages are modified
-# This prevents pushing package changes without a changeset
+# Pre-push hook to:
+# 1. Prevent direct pushes to main branch
+# 2. Check for changesets when packages are modified
+# This prevents accidental pushes to main and ensures proper versioning
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
+
+# Skip all checks in CI environments (GitHub Actions, etc.)
+if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ]; then
+  echo "⏭️  Pre-push: Skipping checks in CI environment"
+  exit 0
+fi
+
+echo "🔍 Pre-push: Checking branch protection..."
+
+# Get current branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Read the push details from stdin to get remote branch
+# We need to read stdin early, but save the data for later use
+STDIN_DATA=$(cat)
+
+# Check if pushing to main branch
+echo "$STDIN_DATA" | while read local_ref local_sha remote_ref remote_sha
+do
+  # Extract branch name from refs/heads/main format
+  REMOTE_BRANCH=$(echo "$remote_ref" | sed 's|refs/heads/||')
+
+  # Block direct pushes to main
+  if [ "$CURRENT_BRANCH" = "main" ] || [ "$REMOTE_BRANCH" = "main" ]; then
+    echo ""
+    echo "${RED}❌ ERROR: Direct pushes to 'main' branch are not allowed${NC}"
+    echo ""
+    echo "   Please create a Pull Request instead:"
+    echo ""
+    echo "   1. Create a feature branch:"
+    echo "      ${GREEN}git checkout -b feature/your-feature-name${NC}"
+    echo ""
+    echo "   2. Push your branch:"
+    echo "      ${GREEN}git push -u origin feature/your-feature-name${NC}"
+    echo ""
+    echo "   3. Create a PR via GitHub UI or:"
+    echo "      ${GREEN}gh pr create${NC}"
+    echo ""
+    echo "   ${YELLOW}To bypass this hook (NOT RECOMMENDED):${NC}"
+    echo "      git push --no-verify"
+    echo ""
+    exit 1
+  fi
+done
+
+# If we got here without exiting, re-process stdin for changeset checks
+echo "$STDIN_DATA" | {
 
 echo "🔍 Pre-push: Checking for changesets..."
 
@@ -159,3 +208,4 @@ done
 
 echo "${GREEN}✅ Pre-push checks passed${NC}"
 exit 0
+}
