@@ -1,11 +1,5 @@
 {
-  "bypass_actors": [
-    {
-      "actor_id": 15368,
-      "actor_type": "Integration",
-      "bypass_mode": "always"
-    }
-  ],
+  "bypass_actors": [],
   "conditions": {
     "ref_name": {
       "exclude": [],
@@ -15,12 +9,6 @@
   "enforcement": "active",
   "name": "Protect production",
   "rules": [
-    {
-      "type": "creation"
-    },
-    {
-      "type": "update"
-    },
     {
       "type": "deletion"
     },
