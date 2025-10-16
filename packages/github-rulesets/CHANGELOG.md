@@ -1,5 +1,58 @@
 # @protomolecule/github-rulesets
 
+## 2.0.0
+
+### Major Changes
+
+- [`e60f4a4`](https://github.com/RobEasthope/protomolecule/commit/e60f4a4eca5b9812679ea41028b98ffacc843ef5) [#318](https://github.com/RobEasthope/protomolecule/pull/318) - Simplify Protect production ruleset to minimal essential rules
+
+  **Breaking Change:** Significantly reduced branch protection rules to bare minimum.
+
+  **Removed rules:**
+  - `creation` - No longer blocks branch creation/recreation
+  - `update` - No longer blocks direct pushes to main
+  - Removed all `bypass_actors` configuration
+
+  **Remaining rules:**
+  - `deletion` - Prevents branch deletion
+  - `non_fast_forward` - Prevents force pushes
+  - `pull_request` - Requires PR workflow (no review required)
+
+  **Impact:**
+  - ✅ Developers can now push directly to main
+  - ✅ Release workflows work without bypass configuration
+  - ✅ CI checks still run on PRs and show results
+  - ⚠️ No enforcement of PR-only workflow
+  - ⚠️ Developers must use discipline to avoid direct pushes
+
+  **Why this change:**
+  After testing, the simplified ruleset provides essential protections (no force push, no deletion) while removing workflow friction. The `pull_request` rule encourages PR workflow but doesn't enforce it strictly.
+
+### Patch Changes
+
+- [`873face`](https://github.com/RobEasthope/protomolecule/commit/873face268c2126b372e977275cf97607d0ec77c) [#314](https://github.com/RobEasthope/protomolecule/pull/314) - Allow GitHub Actions to bypass Protect production ruleset and simplify rules
+
+  **Changes:**
+  - Add `bypass_actors` with GitHub Actions integration (actor_id: 15368)
+  - Remove `required_linear_history` rule for flexibility with merge strategies
+  - Maintain all core protection rules
+
+  **What this enables:**
+  - GitHub Actions can push version bump commits during releases
+  - Automated release workflow (`changesets/action`) functions properly
+  - Supports both merge commits and squash/rebase strategies
+  - Human developers still blocked from direct pushes
+
+  **Why this is needed:**
+
+  The `update` rule blocks ALL direct pushes to main, including automated CI/CD workflows. This change allows the release workflow to push version bump commits while maintaining protection against manual developer pushes.
+
+  **Security:**
+  - Only workflows running from repository branches can bypass
+  - External forks cannot trigger bypass-enabled workflows
+  - `RELEASE_PAT` token still requires proper permissions
+  - Core protections remain: creation, update, deletion, non_fast_forward, pull_request
+
 ## 1.2.0
 
 ### Minor Changes
