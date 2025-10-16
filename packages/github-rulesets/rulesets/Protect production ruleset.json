@@ -33,30 +33,6 @@
         "required_review_thread_resolution": true
       },
       "type": "pull_request"
-    },
-    {
-      "parameters": {
-        "required_status_checks": [
-          {
-            "context": "Lint",
-            "integration_id": 15368
-          },
-          {
-            "context": "Build",
-            "integration_id": 15368
-          },
-          {
-            "context": "Test",
-            "integration_id": 15368
-          },
-          {
-            "context": "Changeset Check",
-            "integration_id": 15368
-          }
-        ],
-        "strict_required_status_checks_policy": true
-      },
-      "type": "required_status_checks"
     }
   ],
   "target": "branch"
