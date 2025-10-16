@@ -1,5 +1,11 @@
 {
-  "bypass_actors": [],
+  "bypass_actors": [
+    {
+      "actor_id": 15368,
+      "actor_type": "Integration",
+      "bypass_mode": "always"
+    }
+  ],
   "conditions": {
     "ref_name": {
       "exclude": [],
@@ -20,9 +26,6 @@
     },
     {
       "type": "non_fast_forward"
-    },
-    {
-      "type": "required_linear_history"
     },
     {
       "type": "pull_request"
