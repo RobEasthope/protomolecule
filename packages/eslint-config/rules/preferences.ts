@@ -72,6 +72,24 @@ export const preferences = {
     "unicorn/numeric-separators-style": "off",
   },
   settings: {
+    // TypeScript import resolver for monorepo support
+    // Fixes false positives with import/no-extraneous-dependencies when lint-staged
+    // passes absolute file paths in monorepo workspaces
+    // See: https://github.com/RobEasthope/protomolecule/issues/327
+    "import-x/resolver": {
+      typescript: {
+        // Always try to resolve types under `@types/*` directory
+        alwaysTryTypes: true,
+        // Support both monorepo and single-package projects
+        // Monorepo: Multiple tsconfig files for workspace packages
+        // Single package: Falls back to root tsconfig.json
+        project: [
+          "tsconfig.json", // Root or single package
+          "apps/*/tsconfig.json", // Monorepo apps
+          "packages/*/tsconfig.json", // Monorepo packages
+        ],
+      },
+    },
     react: {
       version: "detect",
     },
