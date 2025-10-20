@@ -1,5 +1,74 @@
 # @protomolecule/eslint-config
 
+## 5.3.0
+
+### Minor Changes
+
+- [`7cbd100`](https://github.com/RobEasthope/protomolecule/commit/7cbd100320ee114a750d9db22211069def0fe57d) [#324](https://github.com/RobEasthope/protomolecule/pull/324) - Enforce function declarations with error-level func-style rule
+
+  **Breaking Change for Consumers:**
+  The `func-style` rule now errors (previously warned) when arrow functions or function expressions are used instead of function declarations. This enforces consistent function declaration style across codebases.
+
+  **Changes:**
+  - Changed `func-style` from `"warn"` to `"error"` severity
+  - Function declarations are now the enforced standard pattern
+  - Arrow functions and function expressions will cause linting failures
+
+  **Migration Guide:**
+  Convert arrow functions and function expressions to function declarations:
+
+  ```typescript
+  // ❌ Before (now errors)
+  const myFunction = () => {
+    // ...
+  };
+
+  // ✅ After
+  function myFunction() {
+    // ...
+  }
+  ```
+
+  **Framework-Specific Exceptions:**
+  React Router 7 files (`root.tsx`, `*route.tsx`) will need special handling in a future update, as they require arrow functions for typed exports like `export const links: Route.LinksFunction = () => [...]`. See issue #323 for tracking.
+
+  **Rationale:**
+  - Better hoisting behavior
+  - Clearer stack traces in debugging
+  - Explicit function names in all contexts
+  - Consistent codebase style
+
+### Patch Changes
+
+- [`c52f51a`](https://github.com/RobEasthope/protomolecule/commit/c52f51a6e8653d854f64115a9881842eb98d8259) [#325](https://github.com/RobEasthope/protomolecule/pull/325) - Add React Router 7 exceptions for func-style rule
+
+  **Changes:**
+  - Created `reactRouterExceptions` config for React Router 7 files (`root.tsx`, `*.route.tsx`)
+  - These files now allow arrow functions via `allowArrowFunctions` option
+  - Exceptions properly override the strict func-style enforcement from base config
+
+  **React Router 7 Patterns Now Allowed:**
+
+  ```typescript
+  // ✅ Allowed in root.tsx and *.route.tsx files
+  export const links: Route.LinksFunction = () => [...];
+  export const meta: Route.MetaFunction = () => ({ ... });
+  export const loader: Route.LoaderFunction = async () => { ... };
+  ```
+
+  **Why This Exception Is Needed:**
+  React Router 7 uses typed exports that require arrow functions or function expressions because:
+  1. They need type annotations (`Route.LinksFunction`, etc.)
+  2. TypeScript doesn't allow type annotations on function declarations
+  3. The framework expects these specific export patterns
+
+  **Implementation Details:**
+  - Created `rules/reactRouterExceptions.ts` with framework-specific overrides
+  - Added to config array AFTER `preferences` (order matters for override behavior)
+  - Uses `allowArrowFunctions: true` option to permit arrow functions in variable declarations
+
+  **Resolves:** #323
+
 ## 5.2.1
 
 ### Patch Changes
