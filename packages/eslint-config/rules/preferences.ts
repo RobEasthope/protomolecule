@@ -12,10 +12,11 @@ export const preferences = {
   rules: {
     "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
-    // Allow arrow functions for exported const with type annotations (React Router v7, Remix patterns)
-    // e.g., `export const links: Route.LinksFunction = () => [...]`
+    // Enforce function declarations as the standard pattern
+    // Arrow functions and function expressions will error
+    // Note: React Router 7 files (root.tsx, *route.tsx) need framework-specific exceptions
     // See: https://github.com/RobEasthope/protomolecule/issues/299
-    "func-style": ["warn", "declaration"],
+    "func-style": ["error", "declaration"],
     "import/no-extraneous-dependencies": [
       "error",
       {
