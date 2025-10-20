@@ -6,6 +6,7 @@ import { frameworkRouting } from "./rules/frameworkRouting";
 import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";
+import { reactRouterExceptions } from "./rules/reactRouterExceptions";
 import { storybook } from "./rules/storybook";
 import { testFiles } from "./rules/testFiles";
 import { typescriptOverrides } from "./rules/typescriptOverrides";
@@ -32,6 +33,9 @@ const config: any[] = [
   testFiles,
   ...astro,
   preferences,
+  // React Router 7 exceptions MUST come after preferences to override func-style
+  // See: https://github.com/RobEasthope/protomolecule/issues/323
+  reactRouterExceptions,
   frameworkRouting,
 ];
 
