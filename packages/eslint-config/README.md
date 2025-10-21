@@ -12,13 +12,51 @@ pnpm add -D @robeasthope/eslint-config eslint
 
 That's it! All ESLint plugins are bundled as dependencies, so you don't need to install them separately.
 
+### Migrating from v5.x
+
+**v6.0.0 introduces a breaking change**: Type import style has changed from inline to top-level for React Router 7 compatibility.
+
+```bash
+# Update to v6.0.0
+pnpm update @robeasthope/eslint-config@6.0.0
+
+# Auto-fix most import style changes
+pnpm lint:fix
+```
+
+**What changed:**
+
+```typescript
+// Before (v5.x - Inline Style)
+import { useState, type FC } from "react";
+
+// After (v6.0.0 - Top-Level Style)
+import type { FC } from "react";
+import { useState } from "react";
+```
+
+**Manual fixes required** for mixed imports:
+
+```typescript
+// Before
+import { useState, type FC, type ReactNode } from "react";
+
+// After - Split manually
+import type { FC, ReactNode } from "react";
+import { useState } from "react";
+```
+
+**If you overrode import rules for React Router 7**, you can now remove those overrides as they're built-in.
+
+See the [full migration guide](https://github.com/RobEasthope/protomolecule/issues/333) for details.
+
 ### Migrating from v4.x
 
 If you're upgrading from v4.x, you can remove the plugin dependencies:
 
 ```bash
-# Update to v5.0.0
-pnpm update @robeasthope/eslint-config@5.0.0
+# Update to v5.0.0+
+pnpm update @robeasthope/eslint-config
 
 # Remove plugin dependencies (now bundled)
 pnpm remove astro-eslint-parser eslint-plugin-import-x \
@@ -54,6 +92,7 @@ This configuration includes:
 
 - **TypeScript Support**: Full TypeScript linting with type checking
 - **React Support**: React and JSX best practices
+- **React Router 7 Compatible**: Top-level type imports for virtual module compatibility
 - **Modern JavaScript**: ES2022+ features
 - **Code Quality**: Enforces consistent code style
 - **Accessibility**: Basic a11y checks for React components
@@ -71,6 +110,7 @@ This configuration includes:
 
 - Strict TypeScript checking
 - React 19 compatible rules
+- **Top-level type imports** (`import type { }` instead of `import { type }`)
 - Consistent import ordering
 - No unused variables or imports
 - Consistent naming conventions
