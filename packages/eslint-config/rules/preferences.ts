@@ -1,4 +1,4 @@
-import { type Linter } from "eslint";
+import type { Linter } from "eslint";
 
 export const preferences = {
   files: ["**/*.{ts,tsx,js,jsx,mjs}"],
@@ -12,11 +12,25 @@ export const preferences = {
   rules: {
     "canonical/filename-match-regex": "off",
     "canonical/id-match": "off",
+    // Prefer top-level type imports for React Router 7 compatibility
+    // Top-level: import type { Foo } from 'bar'
+    // Inline: import { type Foo } from 'bar' (causes issues with virtual modules)
+    // See: https://github.com/RobEasthope/protomolecule/issues/333
+    "canonical/prefer-inline-type-import": "off",
     // Enforce function declarations as the standard pattern
     // Arrow functions and function expressions will error
     // Note: React Router 7 files (root.tsx, *route.tsx) need framework-specific exceptions
     // See: https://github.com/RobEasthope/protomolecule/issues/299
     "func-style": ["error", "declaration"],
+    // Prefer top-level type imports over inline type imports
+    // This ensures compatibility with React Router 7 virtual modules and verbatimModuleSyntax
+    // See: https://github.com/RobEasthope/protomolecule/issues/333
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    // Prevent duplicate imports from the same module
+    // With prefer-inline: false, allows separate type and value imports
+    // e.g., import { useState } from 'react' and import type { FC } from 'react'
+    // See: https://github.com/RobEasthope/protomolecule/issues/333
+    "import/no-duplicates": ["error", { "prefer-inline": false }],
     "import/no-extraneous-dependencies": [
       "error",
       {

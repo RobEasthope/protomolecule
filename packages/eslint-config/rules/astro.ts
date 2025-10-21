@@ -1,4 +1,4 @@
-import { type Linter } from "eslint";
+import type { Linter } from "eslint";
 import { configs } from "eslint-plugin-astro";
 
 export const astro = [
