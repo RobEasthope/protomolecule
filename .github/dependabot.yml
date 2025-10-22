@@ -12,38 +12,20 @@ updates:
       time: "09:00"
       timezone: "Europe/London"
 
-    # Group updates by type for easier review
+    # Single group for ALL npm updates to avoid merge conflicts
+    # This creates one PR per week with all dependency updates combined
+    # Rationale: Multiple concurrent PRs cause conflicts in package.json and pnpm-lock.yaml
     groups:
-      # All development dependencies - non-breaking updates
-      # Combines tooling, testing, and type definitions
-      dev-dependencies:
-        dependency-type: "development"
-        update-types: ["minor", "patch"]
+      all-dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
 
-      # Production dependencies - non-breaking updates
-      # Includes React, Storybook, and runtime dependencies
-      prod-dependencies:
-        dependency-type: "production"
-        update-types: ["minor", "patch"]
-        patterns:
-          - "*"
-
-      # Major updates for development dependencies
-      # Grouped for review but kept separate from non-breaking changes
-      dev-major:
-        dependency-type: "development"
-        update-types: ["major"]
-
-      # Major updates for production dependencies
-      # Require careful review and testing
-      prod-major:
-        dependency-type: "production"
-        update-types: ["major"]
-
-    # Limit concurrent PRs to avoid overwhelming CI
-    open-pull-requests-limit: 10
+    # Only one PR at a time - prevents merge conflicts entirely
+    open-pull-requests-limit: 1
 
     # Assign PRs to maintainer for review
     reviewers:
@@ -55,9 +37,9 @@ updates:
       - "automated"
 
     # Commit message prefix follows conventional commits
+    # Single prefix since all updates are grouped together
     commit-message:
-      prefix: "build(deps)"
-      prefix-development: "chore(deps-dev)"
+      prefix: "chore(deps)"
       include: "scope"
 
   # GitHub Actions workflow dependencies
@@ -75,7 +57,8 @@ updates:
         patterns:
           - "*"
 
-    open-pull-requests-limit: 5
+    # Only one PR at a time
+    open-pull-requests-limit: 1
 
     reviewers:
       - "RobEasthope"
