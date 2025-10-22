@@ -1,7 +1,7 @@
 import type { Linter } from "eslint";
 import { configs } from "eslint-plugin-astro";
 
-export const astro = [
+export const astro: Linter.Config[] = [
   ...configs["flat/recommended"],
   {
     files: ["**/*.astro"],
