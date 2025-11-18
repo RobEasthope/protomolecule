@@ -1,5 +1,13 @@
 # @robeasthope/markdownlint-config
 
+## 1.1.1
+
+### Patch Changes
+
+- [`e98d3f7`](https://github.com/RobEasthope/protomolecule/commit/e98d3f7fdaee497ae24a06df75389273d5e0428d) [#345](https://github.com/RobEasthope/protomolecule/pull/345) - Disable MD040 rule (fenced code language requirement)
+
+  The MD040 rule has been causing unnecessary friction by requiring all fenced code blocks to have a language identifier. This change provides more flexibility for markdown authoring while maintaining other code quality standards.
+
 ## 1.1.0
 
 ### Minor Changes
