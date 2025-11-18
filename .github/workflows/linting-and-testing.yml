@@ -161,7 +161,8 @@ jobs:
             # Require changeset for functional package.json changes
             if echo "$file" | grep -q "package.json$"; then
               # Check if the diff includes changes to dependencies, exports, main, module, types, or scripts
-              if git diff origin/${{ github.base_ref }}...HEAD "$file" | grep -qE '^\+.*"(dependencies|peerDependencies|exports|main|module|types|bin|scripts)":'; then
+              if git diff origin/${{ github.base_ref }}...HEAD "$file" | \
+                 grep -qE '^\+.*"(dependencies|peerDependencies|exports|main|module|types|bin|scripts)":'; then
                 REQUIRES_CHANGESET=true
                 break
               fi
@@ -236,7 +237,9 @@ jobs:
             packages/*/.vitest
             packages/*/coverage
             test-results
-          key: ${{ runner.os }}-vitest-${{ hashFiles('**/src/**/*.test.*', '**/src/**/*.spec.*', '**/vitest.config.*') }}
+          key: >-
+            ${{ runner.os }}-vitest-${{ hashFiles('**/src/**/*.test.*',
+            '**/src/**/*.spec.*', '**/vitest.config.*') }}
           restore-keys: |
             ${{ runner.os }}-vitest-
 
@@ -304,7 +307,9 @@ jobs:
           # Install actionlint
           bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
           # Run actionlint on workflow files (ignore shellcheck style warnings)
-          if ./actionlint -color -ignore 'SC2086' -ignore 'SC2129' -ignore 'SC2001' -ignore 'SC2010' -ignore 'SC2295' -ignore 'SC2034'; then
+          if ./actionlint -color \
+             -ignore 'SC2086' -ignore 'SC2129' -ignore 'SC2001' \
+             -ignore 'SC2010' -ignore 'SC2295' -ignore 'SC2034'; then
             echo "✅ **GitHub Actions workflows validated**" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ **GitHub Actions validation failed** - Check the logs for details" >> $GITHUB_STEP_SUMMARY
@@ -323,7 +328,11 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Determine overall status
-          if [[ "${{ needs.lint.result }}" == "success" && "${{ needs.typecheck.result }}" == "success" && "${{ needs.test.result }}" == "success" && "${{ needs.changeset.result }}" == "success" && "${{ needs.yaml-lint.result }}" == "success" ]]; then
+          if [[ "${{ needs.lint.result }}" == "success" && \
+                "${{ needs.typecheck.result }}" == "success" && \
+                "${{ needs.test.result }}" == "success" && \
+                "${{ needs.changeset.result }}" == "success" && \
+                "${{ needs.yaml-lint.result }}" == "success" ]]; then
             echo "### ✅ All checks passed!" >> $GITHUB_STEP_SUMMARY
             OVERALL_STATUS="success"
           else
@@ -339,7 +348,10 @@ jobs:
           if [[ "${{ needs.lint.result }}" == "success" ]]; then
             echo "| 🔬 ESLint | ✅ Passed | Code style checks passed |" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ needs.lint.result }}" == "failure" ]]; then
-            echo "| 🔬 ESLint | ❌ Failed | See [lint job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            {
+              echo -n "| 🔬 ESLint | ❌ Failed | See "
+              echo "[lint logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |"
+            } >> $GITHUB_STEP_SUMMARY
           else
             echo "| 🔬 ESLint | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
           fi
@@ -348,7 +360,10 @@ jobs:
           if [[ "${{ needs.typecheck.result }}" == "success" ]]; then
             echo "| 🔎 TypeScript | ✅ Passed | Type safety verified |" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ needs.typecheck.result }}" == "failure" ]]; then
-            echo "| 🔎 TypeScript | ❌ Failed | See [typecheck job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            {
+              echo -n "| 🔎 TypeScript | ❌ Failed | "
+              echo "[logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |"
+            } >> $GITHUB_STEP_SUMMARY
           else
             echo "| 🔎 TypeScript | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
           fi
@@ -357,7 +372,10 @@ jobs:
           if [[ "${{ needs.test.result }}" == "success" ]]; then
             echo "| 🧪 Unit Tests | ✅ Passed | All tests successful |" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ needs.test.result }}" == "failure" ]]; then
-            echo "| 🧪 Unit Tests | ❌ Failed | See [test job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            {
+              echo -n "| 🧪 Unit Tests | ❌ Failed | See "
+              echo "[test logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |"
+            } >> $GITHUB_STEP_SUMMARY
           else
             echo "| 🧪 Unit Tests | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
           fi
@@ -366,16 +384,23 @@ jobs:
           if [[ "${{ needs.changeset.result }}" == "success" ]]; then
             echo "| 📝 Changeset | ✅ Passed | Version tracking ready |" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ needs.changeset.result }}" == "failure" ]]; then
-            echo "| 📝 Changeset | ❌ Failed | See [changeset job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            {
+              echo -n "| 📝 Changeset | ❌ Failed | "
+              echo "[logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |"
+            } >> $GITHUB_STEP_SUMMARY
           else
             echo "| 📝 Changeset | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
           fi
 
           # YAML Lint status
           if [[ "${{ needs.yaml-lint.result }}" == "success" ]]; then
-            echo "| 📝 YAML Validation | ✅ Passed | YAML syntax and GitHub Actions validated |" >> $GITHUB_STEP_SUMMARY
+            echo "| 📝 YAML Validation | ✅ Passed | " \
+              "YAML syntax and GitHub Actions validated |" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ needs.yaml-lint.result }}" == "failure" ]]; then
-            echo "| 📝 YAML Validation | ❌ Failed | See [yaml-lint job logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            {
+              echo -n "| 📝 YAML Validation | ❌ Failed | "
+              echo "[logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |"
+            } >> $GITHUB_STEP_SUMMARY
           else
             echo "| 📝 YAML Validation | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
           fi
@@ -385,7 +410,8 @@ jobs:
           echo "- **True Parallel Execution**: All checks run simultaneously from start" >> $GITHUB_STEP_SUMMARY
           echo "- **Composite Actions**: Reduced setup duplication" >> $GITHUB_STEP_SUMMARY
           echo "- **Smart Caching**: pnpm store, ESLint, TypeScript, and Turbo caches" >> $GITHUB_STEP_SUMMARY
-          echo "- **Minimal Building**: Only builds what's necessary (eslint-config for linting)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Minimal Building**: Only builds what's necessary " \
+            "(eslint-config for linting)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "---" >> $GITHUB_STEP_SUMMARY
