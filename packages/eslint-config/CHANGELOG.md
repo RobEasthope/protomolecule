@@ -1,5 +1,13 @@
 # @protomolecule/eslint-config
 
+## 6.0.1
+
+### Patch Changes
+
+- [`be027e0`](https://github.com/RobEasthope/protomolecule/commit/be027e09ad09a7dadb71bb69c32b3adb1952d9ae) [#350](https://github.com/RobEasthope/protomolecule/pull/350) - Fix TypeScript compilation error with astro rule type inference
+
+  Added explicit type annotation `Linter.Config[]` to the astro export to resolve TypeScript error TS2742. The compiler was unable to infer the type without an explicit reference, causing build failures.
+
 ## 6.0.0
 
 ### Major Changes
