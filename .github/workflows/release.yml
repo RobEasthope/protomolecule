@@ -86,7 +86,9 @@ jobs:
               else
                 echo "✅ ESLint config: build output verified" >> $GITHUB_STEP_SUMMARY
                 # Additional validation: check file size is reasonable
-                FILE_SIZE=$(stat -f%z "packages/eslint-config/dist/index.js" 2>/dev/null || stat -c%s "packages/eslint-config/dist/index.js" 2>/dev/null || echo 0)
+                FILE_SIZE=$(stat -f%z "packages/eslint-config/dist/index.js" 2>/dev/null || \
+                           stat -c%s "packages/eslint-config/dist/index.js" 2>/dev/null || \
+                           echo 0)
                 if [ "$FILE_SIZE" -lt 100 ]; then
                   echo "  ⚠️ Warning: dist/index.js seems unusually small (${FILE_SIZE} bytes)" >> $GITHUB_STEP_SUMMARY
                 fi
@@ -344,7 +346,8 @@ jobs:
                   echo "✅ $PACKAGE_VERSION is available on npm" >> $GITHUB_STEP_SUMMARY
                 else
                   # It might be private or still propagating
-                  echo "⚠️ $PACKAGE_VERSION not immediately visible on npm (may be private or propagating)" >> $GITHUB_STEP_SUMMARY
+                  echo "⚠️ $PACKAGE_VERSION not immediately visible on npm" \
+                       "(may be private or propagating)" >> $GITHUB_STEP_SUMMARY
                 fi
               fi
             done
@@ -352,7 +355,8 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### GitHub Packages" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ Packages published to GitHub Packages (authentication required for verification)" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Packages published to GitHub Packages" \
+                 "(authentication required for verification)" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
