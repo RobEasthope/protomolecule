@@ -18,7 +18,7 @@ import type { Linter } from "eslint";
  * @see https://perfectionist.dev/rules/sort-objects
  * @see https://www.sanity.io/docs/schema-field-types
  */
-export const sanitySchema = {
+const sanitySchemaPropertyOrdering = {
   files: ["**/*.schema.ts"],
   rules: {
     "perfectionist/sort-objects": [
@@ -103,3 +103,35 @@ export const sanitySchema = {
     ],
   },
 } satisfies Linter.Config;
+
+/**
+ * ESLint configuration for Sanity Studio structure files
+ *
+ * Sanity structure files (structure.ts, deskStructure.ts) use specific conventions
+ * that conflict with standard ESLint rules:
+ *
+ * 1. Arrow functions assigned to constants (standard Sanity pattern):
+ *    export const structure: StructureResolver = (S) => S.list()...
+ *
+ * 2. Single-letter `S` parameter (Sanity StructureBuilder convention):
+ *    The `S` parameter is universally used in Sanity documentation
+ *    and examples to represent the StructureBuilder object.
+ * @see https://github.com/RobEasthope/protomolecule/issues/365
+ * @see https://www.sanity.io/docs/structure-builder-introduction
+ */
+const sanityStructure = {
+  files: ["**/structure.ts", "**/deskStructure.ts"],
+  rules: {
+    "func-style": "off",
+    "id-length": "off",
+  },
+} satisfies Linter.Config;
+
+/**
+ * Combined Sanity ESLint configurations
+ *
+ * Exports an array containing all Sanity-related ESLint configs:
+ * - Schema property ordering for *.schema.ts files
+ * - Structure file exceptions for structure.ts and deskStructure.ts
+ */
+export const sanity = [sanitySchemaPropertyOrdering, sanityStructure];
