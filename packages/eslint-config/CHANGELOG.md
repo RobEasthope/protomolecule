@@ -1,5 +1,29 @@
 # @protomolecule/eslint-config
 
+## 6.1.0
+
+### Minor Changes
+
+- [`8540d1b`](https://github.com/RobEasthope/protomolecule/commit/8540d1bd46e79f06df55386cc53f89bc65ed3459) [#362](https://github.com/RobEasthope/protomolecule/pull/362) - Add ESLint rule for Sanity schema property ordering
+
+  Adds a new `sanitySchema` rule configuration that enforces consistent property ordering in `defineField()` and `defineType()` calls within `*.schema.ts` files.
+
+  **Property ordering groups:**
+  1. Identity: `name`, `title`, `type`, `icon`
+  2. Organization: `fieldset`, `group`, `groups`, `fieldsets`
+  3. Behavior: `hidden`, `readOnly`
+  4. Type-specific: `options`, `rows`, `to`, `of`, `marks`, `styles`
+  5. Content defaults: `initialValue`, `description`
+  6. Document-level: `preview`, `orderings`
+  7. Validation: `validation`
+  8. Fields: `fields` (always last for document types)
+
+  The rule is auto-fixable with `eslint --fix`.
+
+- [`849d4d5`](https://github.com/RobEasthope/protomolecule/commit/849d4d5a55cdbdae6d270f4669a8429e58aaf210) [#361](https://github.com/RobEasthope/protomolecule/pull/361) - Update eslint-plugin-react-hooks from 6.x to 7.x
+
+  This brings the React hooks ESLint plugin to the latest major version, ensuring compatibility with consumer projects that have upgraded to the newer version.
+
 ## 6.0.2
 
 ### Patch Changes
