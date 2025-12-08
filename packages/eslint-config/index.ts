@@ -7,6 +7,7 @@ import { ignoredFileAndFolders } from "./rules/ignoredFileAndFolders";
 import { packageJson } from "./rules/packageJson";
 import { preferences } from "./rules/preferences";
 import { reactRouterExceptions } from "./rules/reactRouterExceptions";
+import { sanitySchema } from "./rules/sanitySchema";
 import { storybook } from "./rules/storybook";
 import { testFiles } from "./rules/testFiles";
 import { typescriptOverrides } from "./rules/typescriptOverrides";
@@ -37,6 +38,9 @@ const config: any[] = [
   // See: https://github.com/RobEasthope/protomolecule/issues/323
   reactRouterExceptions,
   frameworkRouting,
+  // Sanity schema property ordering for *.schema.ts files
+  // See: https://github.com/RobEasthope/protomolecule/issues/360
+  sanitySchema,
 ];
 
 export default config;
