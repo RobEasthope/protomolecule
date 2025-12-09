@@ -18,6 +18,6 @@
   "devDependencies": {
     "@robeasthope/markdownlint-config": "workspace:*",
     "@robeasthope/tsconfig": "workspace:*",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.1.2"
   }
 }
