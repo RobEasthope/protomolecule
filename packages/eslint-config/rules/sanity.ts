@@ -53,15 +53,15 @@ const sanitySchemaPropertyOrdering = {
           { elementNamePattern: "^initialValue$", groupName: "initialValue" },
           { elementNamePattern: "^description$", groupName: "description" },
 
-          // 6. Document-level
-          { elementNamePattern: "^preview$", groupName: "preview" },
-          { elementNamePattern: "^orderings$", groupName: "orderings" },
-
-          // 7. Validation (often longest, so near the end)
+          // 6. Validation (often longest, so near the end)
           { elementNamePattern: "^validation$", groupName: "validation" },
 
-          // 8. Fields array (always last for document types - it's the bulk of the schema)
+          // 7. Fields array (always last for document types - it's the bulk of the schema)
           { elementNamePattern: "^fields$", groupName: "fields" },
+
+          // 8. Document-level
+          { elementNamePattern: "^preview$", groupName: "preview" },
+          { elementNamePattern: "^orderings$", groupName: "orderings" },
         ],
         groups: [
           // Identity
@@ -87,13 +87,13 @@ const sanitySchemaPropertyOrdering = {
           // Content defaults
           "initialValue",
           "description",
-          // Document-level
-          "preview",
-          "orderings",
           // Validation
           "validation",
           // Fields
           "fields",
+          // Document-level
+          "preview",
+          "orderings",
           // Everything else (sorted alphabetically)
           "unknown",
         ],
