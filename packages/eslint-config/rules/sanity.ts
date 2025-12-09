@@ -120,7 +120,7 @@ const sanitySchemaPropertyOrdering = {
  * @see https://www.sanity.io/docs/structure-builder-introduction
  */
 const sanityStructure = {
-  files: ["**/structure.ts", "**/deskStructure.ts"],
+  files: ["**/sanity.structure.ts", "**/deskStructure.ts"],
   rules: {
     "func-style": "off",
     "id-length": "off",
