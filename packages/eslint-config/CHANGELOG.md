@@ -1,5 +1,11 @@
 # @protomolecule/eslint-config
 
+## 6.2.1
+
+### Patch Changes
+
+- [`f05be2f`](https://github.com/RobEasthope/protomolecule/commit/f05be2fa1667546555c2113042559e5b1117af85) [#368](https://github.com/RobEasthope/protomolecule/pull/368) - Improve Sanity ESLint rules: reorder schema property ordering (move fields earlier) and update structure file pattern to match naming convention
+
 ## 6.2.0
 
 ### Minor Changes
