@@ -1,5 +1,11 @@
 # @protomolecule/infrastructure
 
+## 2.5.1
+
+### Patch Changes
+
+- [`72cd625`](https://github.com/RobEasthope/protomolecule/commit/72cd625fb5e267572f27b9311fc23b001056756f) [#371](https://github.com/RobEasthope/protomolecule/pull/371) - Remove Claude Code review workflows since we're no longer using Claude Code
+
 ## 2.5.0
 
 ### Minor Changes
