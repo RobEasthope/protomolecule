@@ -31,17 +31,20 @@ const sanitySchemaPropertyOrdering = {
           { elementNamePattern: "^type$", groupName: "type" },
           { elementNamePattern: "^icon$", groupName: "icon" },
 
-          // 2. Organization - where does it go?
+          // 2. Fields array (always last for document types - it's the bulk of the schema)
+          { elementNamePattern: "^fields$", groupName: "fields" },
+
+          // 3. Organization - where does it go?
           { elementNamePattern: "^fieldset$", groupName: "fieldset" },
           { elementNamePattern: "^group$", groupName: "group" },
           { elementNamePattern: "^groups$", groupName: "groups" },
           { elementNamePattern: "^fieldsets$", groupName: "fieldsets" },
 
-          // 3. Behavior - how does it behave?
+          // 4. Behavior - how does it behave?
           { elementNamePattern: "^hidden$", groupName: "hidden" },
           { elementNamePattern: "^readOnly$", groupName: "readOnly" },
 
-          // 4. Type-specific options
+          // 5. Type-specific options
           { elementNamePattern: "^options$", groupName: "options" },
           { elementNamePattern: "^rows$", groupName: "rows" },
           { elementNamePattern: "^to$", groupName: "to" },
@@ -49,15 +52,12 @@ const sanitySchemaPropertyOrdering = {
           { elementNamePattern: "^marks$", groupName: "marks" },
           { elementNamePattern: "^styles$", groupName: "styles" },
 
-          // 5. Content defaults
+          // 6. Content defaults
           { elementNamePattern: "^initialValue$", groupName: "initialValue" },
           { elementNamePattern: "^description$", groupName: "description" },
 
-          // 6. Validation (often longest, so near the end)
+          // 7. Validation (often longest, so near the end)
           { elementNamePattern: "^validation$", groupName: "validation" },
-
-          // 7. Fields array (always last for document types - it's the bulk of the schema)
-          { elementNamePattern: "^fields$", groupName: "fields" },
 
           // 8. Document-level
           { elementNamePattern: "^preview$", groupName: "preview" },
@@ -69,6 +69,8 @@ const sanitySchemaPropertyOrdering = {
           "title",
           "type",
           "icon",
+          // Fields
+          "fields",
           // Organization
           "fieldset",
           "group",
@@ -89,8 +91,7 @@ const sanitySchemaPropertyOrdering = {
           "description",
           // Validation
           "validation",
-          // Fields
-          "fields",
+
           // Document-level
           "preview",
           "orderings",
