@@ -53,30 +53,30 @@
   },
   "dependencies": {
     "astro-eslint-parser": "^1.0.0",
-    "eslint-config-canonical": "^45.0.1",
-    "eslint-plugin-astro": "^1.0.0",
+    "eslint-config-canonical": "^47.3.8",
+    "eslint-plugin-astro": "^1.5.0",
     "eslint-plugin-import-x": "^4.16.1",
-    "eslint-plugin-jsdoc": "^60.8.2",
+    "eslint-plugin-jsdoc": "^62.1.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-n": "^17.23.1",
-    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-n": "^17.23.2",
+    "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-regexp": "^2.10.0",
-    "eslint-plugin-unicorn": "^61.0.2",
-    "globals": "^16.4.0",
-    "typescript-eslint": "^8.46.0"
+    "eslint-plugin-unicorn": "^62.0.0",
+    "globals": "^17.0.0",
+    "typescript-eslint": "^8.53.0"
   },
   "devDependencies": {
     "@robeasthope/markdownlint-config": "workspace:*",
     "@robeasthope/tsconfig": "workspace:*",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^24.6.2",
+    "@types/node": "^25.0.9",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.4.5"
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
