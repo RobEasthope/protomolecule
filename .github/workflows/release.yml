@@ -22,7 +22,7 @@ jobs:
       id-token: write # Required for npm provenance
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           # Use RELEASE_PAT for protected branches and version commits
@@ -160,7 +160,7 @@ jobs:
 
       - name: 🚀 Create Release or Publish
         id: changesets
-        uses: changesets/action@v1.5.3
+        uses: changesets/action@v1.6.0
         with:
           # This will run pnpm changeset version && pnpm changeset publish
           # Provenance is enabled via publishConfig.provenance in package.json
